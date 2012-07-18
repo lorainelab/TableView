@@ -425,7 +425,7 @@ if(true) {
     d.height = (int) (.8 * screenSize.height);
     frame.setSize(d);
     frame.setLocation(100,100);
-    frame.show();   
+    frame.setVisible(true);   
     for (int i = 0; i < args.length; i++) {
       try {
         dv.importData(args[i]);

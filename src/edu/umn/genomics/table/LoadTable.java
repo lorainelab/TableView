@@ -224,7 +224,7 @@ public class LoadTable extends AbstractTableSource {
           try {
             Class theClass = Class.forName(className);
             if (edu.umn.genomics.table.AbstractTableSource.class.isAssignableFrom(theClass)) {
-              AbstractTableSource tableSource = (AbstractTableSource)theClass.getConstructor(null).newInstance(null);  
+              AbstractTableSource tableSource = (AbstractTableSource)theClass.getConstructor((Class) null).newInstance((Object) null);  
               ImageIcon icon = null;
               String toolTip = properties.getProperty(id+".tooltip");
               String iconSrc = properties.getProperty(id+".icon");
@@ -306,7 +306,7 @@ public class LoadTable extends AbstractTableSource {
               setSuperTableSource(getTableModel(), nameField.getText());
               mtm = null;
               mergeNameLabel.setText(""); 
-              dialog.hide();
+              dialog.setVisible(false);
             } catch (Exception ex) {
             }
           }
@@ -348,7 +348,7 @@ public class LoadTable extends AbstractTableSource {
             try {
               mtm = null;
               setTableSource(null,"");
-              dialog.hide();
+              dialog.setVisible(false);
             } catch (Exception ex) {
             }
           }
@@ -385,7 +385,7 @@ public class LoadTable extends AbstractTableSource {
     if (src != null) {
       setTableSource(src.getTableModel(),src.getTableSource());
     }
-    getDialog(owner).show();
+    getDialog(owner).setVisible(true);
     return getTableModel();
   }
 
