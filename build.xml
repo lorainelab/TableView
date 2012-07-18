@@ -157,7 +157,7 @@
     
     <target name="compiler-def-args">
         <!-- compiler defaults passed to javac -->
-	<property name="debug"         value="off" />
+	<property name="debug"         value="true" />
 	<property name="deprecation"   value="true"/>
 	<property name="compiler.args" value="-Xlint:-unchecked"/>
     </target>

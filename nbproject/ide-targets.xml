@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir=".." name="TABLEVIEW-IDE">
+    <import file="../build.xml"/>
+    <target depends="compile" description="debug TableView" name="debug-nb">
+        <nbjpdastart addressproperty="jpda.address" name="TableView" 
+                     transport="dt_socket" />
+           
+        <java fork="true" maxmemory="1024m" classname="edu.umn.genomics.table.TableView"
+              classpath="${build.dir}:${lib.path}">
+            <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+            <sysproperty key="apple.laf.useScreenMenuBar" value="true" />
+        </java>
+    </target>
+
+    <target name="profile-nb" depends="compile" description="profile TableView in NetBeans">
+        <nbprofiledirect>
+            <classpath refid="igb.classpath"/>
+            <rootspath>
+                <dirset dir="${basedir}">
+                    <include name="*/build" />
+                </dirset>
+            </rootspath>
+        </nbprofiledirect>
+        <java fork="true" maxmemory="${igb.maxmem}" classname="com.affymetrix.main.Main" jvm="${profiler.info.jvm}" dir="${profiler.session.working.dir}">
+            <jvmarg line="${igb.jvmargs}" />
+            <jvmarg value="${profiler.info.jvmargs.agent}" />
+            <jvmarg line="${profiler.info.jvmargs}"/>
+            <arg value="-prefs" />
+            <arg value="${igb}/etc/igb_prefs.xml" />
+			<arg line="${svn.update.available}" />
+            <classpath refid="igb.classpath"/>
+        </java>
+    </target>
+</project>
+
