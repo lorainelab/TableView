@@ -183,6 +183,7 @@
         <mkdir dir="${dist.root}" />
         <jar jarfile="${dist.root}/${name}.jar" update="false" manifest="./META-INF/MANIFEST.MF">
 		<fileset dir="${build.dir}" />
+                <zipgroupfileset dir="${lib.dir}" includes="*.jar"/>
 	</jar>
     </target>
     
