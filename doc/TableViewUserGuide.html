@@ -1,0 +1,1121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	
+  <meta http-equiv="CONTENT-TYPE"
+ content="text/html; charset=iso-8859-1">
+  <title>TableView User Guide</title>
+	 	
+  <meta name="GENERATOR" content="StarOffice 7  (Solaris Sparc)">
+	
+  <meta name="CREATED" content="20040802;8352300">
+	
+  <meta name="CHANGEDBY" content="James Johnson">
+	
+  <meta name="CHANGED" content="20040802;10583500">
+	<!-- @(#) $RCSfile: TableViewUserGuide.html,v $ $Revision: 1.15 $ $Date: 2004/08/18 19:02:39 $ $Name: TableView1_3_2 $
+ Center for Computational Genomics and Bioinformatics
+ Academic Health Center, University of Minnesota
+ Copyright (c) 2002. The Regents of the University of Minnesota
+-->
+	
+  <script language="Javascript">
+ 
+               var javawsInstalled = 0; 
+               isIE = "false"; 
+
+               if (navigator.mimeTypes && navigator.mimeTypes.length) { 
+                   x = navigator.mimeTypes['application/x-java-jnlp-file']; 
+                 if (x) javawsInstalled = 1; 
+               } else { 
+                   isIE = "true"; 
+               } 
+
+               function insertLink(url, name) { 
+                if (javawsInstalled) { 
+                     document.write("<a href=" + url + ">"  + name + "</a>"); 
+                  } else { 
+                     document.write("Need to install Java Web Start"); 
+                  } 
+               } 
+    
+  
+  
+  </script>
+	
+  <style>
+	<!--
+		@page { size: 8.5in 11in }
+	-->
+	</style>
+</head>
+<body lang="en-US" dir="ltr">
+<h1>TableView </h1>
+<p><font color="#000080"><a href="../Images/TableView.png"><font
+ color="#000080"><img src="../Images/TableViewSmall.png" name="Graphic1"
+ align="top" width="403" height="327" border="1"></font></a></font> </p>
+<h2>Contents</h2>
+<ul>
+	<li>
+    <p style="margin-bottom: 0in;"><a href="#Overview">Overview</a> 	</p>
+	</li>
+  <li>
+    <p style="margin-bottom: 0in;"><a href="#Data_Sources">Data 	Sources</a></p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;"><a href="#Edit_Table_Columns">Edit
+Table Columns</a></p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;"><a href="#Selected_Rows_Table">SubTables</a></p>
+  </li>
+</ul>
+<ul>
+  <li>
+    <p style="margin-bottom: 0in;"><a href="#Selection">Selection</a> 		</p>
+	</li>
+  <li>
+    <p><a href="#Views">Views</a></p>
+  </li>
+</ul>
+<p><br>
+<br>
+</p>
+<h2><a name="Overview"></a>Overview </h2>
+<p>TableView is a Java application for data exploration and
+visualization. It provides several graphical overviews of the table of
+data. It allows the viewer to select rows of interest from the data
+table by selecting in any of the views. </p>
+<p>It has been developed as a portable, general purpose tool. It has
+been tested on the following platforms: Sun, SGI, Linux, MacOSX, and
+Windows. </p>
+<h2>The Top Level Control Panel</h2>
+<h2><map name="MAP1">
+<area shape="RECT" coords="75,31,112,50" href="#Views" target="_self"
+ alt="View menu to open views on tables">
+<area shape="RECT" coords="39,29,71,49" href="#Edit_Menu" target="_self"
+ alt="Edit Menu to alter tables">
+<area shape="RECT" coords="7,30,34,50" href="#Data_Sources"
+ target="_self" alt="File menu to Import and export data tables">
+<area shape="RECT" coords="259,127,285,146" nohref=""
+ alt="Exclusive OR of previous selection with new selection">
+<area shape="RECT" coords="231,127,259,144" nohref=""
+ alt="Delete new selection from previous selection">
+<area shape="RECT" coords="205,127,231,144" nohref=""
+ alt="Intersect previous selection with new selection">
+<area shape="RECT" coords="180,127,205,145" nohref=""
+ alt="Union previous selection with new selection">
+<area shape="RECT" coords="153,124,176,146" nohref=""
+ alt="Replace previous selection with new selection">
+<area shape="RECT" coords="130,127,146,147" nohref=""
+ alt="Select by brushover">
+<area shape="RECT" coords="83,122,126,151" nohref=""
+ alt="Invert the selection of rows in the table">
+<area shape="RECT" coords="61,117,83,151" nohref=""
+ alt="Select all rows in the table">
+<area shape="RECT" coords="22,117,61,150" nohref=""
+ alt="Clear the selection">
+<area shape="RECT" coords="6,117,22,151" href="#Selection"
+ target="_self" alt="Selection Toolbar">
+<area shape="RECT" coords="4,54,23,82" nohref="" alt="Table Toolbar">
+<area shape="RECT" coords="6,88,22,117" href="#Views" target="_self"
+ alt="View Toolbar">
+<area shape="RECT" coords="501,88,531,117" href="#Line_Graphs"
+ target="_self" alt="Column Line Graphs">
+<area shape="RECT" coords="473,88,501,117" href="#Compare_Columns"
+ target="_self" alt="Compare Columns">
+<area shape="RECT" coords="443,88,473,117" href="#Scatter_Plot_3D"
+ target="_self" alt="Java3D Scatter Plot">
+<area shape="RECT" coords="412,88,443,116" href="#Scatter_Plots_3D"
+ target="_self" alt="Scatter Plot in 3D">
+<area shape="RECT" coords="383,88,412,118" href="#Cluster_Rows"
+ target="_self" alt="Cluster Rows">
+<area shape="RECT" coords="353,88,383,116" href="#Cluto_Clustering"
+ target="_self" alt="Cluto Clustering">
+<area shape="RECT" coords="321,88,353,117" href="#Span_Plot"
+ target="_self" alt="Span Plot">
+<area shape="RECT" coords="291,88,321,116" href="#Scatter_Plot"
+ target="_self" alt="Scatter Plot">
+<area shape="RECT" coords="261,88,291,116" href="#Scatter_Plot_Icons"
+ target="_self" alt="Scatter Plot Icons">
+<area shape="RECT" coords="231,88,261,117" href="#Row_Graphs"
+ target="_self" alt="Row Graphs">
+<area shape="RECT" coords="203,88,231,116" href="#Compare_Rows"
+ target="_self" alt="Compare Rows">
+<area shape="RECT" coords="172,88,203,117" href="#PieChart"
+ target="_self" alt="PieChart">
+<area shape="RECT" coords="142,88,172,117" href="#Histogram3D"
+ target="_self" alt="Histogram3D">
+<area shape="RECT" coords="113,88,142,116" href="#Histogram"
+ target="_self" alt="Histogram">
+<area shape="RECT" coords="80,88,113,117" href="#Histograms"
+ target="_self" alt="Histograms">
+<area shape="RECT" coords="50,88,80,116" href="#Search" target="_self"
+ alt="Search to Select">
+<area shape="RECT" coords="22,88,50,117" href="#Table" target="_self"
+ alt="Table view">
+<area shape="RECT" coords="203,56,231,84" nohref="" alt="Trash">
+<area shape="RECT" coords="162,55,191,82" nohref="" alt="Scratch Pad">
+<area shape="RECT" coords="51,54,80,82" nohref="" alt="Save Table">
+<area shape="RECT" coords="120,55,149,82" href="#Edit_Table_Columns"
+ target="_self" alt="Edit Table Columns">
+<area shape="RECT" coords="92,55,120,82" href="#Selected_Rows_Table"
+ target="_self" alt="Create Table from Selected Rows">
+<area shape="RECT" coords="23,54,51,82" href="#Data_Sources"
+ target="_self" alt="Import Data Table">
+</map>
+<img src="../Images/TableViewMain.gif" name="Graphic2"
+ alt="TableView Main Control Panel" align="top" width="554" height="504"
+ border="0" usemap="#MAP1"></h2>
+<p>The top level controls allow the user to import data tables to
+TableView, open various views on the data, and save the selected rows of
+the data table. The panel consists of: </p>
+<ul>
+	<li>
+    <p style="margin-bottom: 0in;">a menubar 	</p>
+	</li>
+  <li>
+    <p style="margin-bottom: 0in;">a file/edit toolbar 	</p>
+	</li>
+  <li>
+    <p style="margin-bottom: 0in;">a view toolbar 	</p>
+	</li>
+  <li>
+    <p style="margin-bottom: 0in;">a selection toolbar 	</p>
+	</li>
+  <li>
+    <p>a tree diagram of the open tables and views on those tables. 	</p>
+  </li>
+</ul>
+<h2><a name="Data_Sources"></a>Data Sources </h2>
+<p>TableView can read the table of data from a tab-delimited file or
+the table may be queried from a data base using JDBC. TableView can
+write the selected set of rows from the table to a file for further
+analysis by other tools. </p>
+<table width="968" border="1" cellpadding="2" cellspacing="3"
+ rules="groups">
+	<colgroup><col width="536"></colgroup> 	<colgroup><col width="110"><col
+ width="257"><col width="31"></colgroup> 	<tbody>
+		<tr>
+			<td rowspan="6" width="536"> 				
+      <p><img src="../Images/FileMenu.png" name="Graphic3" align="top"
+ width="129" height="130" border="0"></p>
+			</td>
+			<td colspan="3" width="413"> 				
+      <p>File Menu</p>
+				
+      <p>The File menu on the main control panel provides choices for
+				importing and exporting data.</p>
+			</td>
+		</tr>
+		<tr>
+			<td width="110"> 				
+      <p><b>load table</b></p>
+			</td>
+			<td width="257"> 				
+      <p>load a table from a file, URL, or data base</p>
+			</td>
+			<td rowspan="4" width="31" valign="top"> 				
+      <p><br>
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td width="110"> 				
+      <p><b>save selection</b></p>
+			</td>
+			<td width="257"> 				
+      <p>save the selected rows to a file</p>
+			</td>
+		</tr>
+		<tr>
+			<td width="110"> 				
+      <p><b>output selection</b></p>
+			</td>
+			<td width="257"> 				
+      <p>output the selected rows to stdout</p>
+			</td>
+		</tr>
+		<tr>
+			<td width="110"> 				
+      <p><b>Exit</b></p>
+			</td>
+			<td width="257"> 				
+      <p>Quit TableView</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" width="413"> 				
+      <p><br>
+				</p>
+			</td>
+		</tr>
+	
+  </tbody> 	<tbody>
+		<tr>
+			<td width="536"> 				
+      <p><img src="../Images/FileBrowser.png" name="Graphic4"
+ align="top" width="353" height="249" border="0"></p>
+			</td>
+			<td colspan="3" width="413"> 				
+      <p>Enter a filename or URL for an ASCII text data file.</p>
+				
+      <p>The <b>browse</b> button brings up a filechooser. Data files
+				are assumed to have one row per line, and data fields separated
+				by a TAB, comma, semicolon, or other single character.</p>
+				
+      <p>The file data is previewed in the Load Table panel. Pressing
+				the <b>load</b> button will enter it into TableView.</p>
+				
+      <p>Press the <b>cancel</b> button to ignore this table.</p>
+			</td>
+		</tr>
+	
+  </tbody> 	<tbody>
+		<tr>
+			<td width="536"> 				
+      <p><img src="../Images/DBBrowser67.png" name="Graphic5"
+ align="top" width="362" height="363" border="0"></p>
+			</td>
+			<td colspan="3" width="413"> 				
+      <p>The query database option under the file menu brings up a
+				query form. 				</p>
+				
+      <p>The <b>Edit Connections </b>button brings up the <b>Data
+Base 				Account Information </b>dialog which allows the user to enter
+new 				logins to data base servers.</p>
+				
+      <p>Select the database to connect to, then press the <b>connect</b>
+				button.</p>
+				
+      <p>Select the Catalog or Schema and a Table to view. Columns from
+				the table can be omitted by unchecking them.</p>
+				
+      <p>The SQL query appears in the Query area, and may be edited.
+				Press the <b>submit</b> button to preview the table resulting
+				from the query.</p>
+				
+      <p>Press the <b>load</b> button to enter the table into
+				TableView.</p>
+				
+      <p>Press the <b>cancel</b> button to ignore this table.</p>
+			</td>
+		</tr>
+	
+  </tbody> 	<tbody>
+		<tr>
+			<td width="536"> 				
+      <p><img src="../Images/DBConnect.gif" name="Graphic6"
+ alt="Edit Database Account Preferences" align="top" width="537"
+ height="280" border="0"></p>
+			</td>
+			<td colspan="3" width="413"> 				
+      <p>The <b>Data Base Account Information </b>dialog allows you
+to 				set the database connection parameters for JDBC conections to
+				data base servers. (Starting with java1.4 these logins will be
+				stored on the user's computer in the java preferences.) The
+				values for these fields should be given to the user by the
+				administrator of the data base. User preferences can also be
+				imported or exported as XML formatted files, (as specified in the
+				java api for java.util.prefs.Preferences), which provides a
+				convenient way to share connection information among users or
+				across all of a users platforms. 				</p>
+				
+      <p>Press <b>Add</b> to add these parameters as a new entry in the
+				list.</p>
+				
+      <p>Press <b>Remove</b> to remove this entry from the list. 				</p>
+				
+      <p>Press <b>Test</b> to test a connection to the database.</p>
+				
+      <p>Press <b>Import</b> to import a preferences file. 				</p>
+				
+      <p>Press <b>Export</b> to export the currently displayed entry as
+				a preferences file.</p>
+				
+      <p>Press <b>Export All</b> to export all database connctions
+				entries as a preferences file.</p>
+			</td>
+		</tr>
+	
+  </tbody>
+</table>
+<h2><br>
+</h2>
+<h2><a name="Edit_Menu"></a>Edit Menu</h2>
+<table width="968" border="1" cellpadding="2" cellspacing="3"
+ rules="groups">
+	<colgroup><col width="257"></colgroup> 	<colgroup><col width="123"><col
+ width="561"></colgroup> 	<tbody>
+    <tr>
+		<td rowspan="6" width="257"> 			
+      <p><img src="../Images/EditMenu.png" name="Graphic7"
+ align="bottom" width="258" height="132" border="0"></p>
+		</td>
+		<td colspan="2" width="692"> 			
+      <p align="center">The Edit menu options apply the table or view
+			which has focus in the tree display of the main control panel. 			</p>
+		</td>
+	</tr>
+	<tr>
+		<td width="123"> 			
+      <p><b>Table Columns</b></p>
+		</td>
+		<td width="561"> 			
+      <p>Delete, reorder, or add columns to the table.</p>
+		</td>
+	</tr>
+	<tr>
+		<td width="123"> 			
+      <p><b>Set Default Mapping Order</b></p>
+		</td>
+		<td width="561"> 			
+      <p>Determines the mapping order for character string columns.</p>
+		</td>
+	</tr>
+	<tr>
+		<td width="123"> 			
+      <p><b>Create Table from Selected Rows</b></p>
+		</td>
+		<td width="561"> 			
+      <p>Create a new table of the selected rows from current table.
+The 			new subtable is added as a child view of the original table in
+the 			tree diagram. The selections between this new subtable and the
+			original will be linked. 			</p>
+		</td>
+	</tr>
+	<tr>
+		<td width="123"> 			
+      <p><b>Delete Item</b></p>
+		</td>
+		<td width="561"> 			
+      <p>Delete this table or view and all other tables or views that
+			depend upon it.</p>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" width="692"> 			
+      <p><br>
+			</p>
+		</td>
+	</tr>
+  </tbody>
+</table>
+<h2><a name="Edit_Table_Columns"></a>Edit Table Columns</h2>
+This panel allows the user to change the name of the table, or add or
+remove columns from the table.&nbsp; <br>
+<img src="../Images/TableColumnEditor.gif" title=""
+ alt="TableColumnEditor" style="width: 594px; height: 431px;"
+ align="top"><br>
+<br>
+A New Column dialog opens when choosing to insert or add a column. New
+columns can be columns from the imported table, columns with user
+entered values, or formula columns that use a script to generate values.<br>
+<br>
+<img src="../Images/NewColumnTC.gif" title=""
+ alt="New Column from the table" align="top"><br>
+<br>
+<br>
+<img src="../Images/NewColumnBSH.gif" title=""
+ alt="A BeanShell formula column" align="top"
+ style="width: 710px; height: 201px;"><br>
+<br>
+Two formula interpretters are currently supported:<br>
+<ul>
+  <li><span style="font-weight: bold;">BeanShell</span> for Java
+&nbsp;&nbsp; <a href="http://www.beanshell.org/docs.html">http://www.beanshell.org/docs.html</a></li>
+  <li><span style="font-weight: bold;">Rhino </span>for JavaScript<span
+ style="font-weight: bold;"> </span><a
+ href="http://www.mozilla.org/rhino/">http://www.mozilla.org/rhino/</a><br>
+  </li>
+</ul>
+Four variables are provided to the formula: <br>
+&nbsp;&nbsp; <span style="font-weight: bold;">table</span> - the
+javax.swing.table.TableModel on which this formula operates <br>
+&nbsp;&nbsp; <span style="font-weight: bold;">row</span> - the row of
+the cell in the table (row starts from 0)<br>
+&nbsp;&nbsp; <span style="font-weight: bold;">col</span> - the column
+of the cell in the table (col starts from 0) <br>
+&nbsp;&nbsp; <span style="font-weight: bold;">Cells</span> - the Cells
+class that has a number of useful static methods.<br>
+<br>
+The formula should return a value.<br>
+<br>
+To retrieve a value from a cell in the table, use the method from the
+TableModel interface:<br>
+table.getValueAt(row, col-1);<br>
+<br>
+<br>
+&nbsp;The Cells class provides a means to get a collection of table
+cells.&nbsp; (Cells uses java.util.Collection interface for
+Java2,&nbsp;&nbsp; for JDK1.1 it uses java.util.Vector only.) <br>
+&nbsp;Cells provides the following static methods:<br>
+&nbsp; Vector getValuesFrom(TableModel tableModel, int from_row, int
+from_col, int to_row, int to_col)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Return a list of cells from a rectangular
+portion of the table.<br>
+&nbsp; Object min(Collection cells)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Return the cell with minimum value of the
+cells in the list.<br>
+&nbsp; Object max(Collection cells)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Return the cell with maximum value of the
+cells in the list.<br>
+&nbsp; Object median(Collection cells)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Return the median value of all Number-typed
+cells in the list.<br>
+&nbsp; double sum(Collection cells)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Return the sum of all Number-typed cells in
+the list of cells.<br>
+&nbsp; double average(Collection cells)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Return the average mean value of all
+Number-typed cells in the list.<br>
+&nbsp; double variance(Collection cells)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Return the variance of all Number-typed cells
+in the list.<br>
+&nbsp; double stddev(Collection cells)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Return the standard deviation of all
+Number-typed cells in the list.<br>
+&nbsp; int count(Collection cells)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Return the count of cells in the list.<br>
+&nbsp; int count(Collection cells, Object obj)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Return the number of times the given obj
+appears among the cells in the list.<br>
+&nbsp; int count(Collection cells, Class javaClass)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Return the number of cells in the list are of
+the given java class.<br>
+&nbsp; Set distinct(Collection cells)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Return the set of distinct cells in the list
+with duplicates removed.<br>
+&nbsp; List sort(Collection cells)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Sort the cells in place.&nbsp; <br>
+&nbsp; List reverse(Collection cells)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Reverse the order of the cells in
+place.&nbsp; <br>
+&nbsp; List fill(Collection cells, Object obj)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Fill the list with the given obj.&nbsp; <br>
+&nbsp; List getCommonClasses(Collection collection)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Return a list of java Classes that all cells
+in the list belong to.<br>
+&nbsp; Class getCommonClass(Collection collection)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Return the most specific java Class that all
+cells in the list belong to.<br>
+&nbsp; Set getCommonInterfaces(Collection collection)<br>
+&nbsp; &nbsp;&nbsp;&nbsp; Return a list of java interfaces that all
+cells in the list implement.<br>
+<br>
+<br>
+BeanShell Example formulas: <br>
+<br>
+//Example 1<br>
+&nbsp;&nbsp; // return column 1 - column 0 <br>
+&nbsp;&nbsp; table.getValueAt(row, 1) - table.getValueAt(row, 0); <br>
+<br>
+//Example 2<br>
+&nbsp;&nbsp; // return the previous column value with a maximum number
+of decimal places <br>
+&nbsp;&nbsp; double dp = 100; // set number of decimal places <br>
+&nbsp;&nbsp; Object v = table.getValueAt(row,col-1);<br>
+&nbsp;&nbsp; return v instanceof Number ?
+Math.round(((Number)v).doubleValue() * dp) / dp : null; <br>
+&nbsp; Example 3<br>
+<br>
+&nbsp;&nbsp; // return the sin of column 0 <br>
+&nbsp;&nbsp; Math.sin(((Number)(table.getValueAt(row,0) +
+1.)).doubleValue());<br>
+<br>
+//Example 4<br>
+&nbsp;&nbsp; // average the values in a range of rows <br>
+&nbsp;&nbsp;
+Cells.average(Cells.getValuesFrom(table,row-1,col-1,row+1,col-1)); <br>
+<br>
+//Example 5<br>
+&nbsp; // return the sum of the preceeding columns <br>
+&nbsp; double sum = 0.; <br>
+&nbsp; for (int c = 0; c &lt; col; c++) { <br>
+&nbsp;&nbsp;&nbsp; Object v = table.getValueAt(row,c); <br>
+&nbsp;&nbsp;&nbsp; if (v instanceof Number) { <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sum += ((Number)v).doubleValue(); <br>
+&nbsp;&nbsp;&nbsp; } <br>
+&nbsp; } <br>
+&nbsp; return sum; <br>
+<br>
+<h2><a name="Selected_Rows_Table"></a>SubTables <span
+ style="font-style: italic; font-weight: normal;">Creating Table of
+Selected Rows</span><br>
+</h2>
+This creates a subtable that contains only the selected rows from the
+selected parent table.&nbsp; The subtable references rows in the parent
+table, and thus will reflect any changes made to that table.&nbsp; Row
+selection is also linked between the tables, so that any selection of
+rows in one table will be reflected in the other.<br>
+<br>
+<h2><a name="Selection"></a>Selection </h2>
+<p>TableView provides a convenient means to select rows of interest
+from the table and maintains a set of selected rows from the table of
+data. The selected set is highlighted in each view of the data, and it
+may be adjusted by interaction in each view. For example, the user can
+use the mouse to select data of interest directly from the parallel
+coordinates representation and this selection is reflected in the other
+view windows. The user can build up a selection set by interacting in
+any view, performing a set operation on the previous selection with the
+new selection. TableView's main control panel provides buttons for
+setting the set operation to perform when selecting from a view: replace
+selection, union selections, intersect selections, subtract from
+previous selection, and an exclusive or with the previous selection.
+There are also buttons to clear the selection, select all, or invert the
+selected and unselected rows.</p>
+<p><img src="../Images/SelBtn.png" name="Graphic8" align="top"
+ width="576" height="71" border="0"></p>
+<p>Table row selection operations:</p>
+<ul>
+	<li> <b>Clear </b><span style="">- Clear the 	selection</span> 	</li>
+  <li> <b>All </b><span style="">- Select all rows 	in the table</span>
+	</li>
+  <li> <b>Invert </b>- Invert the 	selection of rows in the table 	</li>
+</ul>
+<p>Selection Set Operation Choice:</p>
+<ul>
+  <li> <b>Brushover </b><span style="">- Select 	rows as the cursor
+brushes over items  (<i>Note: this only works in 	some views</i>)</span> 	</li>
+  <li> <b>Replace </b>- Replace the previous selection with new
+selection 	 	</li>
+  <li> <b>Union </b>- Union previous selection with the new selection 	</li>
+  <li> <b>Intersection </b>- Intersect previous selection with the new
+selection 	</li>
+  <li> <b>Minus </b>- Delete the new selection from the previous
+selection 	</li>
+  <li> <b>XOR </b>- Exclusive OR of previous selection with new
+selection</li>
+</ul>
+<h2><br>
+</h2>
+<h2><a name="Views"></a>Views</h2>
+<p>Views can be opened on the selected table either from the View menu
+or the view toolbar.</p>
+<p><img src="../Images/ViewMenu.png" name="Graphic9" align="bottom"
+ width="205" height="245" border="0"> </p>
+<p><map name="MAP12">
+<area shape="RECT" coords="499,4,528,32" href="#Line_Graphs"
+ target="_self" alt="Line Graphs">
+<area shape="RECT" coords="469,4,499,30" href="#Compare_Columns"
+ target="_self" alt="Compare Columns">
+<area shape="RECT" coords="439,4,469,32" href="#Scatter_Plots_3D"
+ target="_self" alt="Scatter Plots 3D">
+<area shape="RECT" coords="408,4,439,32" href="#Scatter_Plots_3D"
+ target="_self" alt="Scatter Plots 3D">
+<area shape="RECT" coords="379,4,408,31" href="#Cluster%20Rows"
+ target="_self" alt="Cluster Rows">
+<area shape="RECT" coords="351,4,379,33" href="#Cluto%20Clustering"
+ target="_self" alt="Cluto Clustering">
+<area shape="RECT" coords="318,4,347,31" href="#Span_Plot"
+ target="_self" alt="Span_Plot">
+<area shape="RECT" coords="290,4,318,32" href="#Scatter_Plot"
+ target="_self" alt="Scatter Plot">
+<area shape="RECT" coords="261,5,286,30" href="#Scatter_Plot_Icons"
+ target="_self" alt="ScatterPlot Icons">
+<area shape="RECT" coords="232,5,255,31" href="#Row_Graphs"
+ target="_self" alt="Row Graphs">
+<area shape="RECT" coords="199,3,227,32" href="#Compare_Rows"
+ target="_self" alt="Compare Rows">
+<area shape="RECT" coords="171,3,199,31" href="#PieChart" target="_self"
+ alt="PieChart">
+<area shape="RECT" coords="141,3,168,32" href="#Histogram3D"
+ target="_self" alt="Histogram3D">
+<area shape="RECT" coords="108,3,137,31" href="#Histogram"
+ target="_self" alt="Histogram view">
+<area shape="RECT" coords="79,3,108,31" href="#Histograms"
+ target="_self" alt="Histograms view">
+<area shape="RECT" coords="51,4,76,31" href="#Search" target="_self"
+ alt="Search view">
+<area shape="RECT" coords="18,3,48,33" href="#Table" target="_self"
+ alt="Table view">
+</map>
+<img src="../Images/ViewToolBar.gif" name="Graphic10" alt="View ToolBar"
+ align="top" width="530" height="35" border="0" usemap="#MAP12"></p>
+<h3><a name="Axis_Display"></a>Axis Displays on Views</h3>
+<p>The Axes displays on several of the view allow the the user to zoom
+in, zoom out, or pan across the view of the data by using the <b>mouse</b>
+or the <b>arrow</b> keys. <b>Not all axes have the zoomable option set</b>.</p>
+<table border="1" cellpadding="2" cellspacing="2">
+	<tbody>
+    <tr>
+		<td> 			
+      <p><img src="../Images/AxisZoom.png" name="Graphic11"
+ align="bottom" width="226" height="34" border="0"></p>
+			
+      <p><img src="../Images/AxisZoomDone.png" name="Graphic12"
+ align="bottom" width="226" height="34" border="0"></p>
+		</td>
+		<td> 			
+      <h3>Zoom In</h3>
+			
+      <p>Press the <b>UP</b> arrow key. 			</p>
+			
+      <p>Using <b>MouseButton1</b> to zoom in on the view: the point at
+			which the button is pressed will move to the left edge, and the
+			point at which the button is released will move to the right edge.</p>
+		</td>
+	</tr>
+	<tr>
+		<td> 			
+      <p><img src="../Images/AxisPan.png" name="Graphic13"
+ align="bottom" width="226" height="34" border="0"></p>
+			
+      <p><img src="../Images/AxisPanDone.png" name="Graphic14"
+ align="texttop" width="226" height="34" border="0"></p>
+		</td>
+		<td> 			
+      <h3>Pan across</h3>
+			
+      <p>Press the <b>LEFT</b> arrow or the <b>RIGHT</b> arrow key. 			</p>
+			
+      <p>Using <b>MouseButton2</b> <i>(or <b>&lt;Shift&gt;MouseButton1</b>)
+			</i>to pan across the view: press the button and drag to pan.</p>
+		</td>
+	</tr>
+	<tr>
+		<td> 			
+      <p><img src="../Images/AxisShrink.png" name="Graphic15"
+ align="bottom" width="226" height="34" border="0"></p>
+			
+      <p><img src="../Images/AxisShrinkDone.png" name="Graphic16"
+ align="bottom" width="226" height="34" border="0"></p>
+		</td>
+		<td> 			
+      <h3>Zoom Out</h3>
+			
+      <p>Press the <b>DOWN</b> arrow key. 			</p>
+			
+      <p>Using <b>MouseButton3</b> <i>(or <b>&lt;Ctrl&gt;MouseButton1</b>)</i>
+			to zoom out on the view: the left edge will move to the point at
+			which the button is pressed, and right edge will move to the point
+			at which the button is released.</p>
+		</td>
+	</tr>
+  </tbody>
+</table>
+<table>
+	<tbody>
+    <tr valign="top">
+		<td> 			
+      <p align="left"><font color="#000080"><a href="../Images/JT.png"
+ target="_blank"><font color="#000080"><img src="../Images/JTs.png"
+ name="Graphic17" align="top" width="295" height="376" border="1"></font></a></font></p>
+		</td>
+		<td> 			
+      <h3 align="left"><a name="Table"></a>Table</h3>
+			
+      <p align="left">Table provides a view of the data as a table
+using 			the java swing component: JTable. It looks much like a
+traditional 			spreadsheet. 			</p>
+			
+      <p align="left">The small bar along the left margin shows the
+			location of selected rows within the entire length of the table. A
+			mouse click in this area will scroll the table to that location.
+			The left margin of the table shows the row number indices of the
+			table in its original sort order. Clicking <b><i>MouseButton1</i></b>
+			on an arrow above a column will sort the view of table according
+			to the values in that column. Holding the <b><i>&lt;Shift&gt;</i></b>
+			key while clicking on other arrows will add the respestive columns
+			as additional sorting criteria. Holding the <b><i>&lt;Ctrl&gt;</i></b>
+			key while clicking on an arrow will remove that column from the
+			sorting criteria. Checking <b>Fit Columns</b> will force the table
+			to fit the width of the window by either expanding or shrinking
+			the coulmn widths. Checking <b>Select Columns</b> allows selection
+			of a rectangle of cells in the table. The <b>Copy</b> button
+			copies the text values of the selected cells in the table to the
+			system clipboard. The values can then be pasted in other
+			applications. 			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td> 			
+      <p align="left"><font color="#000080"><a
+ href="../Images/RegExSearch.png" target="_blank"><font color="#000080"><img
+ src="../Images/RegExSearch.png" name="Graphic18" align="top"
+ width="297" height="216" border="1"></font></a></font></p>
+		</td>
+		<td> 			
+      <h3 align="left"><a name="Search"></a>Search</h3>
+			
+      <p align="left">Search allows for the search of matching values
+in a 			column. Enter a regular expression for the desired column, then
+			press the Set operation to specify how to apply the matches to the
+			selection of rows. Example: 			</p>
+			
+      <ul>
+				<li>
+          <p align="left" style="margin-bottom: 0in;"><b>*.DNA.*</b>
+				Matches values that <i>contain</i> 'DNA' 				</p>
+				</li>
+        <li>
+          <p align="left" style="margin-bottom: 0in;"><b>DNA.*</b>
+Matches 				values that <i>start</i> with 'DNA' 				</p>
+				</li>
+        <li>
+          <p align="left"><b>*.DNA</b> Matches values that <i>end</i>
+				with 'DNA' 				</p>
+			</li>
+      </ul>
+			
+      <p align="left">For more information on regular expressions: 			<br>
+      <a
+ href="http://java.sun.com/docs/books/tutorial/extra/regex/index.html">http://java.sun.com/docs/books/tutorial/extra/regex/index.html
+			</a><br>
+      <a
+ href="http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/Pattern.html">http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/Pattern.html
+			</a> 			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td> 			
+      <p align="left"><font color="#000080"><a href="../Images/HG.png"
+ target="_blank"><font color="#000080"><img
+ src="../Images/Histograms.png" name="Graphic19" align="top" width="161"
+ height="361" border="1"></font></a></font></p>
+		</td>
+		<td> 			
+      <h3 align="left"><a name="Histograms"></a>Histograms</h3>
+			
+      <p align="left">This view presents a histogram for each column in
+			the table. A histogram shows how many rows of the table have
+			values that fall in each subrange between the minimum and maximum
+			values for a column. Changing the width of the window will cause
+			each histogram to be recomputed.</p>
+			
+      <p align="left">The toolbar has a button with an iconic histogram
+			for each column in the table. Selecting a button on the toolbar
+			displays an interactive histogram.</p>
+			
+      <p align="left">The user may select rows from the table by
+pressing 			the mouse button over a histogram and dragging left or right
+to 			select a range of values from the column. Rows from the table that
+			correspond to that range of values are selected. 			</p>
+			
+      <p align="left">The highlighted portion of each bar shows how
+many 			rows with that value are selected.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="text-align: left; vertical-align: top;"> 			
+      <h3><a name="HistogramEditor"></a>HistogramEditor</h3>
+A histogram divides the range of a set of values into a number of bins,
+and reports the number of values that fall into each bin.&nbsp; <br>
+The HistogramEditor defines the bins for each of the table columns
+included in the histogram.&nbsp; <br>
+      <br>
+		</td>
+		<td> 			
+      <p><font color="#000080"><a href="../Images/HistogramEditor.gif"><font
+ color="#000080"><img src="../Images/HistogramEditor.gif"
+ name="Graphic20" alt="Histogram Editor" align="top" width="380"
+ height="275" border="1"></font></a></font></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td> 			
+      <p align="left"><font color="#000080"><a
+ href="../Images/Histogram.gif"><font color="#000080"><img
+ src="../Images/Histogram.gif" name="Graphic21" alt="Histogram"
+ align="top" width="300" height="270" border="1"></font></a></font></p>
+		</td>
+		<td> 			
+      <h3 align="left"><a name="Histogram"></a>Histogram</h3>
+			
+      <p align="left">This view presents a bar chart to represent the
+histogram.&nbsp; If multuple columns are included in the histogram,
+this will be a grouped barchart. &nbsp; 			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td> 			
+      <p align="left"><font color="#000080"><a
+ href="../Images/Histogram3D.gif"><font color="#000080"><img
+ src="../Images/Histogram3D.gif" name="Graphic22" alt="3D Histogram"
+ align="top" width="273" height="302" border="1"></font></a></font></p>
+		</td>
+		<td> 			
+      <h3 align="left"><a name="Histogram3D"></a>Histogram3D</h3>
+			
+      <p align="left">This view presents 3 dimensional bars to
+represent a histogram calculated over 2 table columns. 			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td> 			
+      <p align="left"><font color="#000080"><a
+ href="../Images/PieChart.gif"><font color="#000080"><img
+ src="../Images/PieChart.gif" name="Graphic23" alt="PieChart"
+ align="top" width="211" height="249" border="1"></font></a></font>
+						</p>
+		</td>
+		<td> 			
+      <h3 align="left"><a name="PieChart"></a>PieChart</h3>
+      <br>
+This view presents a pie chart to represent the histogram.&nbsp; If
+multuple columns are included in the histogram,&nbsp; there will be a
+ring for each column.&nbsp; <br>
+      <br>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td> 			
+      <p align="left"><font color="#000080"><a href="../Images/PC.png"
+ target="_blank"><font color="#000080"><img src="../Images/PCs.png"
+ name="Graphic24" align="bottom" width="293" height="363" border="1"></font></a></font></p>
+		</td>
+		<td> 			
+      <h3 align="left"><a name="Compare_Rows"></a>Compare Rows <tt><i>(Parallel
+			Coordinates)</i></tt></h3>
+			
+      <p align="left">This view displays the values of each row of a
+table 			as a line graph across a set of vertical axes which represent
+the 			columns of the table. Each vertical axis line represents one
+			column from the table and each value from that column to mapped to
+			the line by its relative distance between the minimum and maximum
+			value for that column.</p>
+			
+      <p align="left">The user may select rows from the table by
+pressing 			the mouse button over a vertical axis and dragging
+vertically to 			select a region of values in that column.</p>
+			
+      <p align="left">The Selection of columns to operate on is
+controlled 			by selecting the diamond shape for the column at top the
+graph. 			The selection status of the column is indicated by whether the
+			diamond-shape if filled. The anchor selection is draw in black.
+			Clicking on a diamond will select that column, a Double-Click
+			selects only that column, and a Control-Click toggles the selected
+			status of the column. 			</p>
+			
+      <p align="left">The ToolBar buttons operate as follows: 			</p>
+			
+      <ul>
+				<li>
+          <p align="left" style="margin-bottom: 0in;"><b>Show All</b>
+				causes all columns to be displayed. 				</p>
+				</li>
+        <li>
+          <p align="left" style="margin-bottom: 0in;"><b>Hide</b> will
+				hide the currently selected columns from view. 				</p>
+				</li>
+        <li>
+          <p align="left" style="margin-bottom: 0in;"><b>Group</b> will
+				set the display range the same on the currently selected columns.
+								</p>
+				</li>
+        <li>
+          <p align="left"><b>Normalize</b> will set the display range
+				independently for each selected column. 				</p>
+			</li>
+      </ul>
+			
+      <p align="left">The Radio buttons control which rows are
+displayed: 			</p>
+			
+      <ul>
+				<li>
+          <p align="left" style="margin-bottom: 0in;"><b>All Rows</b>
+				Display all rows from the table. 				</p>
+				</li>
+        <li>
+          <p align="left" style="margin-bottom: 0in;"><b>Selected Rows</b>
+				Tracks the selection and display those rows from the table. 				</p>
+				</li>
+        <li>
+          <p align="left"><b>Current Rows</b> Locks the display on the
+				current selection. 				</p>
+			</li>
+      </ul>
+			
+      <p align="left">The color gradient of the graph lines can be set
+to 			a column by double-clicking the diamond shape for the column at
+			top the graph. 			</p>
+			
+      <p align="left">The columns may be reordered by dragging the
+diamond 			shape above a column to the left or right. 			</p>
+			
+      <p align="left">The mapping order of a column may be inverted by
+			clicking on the triangle below the column. 			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td> 			
+      <p align="left"><img src="../Images/RowGraphs.png"
+ name="Graphic25" align="bottom" width="272" height="361" border="0"></p>
+		</td>
+		<td> 			
+      <h3 align="left"><a name="Row_Graphs"></a>Row Graphs</h3>
+			
+      <p align="left">This displays a table that has a row for each
+			distinct value of the selected column. The table displays the
+			value in the first column and a graph of row values in the second
+			column. Double-Clicking on the graph, will open a Compare Rows
+			view.<br>
+      <br>
+The column to display is selected in the <b>Graph 			Column</b> box. <br>
+      <br>
+The height in pixels for each graph can be 			set in the <b>Graph
+Height</b> box.&nbsp; The width of the graph 			can be adjusted by
+dragging the edge of the column header.<br>
+      <br>
+The 			look of the graph&nbsp; is set using the the <b>Graph
+Prototype.&nbsp;</b> 			This is a <b>Compare Rows </b>view&nbsp; that
+serves as a model 			for all of the graphs displayed.</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td> 			
+      <p align="left"><img src="../Images/ScatterPlotIcons.png"
+ name="Graphic26" align="bottom" width="214" height="200" border="0"></p>
+		</td>
+		<td> 			
+      <h3 align="left"><a name="Scatter_Plot_Icons"></a>Scatter Plot
+Icons</h3>
+			
+      <p align="left">This provides a pairwise scatter plot of any two
+			columns in the table. A thumbnail icon is generated for each pair
+			of columns in the table. Clicking an icon open an interactive
+			Scatter Plot view for that pair of columns.</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td> 			
+      <p align="left"><font color="#000080"><a href="../Images/SC.png"
+ target="_blank"><font color="#000080"><img
+ src="../Images/ScatterPlot.png" name="Graphic27" align="bottom"
+ width="213" height="283" border="1"></font></a></font></p>
+		</td>
+		<td> 			
+      <h3 align="left"><a name="Scatter_Plot"></a>Scatter Plot</h3>
+			
+      <p align="left">This provides a pairwise scatter plot of any two
+			columns in the table. The columns are selected by choosing from
+			the <b>X</b> and <b>Y</b> lists of column names, and the scatter
+			plot is displayed when the <b>Plot</b> button is pressed.</p>
+			
+      <p align="left">The user may select rows from the table by
+pressing 			the mouse button over a scatterplot and dragging out a
+rectangular 			region.</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td> 			
+      <p align="left"><font color="#000080"><a
+ href="../Images/SpanPlot.gif" target="_blank"><font color="#000080"><img
+ src="../Images/SpanPlot.gif" name="Graphic27" align="bottom"
+ width="213" height="283" border="1"></font></a></font></p>
+		</td>
+		<td> 			
+      <h3 align="left"><a name="Span_Plot"></a>Span Plot</h3>
+			
+      <p align="left">This provides a pairwise scatter plot of any
+three 			columns in the table. Two columns represent the starting and
+			ending values of a span along the X axis, while the third column
+			provides the mapping to the Y axis. The columns are selected by
+			choosing from the <b>Xs, Xe, </b>and <b>Y</b> lists of column
+			names, and the span plot is displayed when the <b>Plot</b> button
+			is pressed.</p>
+			
+      <p align="left">The user may select rows from the table by
+pressing 			the mouse button over a scatterplot and dragging out a
+rectangular 			region.</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td> 			
+      <p align="left"><font color="#000080"><a href="../Images/J3.png"
+ target="_blank"><font color="#000080"><img src="../Images/J3s.png"
+ name="Graphic28" align="bottom" width="200" height="200" border="1"></font></a></font></p>
+		</td>
+		<td> 			
+      <h3 align="left"><a name="Scatter_Plot_3D"></a>Scatter Plots in 3D</h3>
+			
+      <p align="left">Provides a 3D scatter plot of values from three
+			columns of a table. 			</p>
+			
+      <p align="left">The Java3D component provides high performance 3D
+			viewing.</p>
+			
+      <p align="left">The Plot 3D component is an all software version
+			that provides similar functionality for those that don't have
+			Java3D.</p>
+			
+      <p align="left">A control button sets interaction to either
+			navigation or selection. While navigating the left mouse button
+			rotates, the center mouse (or Alt Left Mouse Button) zooms in or
+			out, and the right mouse button translates the view up, down, left
+			or right. While selecting , press the mouse over the view and drag
+			out a region to select rows corresponding to the values in the
+			selected region.</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td> 			
+      <p align="left"><img src="../Images/CompareColumns.png"
+ name="Graphic29" align="bottom" width="219" height="153" border="0"></p>
+		</td>
+		<td> 			
+      <h3 align="left"><a name="Compare_Columns"></a>Compare Columns</h3>
+			
+      <p align="left">Shows a line graph of the values of each selected
+			column, superimposed using a common scale. 			</p>
+			
+      <p align="left">This might be a useful view of the table if
+			successive rows in the table represent a time series of values.</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td> 			
+      <p align="left"><font color="#000080"><a href="../Images/CG.png"
+ target="_blank"><font color="#000080"><img src="../Images/CGs.png"
+ name="Graphic30" align="bottom" width="200" height="200" border="1"></font></a></font></p>
+		</td>
+		<td> 			
+      <h3 align="left"><a name="Line_Graphs"></a>Line Graphs</h3>
+			
+      <p align="left">Shows a line graph of the values in a column
+across 			all the rows in the table. A graph can be slid up or down by
+			dragging the label with the mouse. This allows separate line
+			graphs to be superimposed. Note that each line graph is normalized
+			to its own value range, so superimposed graphs do not share a
+			common scale. 			</p>
+			
+      <p align="left">This might be a useful view of the table if
+			successive rows in the table represent a time series of values.</p>
+			
+      <p align="left">The user may select rows in the table by pressing
+			the mouse button over a graph and dragging left or right to select
+			a region on the graph.</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td> 			
+      <p align="left"><img src="../Images/ClusterRows60.png"
+ name="Graphic31" align="bottom" width="221" height="235" border="0"></p>
+		</td>
+		<td> 			
+      <h3 align="left"><a name="Cluster_Rows"></a>Cluster Rows</h3>
+			
+      <p align="left">Cluster Rows performs a hierarchical clustering
+of 			the rows of the table based on the values in the selected columns.
+			The distances between rows can be calculated using a variety of
+			distance functions available in the CERN colt package. The default
+			is Euclidean distance. The distance calculation between clusters
+			can be set to Average (the averages of the rows distances between
+			the cluster), Single-link (the least row distance), or
+			Complete-link (the greatest row distance). The cluster button
+			starts the clustering process. 			</p>
+			
+      <p align="left">The hierarchical cluster is displayed as a
+			dendogram. Dragging out an area over the dendogram selects all
+			rows in the table represented by the branches of the tree in the
+			selected area.</p>
+		</td>
+	</tr>
+  </tbody>
+</table>
+<p><br>
+<br>
+</p>
+</body>
+</html>

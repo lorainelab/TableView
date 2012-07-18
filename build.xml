@@ -1,0 +1,207 @@
+<project name="TableView" default="exe" basedir=".">
+    <target name="help" depends="init" description="Print out target information.">
+        <echo>
+            targets:        action:
+              help            print this target list
+              init            initializes the property values
+                              These can also be set in: ${user.home}/.${name}.properties
+              prepare         makes the build directories
+              prepare-src     copies the source to the build location
+              compile         compiles the jave source
+              jar             builds the jar of the compiled source
+              keystore        creates a keystore, runs GenKey
+              sign            Signs the compiled source jar
+              prepare-libs    copies lib jars to the build area
+              sign-libs       Signs the lib jars
+              war             builds the web archive war that can be deployed in Apache tomcat
+              package         builds the jar and war  (This is the default target.)
+              javadocs        creates javadoc documentation for all classes
+              dist            assembles all files for distribution
+              dist-zip        creates a zip format archive of the distribution
+              dist-tgz        creates a gzipped tar format archive of the distribution
+              dist-both       creates both dist-zip and dist-tgz
+              clean           cleans up the build and dist directories
+        </echo>
+    </target>
+  
+    <target name="init" depends="compiler-def-args" description="Initializes the property values.">
+        <tstamp />
+        <!-- First get the user specified properties -->
+        <property name="name" value="TableView" />
+        <property file="${user.home}/.${name}.properties" />
+
+        <property name="version" value="1.3.1" />
+
+        <property name="build.compiler" value="modern" />
+
+        <!-- Save the current system classpath to pass to forked VMs -->
+        <property name="env.classpath" value="${java.class.path}" />
+
+        <!-- Find all the library jars that should be in the classpath -->
+        <path id="lib.path">
+            <fileset dir="lib">
+                <include name="**/*.jar"/>
+            </fileset>
+        </path>
+
+        <!-- Set the classpath -->
+        <property name="classpath" refid="lib.path"/> 
+        <!--
+        <echo>
+           classpath = ${classpath}
+        </echo>
+        -->
+
+        <!-- Check the current system classpath for JUnit -->
+        <available classpath="${classpath}"
+               classname="junit.framework.TestCase"
+               property="junit.present" />
+
+        <!-- Check the current system classpath for JUnit support in Ant (only in >= 1.3) -->
+        <available classpath="${classpath}"
+               classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTest"
+               property="junit.support" />
+
+        <!-- Check the current system classpath for Java3D -->
+        <available classpath="${classpath}"
+               classname="javax.media.j3d.Canvas3D"
+               property="java3d.present" />
+
+        <!-- Check the current system classpath for the UMN cluto package -->
+        <available classpath="${classpath}"
+               classname="jcluto.ClutoMatrix"
+               property="cluto.present" />
+
+        <!-- Check the current system classpath for the rhino javascript package -->
+        <available classpath="${classpath}"
+               classname="org.mozilla.javascript.Context"
+               property="rhino.present" />
+
+        <!-- Check the current system classpath for the Beanshell package -->
+        <available classpath="${classpath}"
+               classname="bsh.Interpreter"
+               property="beanshell.present" />
+
+        <!-- Check the current system classpath for the CERN colt package -->
+        <available classpath="${classpath}"
+               classname="cern.colt.matrix.DoubleMatrix2D"
+               property="colt.present" />
+
+        <!-- Check the current system classpath for the Lowagie iText package -->
+        <available classpath="${classpath}"
+               classname="com.lowagie.text.pdf.PdfWriter"
+               property="iText.present" />
+
+
+        <!-- source locations -->
+        <property name="readme" value="README" />
+        <property name="license" value="LICENSE" />
+        <property name="src.dir" value="src" />
+        <property name="websrc.dir" value="www" />
+        <property name="lib.dir" value="lib" />
+        <property name="documentation.dir" value="doc" />
+        <property name="rsrc.dir" value="resources" />
+        
+        <!--Do I need it -->
+        <property name="manifest.dir" value="manifest" />
+        <property name="manifest.file" value="defaultmanifest.txt" />
+        <property name="resources.dir" value="resources" />
+
+        <property name="packages" value="edu.*,jcluto.*" />
+
+        <!-- build locations -->
+        <property name="build.xml" value="build.xml" />
+        <property name="build.dir" value="build" />
+        <!-- Subdirectories for main source and classes -->
+        <property name="build.src.main" value="${build.dir}/src/main" />
+        <property name="build.dest.main" value="${build.dir}/classes/main" />
+        <property name="build.lib" value="${build.dir}/lib" />
+        <property name="web.dir" value="${build.dir}/war" />
+
+        <!-- Subdirectory for Javadocs -->
+        <property name="build.javadocs" value="${build.dir}/doc" />
+
+        <property name="dist.root" value="./dist" />
+        <property name="dist.dir" value="${dist.root}/${name}-${version}" />
+
+        <!-- jar signing properties, user should put in real values here, or in user's properties file -->
+        <property name="sign.dname.commonName" value="${user.name}"/>
+        <property name="sign.dname.organizationUnit" value="${user.name}"/>
+        <property name="sign.dname.organizationName"  value="${user.name}"/>
+        <property name="sign.dname.country"  value="PlanetEarth"/>
+        <property name="sign.keystore" value="${user.home}/.keystore" />
+        <property name="sign.storepass" value="password" />
+        <property name="sign.keypass" value="UMNgenomics" />
+        <property name="sign.alias" value="UMNgenomics" />
+        <property name="sign.signedjar" value="${name}.jar" />
+        <property name="project.war" value="${name}.war" />
+        <available file="${sign.keystore}" property="sign.keystore.present"/>
+        <echo>
+            <!--
+             sign.keystore.present = ${sign.keystore.present}
+             sign.dname.commonName = ${sign.dname.commonName}
+             sign.dname.organizationUnit = ${sign.dname.organizationUnit}
+             sign.dname.organizationName = ${sign.dname.organizationName}
+             sign.dname.country = ${sign.dname.country}
+             sign.keystore   = ${sign.keystore}
+             sign.storepass  = ${sign.storepass}
+             sign.keypass    = ${sign.keypass}
+             sign.alias      = ${sign.alias}
+             sign.signedjar  = ${sign.signedjar}
+            -->
+        </echo>
+
+        <!-- The MAIN-CLASS for the application jar. -->
+        <property name="main.class" value="org.tigr.midas.display.Midas" />
+    </target>
+    
+    <target name="compiler-def-args">
+        <!-- compiler defaults passed to javac -->
+	<property name="debug"         value="off" />
+	<property name="deprecation"   value="true"/>
+	<property name="compiler.args" value="-Xlint:-unchecked"/>
+    </target>
+        
+    <presetdef name="my.javac">
+        <javac srcdir="${src.dir}" classpath="${classpath}" debug="${debug}" 
+               deprecation="${deprecation}" includeantruntime="false">
+		<compilerarg compiler="modern" line="${compiler.args}"/>
+    	</javac>
+    </presetdef>
+        
+    <target name="compile" depends="init" description="Compiles java classes.">
+        <mkdir dir="${build.dir}" />
+        <my.javac srcdir="${src.dir}" 
+                  destdir="${build.dir}" 
+                  classpath="${classpath}" />
+        <copy todir="${build.dir}" >
+            <fileset dir="${rsrc.dir}"/>
+	</copy>
+    </target>
+    
+    <target name="jar" depends="compile" description="Create jar to distribute">
+        <mkdir dir="${dist.root}" />
+        <jar jarfile="${dist.root}/${name}.jar" update="false" manifest="./META-INF/MANIFEST.MF">
+		<fileset dir="${build.dir}" />
+	</jar>
+    </target>
+    
+    <target name="run" depends="compile" description="run TableView">
+        <java fork="true" maxmemory="1024m" 
+              classname="edu.umn.genomics.table.TableView"
+              classpath="${build.dir}:${lib.path}">
+            <sysproperty key="apple.laf.useScreenMenuBar" value="true" />
+        </java>
+    </target>
+    
+    <target name="dist"></target>
+    
+    <target name="clean" depends="init" description="Delete compiled data">
+        <delete includeEmptyDirs="true" quiet="true">
+            <fileset dir="${build.dir}" />
+            <fileset dir="${dist.root}" />
+            <fileset file="${name}.jar" />
+        </delete>
+    </target>
+    
+</project>
