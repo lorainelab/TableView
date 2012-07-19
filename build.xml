@@ -5,21 +5,9 @@
               help            print this target list
               init            initializes the property values
                               These can also be set in: ${user.home}/.${name}.properties
-              prepare         makes the build directories
-              prepare-src     copies the source to the build location
               compile         compiles the jave source
               jar             builds the jar of the compiled source
-              keystore        creates a keystore, runs GenKey
-              sign            Signs the compiled source jar
-              prepare-libs    copies lib jars to the build area
-              sign-libs       Signs the lib jars
-              war             builds the web archive war that can be deployed in Apache tomcat
-              package         builds the jar and war  (This is the default target.)
-              javadocs        creates javadoc documentation for all classes
               dist            assembles all files for distribution
-              dist-zip        creates a zip format archive of the distribution
-              dist-tgz        creates a gzipped tar format archive of the distribution
-              dist-both       creates both dist-zip and dist-tgz
               clean           cleans up the build and dist directories
         </echo>
     </target>
