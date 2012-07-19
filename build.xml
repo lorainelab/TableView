@@ -5,21 +5,9 @@
               help            print this target list
               init            initializes the property values
                               These can also be set in: ${user.home}/.${name}.properties
-              prepare         makes the build directories
-              prepare-src     copies the source to the build location
               compile         compiles the jave source
               jar             builds the jar of the compiled source
-              keystore        creates a keystore, runs GenKey
-              sign            Signs the compiled source jar
-              prepare-libs    copies lib jars to the build area
-              sign-libs       Signs the lib jars
-              war             builds the web archive war that can be deployed in Apache tomcat
-              package         builds the jar and war  (This is the default target.)
-              javadocs        creates javadoc documentation for all classes
               dist            assembles all files for distribution
-              dist-zip        creates a zip format archive of the distribution
-              dist-tgz        creates a gzipped tar format archive of the distribution
-              dist-both       creates both dist-zip and dist-tgz
               clean           cleans up the build and dist directories
         </echo>
     </target>
@@ -121,18 +109,26 @@
         <!-- Subdirectory for Javadocs -->
         <property name="build.javadocs" value="${build.dir}/doc" />
 
-        <property name="dist.root" value="./dist" />
+        <property name="dist.root" value="dist" />
         <property name="dist.dir" value="${dist.root}/${name}-${version}" />
-
+        <property name="webstart.dir" value="${dist.root}/webstart" />
+        <!-- JNLP Webstart -->
+        <property name="jnlp.file.path" value="etc/TableView.jnlp" />
+        <property name="jnlp.version"   value="${version}" />
+        <property name="jnlp.codebase"  value="http://USE_YOUR_URL_HERE" />
+        <property name="jnlp.icon.name" value="TableView.png" />
+        <property name="jnlp.icon.path" value="resources/${jnlp.icon.name}" />
+                
         <!-- jar signing properties, user should put in real values here, or in user's properties file -->
         <property name="sign.dname.commonName" value="${user.name}"/>
         <property name="sign.dname.organizationUnit" value="${user.name}"/>
         <property name="sign.dname.organizationName"  value="${user.name}"/>
         <property name="sign.dname.country"  value="PlanetEarth"/>
         <property name="sign.keystore" value="${user.home}/.keystore" />
-        <property name="sign.storepass" value="password" />
-        <property name="sign.keypass" value="UMNgenomics" />
-        <property name="sign.alias" value="UMNgenomics" />
+        <property name="sign.storepass" value="changeit" />
+        <property name="sign.keypass" value="igb" />
+        <property name="sign.alias" value="igb" />
+        <property name="sign.aliaspass" value="${sign.storepass}" />
         <property name="sign.signedjar" value="${name}.jar" />
         <property name="project.war" value="${name}.war" />
         <available file="${sign.keystore}" property="sign.keystore.present"/>
@@ -151,6 +147,10 @@
             -->
         </echo>
 
+        <!-- Filters -->
+	<filter token="jnlp.version"  value="${jnlp.version}" />
+	<filter token="jnlp.codebase" value="${jnlp.codebase}" />
+	<filter token="jnlp.icon.name" value="${jnlp.icon.name}" />
         <!-- The MAIN-CLASS for the application jar. -->
         <property name="main.class" value="org.tigr.midas.display.Midas" />
     </target>
@@ -167,6 +167,10 @@
                deprecation="${deprecation}" includeantruntime="false">
 		<compilerarg compiler="modern" line="${compiler.args}"/>
     	</javac>
+    </presetdef>
+    
+    <presetdef name="my.signjar">
+	<signjar alias="${sign.alias}" storepass="${sign.storepass}" keystore="${sign.keystore}" keypass="${sign.aliaspass}" />
     </presetdef>
     
     <target name="tableview-classpath" depends="init" description="Sets classpath variable">
@@ -213,6 +217,13 @@
             <fileset dir="${build.dir}" />
             <zipgroupfileset dir="${lib.dir}" includes="*.jar"/>
 	</jar>
+    </target>
+    
+    <target name="webstart" depends="dist" description="Create distributable jars">
+        <mkdir dir="${webstart.dir}"/>
+	<my.signjar jar="${dist.dir}/${name}.jar" signedjar="${dist.root}/webstart/${name}.jar"/>
+        <copy file="${jnlp.file.path}" tofile="${webstart.dir}/TableView.jnlp" filtering="true" overwrite="true" />
+	<copy file="${jnlp.icon.path}" tofile="${webstart.dir}/${jnlp.icon.name}" />
     </target>
     
     <target name="clean" depends="init" description="Delete compiled data">

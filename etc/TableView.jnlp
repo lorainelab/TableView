@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- JNLP File for TableView Application -->
+<!--
+ @(#) $RCSfile: TableView.jnlp,v $ $Revision: 1.5 $ $Date: 2003/08/04 18:56:58 $ $Name: TableView1_3_2 $
+ Center for Computational Genomics and Bioinformatics
+ Academic Health Center, University of Minnesota
+ Copyright (c) 2000-2002. The Regents of the University of Minnesota
+-->
+<jnlp spec="6.0+"
+      version="@jnlp.version@"
+      codebase="@jnlp.codebase@"
+      href="TableView.jnlp">
+    <information>
+        <title>TableView @jnlp.version@</title>
+        <vendor>Center for Computational Genomics and Bioinformatics, University of Minnesota</vendor>
+        <homepage href="TableViewUserGuide.html"/>
+        <description>TableView </description>
+        <description kind="short">view data tables</description>
+        <icon href="@jnlp.icon.name@"/>
+        <offline-allowed/>
+	<shortcut online="true">
+            <desktop/>
+	</shortcut>
+    </information>
+    <security> 
+        <all-permissions/> 
+    </security> 
+    <resources>
+        <j2se version="1.6+"/>
+        <jar href="TableView.jar" main="true"/>
+        <property name="jdbc.drivers" value="com.mysql.jdbc.Driver:com.sybase.jdbc2.jdbc.SybDriver:org.postgresql.Driver:oracle.jdbc.driver.OracleDriver"/>
+        <property name="apple.laf.useScreenMenuBar" value="true" />
+    </resources>
+    <application-desc main-class="edu.umn.genomics.table.TableView" />
+</jnlp>
+
+
