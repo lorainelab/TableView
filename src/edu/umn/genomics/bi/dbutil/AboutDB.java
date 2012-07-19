@@ -65,7 +65,7 @@ public class AboutDB {
                         && m[i].getParameterTypes().length == 0) {
                     cols = new ArrayList(2);
                     cols.add(m[i].getName());
-                    cols.add(m[i].invoke(dbmd, (Object) null));
+                    cols.add(m[i].invoke(dbmd,null));
                     rows.add(cols.toArray());
                 }
             } catch (Throwable ex) {
@@ -77,7 +77,7 @@ public class AboutDB {
                         && m[i].getParameterTypes().length == 0) {
                     cols = new ArrayList(2);
                     cols.add(m[i].getName());
-                    cols.add(m[i].invoke(dbmd, (Object) null));
+                    cols.add(m[i].invoke(dbmd, null));
                     rows.add(cols.toArray());
                 }
             } catch (Throwable ex) {
@@ -89,7 +89,7 @@ public class AboutDB {
                         && m[i].getParameterTypes().length == 0) {
                     cols = new ArrayList(2);
                     cols.add(m[i].getName());
-                    cols.add(m[i].invoke(dbmd, (Object) null));
+                    cols.add(m[i].invoke(dbmd, null));
                     rows.add(cols.toArray());
                 }
             } catch (Throwable ex) {
@@ -118,7 +118,7 @@ public class AboutDB {
                         && m[i].getParameterTypes().length == 0) {
                     cols = new ArrayList(2);
                     cols.add(m[i].getName());
-                    cols.add(m[i].invoke(dbmd, (Object) null));
+                    cols.add(m[i].invoke(dbmd, null));
                     rows.add(cols.toArray());
                 }
             } catch (Throwable ex) {
@@ -151,7 +151,7 @@ public class AboutDB {
                         && m[i].getParameterTypes().length == 0) {
                     cols = new ArrayList(2);
                     cols.add(m[i].getName());
-                    cols.add(m[i].invoke(dbmd, (Object) null));
+                    cols.add(m[i].invoke(dbmd, null));
                     rows.add(cols.toArray());
                 }
             } catch (Throwable ex) {
@@ -184,7 +184,7 @@ public class AboutDB {
                         && m[i].getParameterTypes().length == 0) {
                     cols = new ArrayList(2);
                     cols.add(m[i].getName());
-                    cols.add(m[i].invoke(dbmd, (Object) null));
+                    cols.add(m[i].invoke(dbmd, null));
                     rows.add(cols.toArray());
                 }
             } catch (Throwable ex) {
@@ -243,7 +243,7 @@ public class AboutDB {
                     if (name != null && name.length() > 3) {
                         name = name.substring(3, name.length() - 1);
                     }
-                    String vals = (String) m[i].invoke(dbmd, (Object) null);
+                    String vals = (String) m[i].invoke(dbmd, null);
                     for (StringTokenizer st = new StringTokenizer(vals, ","); st != null && st.hasMoreTokens();) {
                         cols = new ArrayList(2);
                         cols.add(name);
@@ -281,7 +281,7 @@ public class AboutDB {
                 if (m[i].getName().startsWith("getDatabase")
                         && m[i].getParameterTypes().length == 0) {
                     sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t"
-                            + m[i].invoke(dbmd, (Object) null));
+                            + m[i].invoke(dbmd, null));
                 }
             } catch (Exception ex) {
                 sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t" + ex);
@@ -292,7 +292,7 @@ public class AboutDB {
                 if (m[i].getName().startsWith("getDriver")
                         && m[i].getParameterTypes().length == 0) {
                     sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t"
-                            + m[i].invoke(dbmd, (Object) null));
+                            + m[i].invoke(dbmd, null));
                 }
             } catch (Exception ex) {
                 sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t" + ex);
@@ -303,7 +303,7 @@ public class AboutDB {
                 if (m[i].getName().startsWith("getJDBC")
                         && m[i].getParameterTypes().length == 0) {
                     sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t"
-                            + m[i].invoke(dbmd, (Object) null));
+                            + m[i].invoke(dbmd, null));
                 }
             } catch (Exception ex) {
                 sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t" + ex);
@@ -315,7 +315,7 @@ public class AboutDB {
                 if (m[i].getReturnType().toString().equals("boolean")
                         && m[i].getParameterTypes().length == 0) {
                     sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t"
-                            + m[i].invoke(dbmd, (Object) null));
+                            + m[i].invoke(dbmd, null));
                 }
             } catch (Exception ex) {
                 sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t" + ex);
@@ -330,7 +330,7 @@ public class AboutDB {
                         && !m[i].getName().startsWith("getJDBC")
                         && m[i].getParameterTypes().length == 0) {
                     sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t"
-                            + m[i].invoke(dbmd, (Object) null));
+                            + m[i].invoke(dbmd, null));
                 }
             } catch (Exception ex) {
                 sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t" + ex);
@@ -345,7 +345,7 @@ public class AboutDB {
                         && !m[i].getName().startsWith("getJDBC")
                         && m[i].getParameterTypes().length == 0) {
                     sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t"
-                            + m[i].invoke(dbmd, (Object) null));
+                            + m[i].invoke(dbmd, null));
                 }
             } catch (Exception ex) {
                 sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t" + ex);
@@ -357,7 +357,7 @@ public class AboutDB {
                 if ((m[i].getReturnType().toString().indexOf("ResultSet") >= 0)
                         && m[i].getParameterTypes().length == 0) {
                     try {
-                        ResultSet rs = (ResultSet) m[i].invoke(dbmd, (Object) null);
+                        ResultSet rs = (ResultSet) m[i].invoke(dbmd, null);
                         sb.append("\n");
                         sb.append(m[i].getName() + ":");
                         sb.append(printResultSet(rs)).append("\n");

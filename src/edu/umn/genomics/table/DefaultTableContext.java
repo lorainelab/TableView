@@ -750,9 +750,9 @@ public class DefaultTableContext implements TableContext {
             try {
                 //Class pc[] = new Class[1];
                 //pc[0] = Class.forName("edu.umn.genomics.table.TableModel");
-                Constructor cons = vc.getConstructor((Class) null);
+                Constructor cons = vc.getConstructor(null);
                 Object po[] = null; // new Object[0];
-                jc = (JComponent) cons.newInstance((Object) null);
+                jc = (JComponent) cons.newInstance(null);
                 if (jc instanceof TableModelView) {
                     ((TableModelView) jc).setTableContext(this);
                     ((TableModelView) jc).setSelectionModel(getRowSelectionModel(vtm));
