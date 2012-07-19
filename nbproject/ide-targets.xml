@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir=".." name="TABLEVIEW-IDE">
+<project basedir=".." name="TableView-IDE">
     <import file="../build.xml"/>
     <target depends="compile" description="debug TableView" name="debug-nb">
         <nbjpdastart addressproperty="jpda.address" name="TableView" 
-                     transport="dt_socket" />
+                     transport="dt_socket" >
+            <classpath refid="tv.classpath"/>
+        </nbjpdastart>
            
         <java fork="true" maxmemory="1024m" classname="edu.umn.genomics.table.TableView"
               classpath="${build.dir}:${lib.path}">
