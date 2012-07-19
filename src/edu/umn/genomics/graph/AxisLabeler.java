@@ -21,22 +21,23 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.graph;
 
 /**
  * An AxisLabeler provides a formatted label for positions along an axis.
  *
- * @author       J Johnson
- * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:49 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ * @author J Johnson
+ * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:49 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public interface AxisLabeler {
-  /** 
-   * Return a label for the given value along an axis.
-   * @param value the value on the axis.
-   * @return a formatted label to display for the given value.
-   */
-  public String getLabel(double value);
+
+    /**
+     * Return a label for the given value along an axis.
+     *
+     * @param value the value on the axis.
+     * @return a formatted label to display for the given value.
+     */
+    public String getLabel(double value);
 }

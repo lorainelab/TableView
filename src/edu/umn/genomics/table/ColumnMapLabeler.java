@@ -21,44 +21,46 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table;
 
+import edu.umn.genomics.graph.AxisLabeler;
 import java.io.Serializable;
-import edu.umn.genomics.graph.*;
 
 /**
- * ColumnMapLabeler AxisLabeler provides a formatted label for the object 
- * or value in a ColumnMap for positions along an axis. 
+ * ColumnMapLabeler AxisLabeler provides a formatted label for the object or
+ * value in a ColumnMap for positions along an axis.
  *
- * @author       J Johnson
- * @version $Revision: 1.3 $ $Date: 2002/07/30 19:45:01 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ * @author J Johnson
+ * @version $Revision: 1.3 $ $Date: 2002/07/30 19:45:01 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public class ColumnMapLabeler implements AxisLabeler, Serializable {
-  ColumnMap cm;
-  int maxLen = Integer.MAX_VALUE;
 
-  public ColumnMapLabeler(ColumnMap cm) {
-    this.cm = cm;
-  }
-  public ColumnMapLabeler(ColumnMap cm, int maxLen) {
-    this.cm = cm;
-    this.maxLen = maxLen;
-  }
+    ColumnMap cm;
+    int maxLen = Integer.MAX_VALUE;
 
-  /** 
-   * Return a label for the given value along an axis.
-   * @param value the value on the axis.
-   * @return a formatted label to display for the given value.
-   */
-  public String getLabel(double value) {
-    Object obj = cm.getMappedValue(value,0);
-    if ( obj != null ) {
-      String s = obj.toString();
-      return s.length() < maxLen ? s : s.substring(0,maxLen);
+    public ColumnMapLabeler(ColumnMap cm) {
+        this.cm = cm;
     }
-    return "NULL";
-  }
+
+    public ColumnMapLabeler(ColumnMap cm, int maxLen) {
+        this.cm = cm;
+        this.maxLen = maxLen;
+    }
+
+    /**
+     * Return a label for the given value along an axis.
+     *
+     * @param value the value on the axis.
+     * @return a formatted label to display for the given value.
+     */
+    public String getLabel(double value) {
+        Object obj = cm.getMappedValue(value, 0);
+        if (obj != null) {
+            String s = obj.toString();
+            return s.length() < maxLen ? s : s.substring(0, maxLen);
+        }
+        return "NULL";
+    }
 }

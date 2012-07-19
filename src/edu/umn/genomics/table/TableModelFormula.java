@@ -21,67 +21,79 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table;
-import java.util.*;
+
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.table.TableModel;
 
 /**
  * TableModelFormula
- * 
- * @author       J Johnson
- * @version $Revision: 1.5 $ $Date: 2004/08/02 20:54:33 $  $Name: TableView1_3_2 $ 
- * @since        1.0
- * @see  javax.swing.table.TableModel 
- * @see  javax.swing.ListSelectionModel
+ *
+ * @author J Johnson
+ * @version $Revision: 1.5 $ $Date: 2004/08/02 20:54:33 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
+ * @see javax.swing.table.TableModel
+ * @see javax.swing.ListSelectionModel
  */
 public interface TableModelFormula extends VirtualCell {
-  static String[] classes = {"edu.umn.genomics.table.Cells",
-                            };
-  static String[] pkgs = {"edu.umn.genomics.table",
-                          "java.lang",
-                          "java.math",
-                          "java.util",
-                          "java.util.regex",
-                          "java.text",
-                          "java.lang.reflect",
-                          "java.beans",
-                          "javax.swing.table",
-                          "java.sql",
-                          "javax.sql",
-                          "java.io",
-                          "java.nio",
-                          "java.net",
-                         };
-  /** A List of java packages the Intrepreter should know about. */
-  public static List packageList = Arrays.asList(pkgs);
-  /** A List of java classes the Intrepreter should know about. */
-  public static List classList = Arrays.asList(classes);
 
-  /**
-   *  Force the model to remove any cached cell values and 
-   *  and recalculate them.
-   */
-  public void recalculate();
-  /** 
-   * Get the formula used to generate cell values.
-   * @return The formula used to generate cell values.
-   */
-  public String getFormula(); 
-  /** 
-   * Set the formula used to generate cell values.
-   * @param formula The formula used to generate cell values.
-   */
-  public void setFormula(String formula);
-  /**
-   * Set the TableModel that the formulas will evaluate.
-   * @param tableModel The TableModel that the formulas will evaluate.
-   */
-  public void setTableModel(TableModel tableModel);
-  /**
-   * Get the TableModel that the formulas will evaluate.
-   * @return The TableModel that the formulas will evaluate.
-   */
-  public TableModel getTableModel();
+    static String[] classes = {"edu.umn.genomics.table.Cells",};
+    static String[] pkgs = {"edu.umn.genomics.table",
+        "java.lang",
+        "java.math",
+        "java.util",
+        "java.util.regex",
+        "java.text",
+        "java.lang.reflect",
+        "java.beans",
+        "javax.swing.table",
+        "java.sql",
+        "javax.sql",
+        "java.io",
+        "java.nio",
+        "java.net",};
+    /**
+     * A List of java packages the Intrepreter should know about.
+     */
+    public static List packageList = Arrays.asList(pkgs);
+    /**
+     * A List of java classes the Intrepreter should know about.
+     */
+    public static List classList = Arrays.asList(classes);
+
+    /**
+     * Force the model to remove any cached cell values and and recalculate
+     * them.
+     */
+    public void recalculate();
+
+    /**
+     * Get the formula used to generate cell values.
+     *
+     * @return The formula used to generate cell values.
+     */
+    public String getFormula();
+
+    /**
+     * Set the formula used to generate cell values.
+     *
+     * @param formula The formula used to generate cell values.
+     */
+    public void setFormula(String formula);
+
+    /**
+     * Set the TableModel that the formulas will evaluate.
+     *
+     * @param tableModel The TableModel that the formulas will evaluate.
+     */
+    public void setTableModel(TableModel tableModel);
+
+    /**
+     * Get the TableModel that the formulas will evaluate.
+     *
+     * @return The TableModel that the formulas will evaluate.
+     */
+    public TableModel getTableModel();
 }

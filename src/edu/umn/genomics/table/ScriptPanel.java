@@ -21,143 +21,154 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
-import java.util.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
-import javax.swing.event.*;
 
 /**
- * 
- * @author       J Johnson
- * @version $Revision: 1.1 $ $Date: 2004/05/19 20:21:50 $  $Name: TableView1_3_2 $ 
- * @since        1.0
- * @see  javax.swing.table.TableModel 
- * @see  javax.swing.ListSelectionModel
- * @see  Cells
+ *
+ * @author J Johnson
+ * @version $Revision: 1.1 $ $Date: 2004/05/19 20:21:50 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
+ * @see javax.swing.table.TableModel
+ * @see javax.swing.ListSelectionModel
+ * @see Cells
  */
 public class ScriptPanel extends JPanel {
-  PipedInputStream jsIn;
-  PrintStream jsOut;
-  PrintStream jsErr;
-  PrintStream jsTo;
-  BufferedReader outRdr;
-  PipedOutputStream pipeOut;
-  PipedInputStream pipeIn;
-  JTextArea outputArea;
-  JTextField inputArea;
-  JScrollPane jspOut;
-  ScriptInterpreter interpreter;
-  Map vars = null;
 
-  Thread outThread = new Thread() {
-    public void run() {
-      displayOutput();   
-    }
-  };
+    PipedInputStream jsIn;
+    PrintStream jsOut;
+    PrintStream jsErr;
+    PrintStream jsTo;
+    BufferedReader outRdr;
+    PipedOutputStream pipeOut;
+    PipedInputStream pipeIn;
+    JTextArea outputArea;
+    JTextField inputArea;
+    JScrollPane jspOut;
+    ScriptInterpreter interpreter;
+    Map vars = null;
+    Thread outThread = new Thread() {
 
-  public void displayOutput() {
-    try {
-      for(String line = outRdr.readLine(); line != null; line = outRdr.readLine()) {
-        displayOutput(line);
-      }
-    } catch (Exception ex) {
-      System.err.println(ex.toString());
-    }
-  }
+        @Override
+        public void run() {
+            displayOutput();
+        }
+    };
 
-  public void displayOutput(String line) {
-    outputArea.append(line);
-    outputArea.append("\n");
-    JScrollBar sb = jspOut.getVerticalScrollBar(); 
-    if (sb != null) {
-      sb.setValue(sb.getMaximum());
-    }
-  }
-
-  private void sendInput() {
-    sendInput(inputArea.getText());
-  }
-
-  public void sendInput(String input) {
-    outputArea.append(input);
-    outputArea.append("\n");
-    JScrollBar sb = jspOut.getVerticalScrollBar(); 
-    if (sb != null) {
-      sb.setValue(sb.getMaximum());
-    }
-    jsTo.println(input);
-    jsTo.flush();
-    inputArea.setText("");
-  }
-
-  public ScriptPanel(ScriptInterpreter scripter) throws IOException {
-    this(scripter, null);
-  }
-
-  public ScriptPanel(ScriptInterpreter scripter, Map vars) throws IOException {
-    interpreter = scripter;
-    this.vars = vars;
-    PipedOutputStream pipeToIn = new PipedOutputStream();
-    jsIn = new PipedInputStream(pipeToIn); 
-    jsTo = new PrintStream(pipeToIn); 
-    pipeOut = new PipedOutputStream();
-    PipedInputStream pipeFrom = new PipedInputStream(pipeOut);
-    outRdr = new BufferedReader(new InputStreamReader(pipeFrom));
-    jsOut = new PrintStream(pipeOut);
-    // jsOut = System.out;
-    jsErr = jsOut;
-    // jsErr = System.err;
-
-    interpreter.initialize(jsIn, jsOut, jsErr, vars);
-    new Thread(interpreter).start();
-    outputArea = new JTextArea(30,80);
-    outputArea.setBackground(Color.lightGray);
-    outputArea.setEditable(false);
-    inputArea = new JTextField(80);
-    inputArea.addActionListener(
-      new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            try {
-              sendInput();
-            } catch (Exception ex) {
+    public void displayOutput() {
+        try {
+            for (String line = outRdr.readLine(); line != null; line = outRdr.readLine()) {
+                displayOutput(line);
             }
+        } catch (Exception ex) {
+            System.err.println(ex.toString());
         }
-      });
-    jspOut = new JScrollPane(outputArea);
-    setLayout(new BorderLayout());
-    add(jspOut);
-    add(inputArea,BorderLayout.SOUTH);
-    outThread.start();
-  }
-
-  public static void main( String[] args) {
-    try {
-      Map vars = new Hashtable();
-      vars.put("me",vars);
-      ScriptPanel jsPnl = new ScriptPanel(new ScriptJS(), vars);
-      JFrame frame = new JFrame("JavaScript");
-      frame.addWindowListener(new WindowAdapter() {
-        private void doClose(WindowEvent e) {
-          System.exit(0);
-        }
-        public void windowClosing(WindowEvent e) {
-          doClose(e);
-        }
-        public void windowClosed(WindowEvent e) {
-          doClose(e);
-        }
-      });
-      frame.getContentPane().add(jsPnl,BorderLayout.CENTER);
-      frame.pack();
-      frame.setVisible(true);
-    } catch (Exception ex) {
-      System.err.println(ex.toString());
     }
-  }
+
+    public void displayOutput(String line) {
+        outputArea.append(line);
+        outputArea.append("\n");
+        JScrollBar sb = jspOut.getVerticalScrollBar();
+        if (sb != null) {
+            sb.setValue(sb.getMaximum());
+        }
+    }
+
+    private void sendInput() {
+        sendInput(inputArea.getText());
+    }
+
+    public void sendInput(String input) {
+        outputArea.append(input);
+        outputArea.append("\n");
+        JScrollBar sb = jspOut.getVerticalScrollBar();
+        if (sb != null) {
+            sb.setValue(sb.getMaximum());
+        }
+        jsTo.println(input);
+        jsTo.flush();
+        inputArea.setText("");
+    }
+
+    public ScriptPanel(ScriptInterpreter scripter) throws IOException {
+        this(scripter, null);
+    }
+
+    public ScriptPanel(ScriptInterpreter scripter, Map vars) throws IOException {
+        interpreter = scripter;
+        this.vars = vars;
+        PipedOutputStream pipeToIn = new PipedOutputStream();
+        jsIn = new PipedInputStream(pipeToIn);
+        jsTo = new PrintStream(pipeToIn);
+        pipeOut = new PipedOutputStream();
+        PipedInputStream pipeFrom = new PipedInputStream(pipeOut);
+        outRdr = new BufferedReader(new InputStreamReader(pipeFrom));
+        jsOut = new PrintStream(pipeOut);
+        // jsOut = System.out;
+        jsErr = jsOut;
+        // jsErr = System.err;
+
+        interpreter.initialize(jsIn, jsOut, jsErr, vars);
+        new Thread(interpreter).start();
+        outputArea = new JTextArea(30, 80);
+        outputArea.setBackground(Color.lightGray);
+        outputArea.setEditable(false);
+        inputArea = new JTextField(80);
+        inputArea.addActionListener(
+                new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            sendInput();
+                        } catch (Exception ex) {
+                        }
+                    }
+                });
+        jspOut = new JScrollPane(outputArea);
+        setLayout(new BorderLayout());
+        add(jspOut);
+        add(inputArea, BorderLayout.SOUTH);
+        outThread.start();
+    }
+
+    public static void main(String[] args) {
+        try {
+            Map vars = new HashMap();
+            vars.put("me", vars);
+            ScriptPanel jsPnl = new ScriptPanel(new ScriptJS(), vars);
+            JFrame frame = new JFrame("JavaScript");
+            frame.addWindowListener(new WindowAdapter() {
+
+                private void doClose(WindowEvent e) {
+                    System.exit(0);
+                }
+
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    doClose(e);
+                }
+
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    doClose(e);
+                }
+            });
+            frame.getContentPane().add(jsPnl, BorderLayout.CENTER);
+            frame.pack();
+            frame.setVisible(true);
+        } catch (Exception ex) {
+            System.err.println(ex.toString());
+        }
+    }
 }

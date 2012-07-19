@@ -21,58 +21,70 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.bi.dbutil;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
 
 /**
  * Test whether a given user can connect to a given data base via JDBC.
- * @author       J Johnson
- * @version $Revision: 1.6 $ $Date: 2003/07/28 15:07:08 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ *
+ * @author J Johnson
+ * @version $Revision: 1.6 $ $Date: 2003/07/28 15:07:08 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public class DBTestConnection {
-  /** Test whether a connection can be established with the database.
-   * @param dbuser JDBC connection parameters.
-   * @return true if a connection could be established, otherwise false.
-   * @throws Exception the exception that occurred when attempting 
-   * this connection.
-   */
-  public static boolean testConnection(DBConnectParams dbuser) 
-                                       throws Exception {
-    return testConnection(dbuser.getUser(), dbuser.getPassword(),
-                          dbuser.getURL(), dbuser.getDriverName());
-  }
-  /** Test whether a connection can be established with the database.
-   * @param user the database user name.
-   * @param password the database password for the user.
-   * @param serverURL the URL for the database connection.
-   * @param driverName the JDBC driver for the connection.
-   * @return true if a connection could be established, otherwise false.
-   * @throws Exception the exception that occurred when attempting 
-   * this connection.
-   */
-  public static boolean testConnection(String user, String password,
-                                       String serverURL, String driverName)
-                                       throws Exception {
-    if (user == null) 
-      throw new Exception("user name missing");
-    if (password == null) 
-      throw new Exception("user password missing");
-    if (serverURL == null) 
-      throw new Exception("data base URL missing");
-    if (driverName != null && driverName.length() > 0) {
-      Class drvrClass = Class.forName(driverName);
-      if (drvrClass == null) {
-        throw new Exception("JDBC Driver Class for " + driverName + " not found");
-      } else {
-        Driver drvr = (Driver)drvrClass.newInstance();
-        DriverManager.registerDriver(drvr);
-      }
+
+    /**
+     * Test whether a connection can be established with the database.
+     *
+     * @param dbuser JDBC connection parameters.
+     * @return true if a connection could be established, otherwise false.
+     * @throws Exception the exception that occurred when attempting this
+     * connection.
+     */
+    public static boolean testConnection(DBConnectParams dbuser)
+            throws Exception {
+        return testConnection(dbuser.getUser(), dbuser.getPassword(),
+                dbuser.getURL(), dbuser.getDriverName());
     }
-    Connection tc = DriverManager.getConnection(serverURL, user, password);
-    tc.close();
-    return true;
-  }
+
+    /**
+     * Test whether a connection can be established with the database.
+     *
+     * @param user the database user name.
+     * @param password the database password for the user.
+     * @param serverURL the URL for the database connection.
+     * @param driverName the JDBC driver for the connection.
+     * @return true if a connection could be established, otherwise false.
+     * @throws Exception the exception that occurred when attempting this
+     * connection.
+     */
+    public static boolean testConnection(String user, String password,
+            String serverURL, String driverName)
+            throws Exception {
+        if (user == null) {
+            throw new Exception("user name missing");
+        }
+        if (password == null) {
+            throw new Exception("user password missing");
+        }
+        if (serverURL == null) {
+            throw new Exception("data base URL missing");
+        }
+        if (driverName != null && driverName.length() > 0) {
+            Class drvrClass = Class.forName(driverName);
+            if (drvrClass == null) {
+                throw new Exception("JDBC Driver Class for " + driverName + " not found");
+            } else {
+                Driver drvr = (Driver) drvrClass.newInstance();
+                DriverManager.registerDriver(drvr);
+            }
+        }
+        Connection tc = DriverManager.getConnection(serverURL, user, password);
+        tc.close();
+        return true;
+    }
 }

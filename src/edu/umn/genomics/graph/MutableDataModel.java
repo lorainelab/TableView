@@ -21,29 +21,32 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.graph;
-import javax.swing.event.*;
+
+import javax.swing.event.ChangeListener;
 
 /**
- * Return arrays of the x pixel location and the y pixel location for 
- * the data values given the axes transformations.
- * 
- * @author       J Johnson
- * @version $Revision: 1.1 $ $Date: 2004/08/02 20:23:35 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ * Return arrays of the x pixel location and the y pixel location for the data
+ * values given the axes transformations.
+ *
+ * @author J Johnson
+ * @version $Revision: 1.1 $ $Date: 2004/08/02 20:23:35 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public interface MutableDataModel extends DataModel {
-  /**
-   * Add a Listener to be notified of changes.
-   * @param l the listener to be added.
-   */
-  public void addChangeListener(ChangeListener l);
 
-  /**
-   * Remove the listener from the notification list.
-   * @param l the listener to be removed.
-   */
-  public void removeChangeListener(ChangeListener l);
+    /**
+     * Add a Listener to be notified of changes.
+     *
+     * @param l the listener to be added.
+     */
+    public void addChangeListener(ChangeListener l);
+
+    /**
+     * Remove the listener from the notification list.
+     *
+     * @param l the listener to be removed.
+     */
+    public void removeChangeListener(ChangeListener l);
 }

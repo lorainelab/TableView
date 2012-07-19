@@ -21,29 +21,30 @@
  * GNU General Public License for more details.
  *
  */
-
 package edu.umn.genomics.bi.dbutil;
 
-import  java.util.*;
-import  java.util.prefs.*;
-import  java.io.*;
-import  java.net.*;
-import  java.sql.Connection;
-import  java.sql.SQLException;
-import  java.sql.DriverManager;
-import  java.text.SimpleDateFormat;
-import  java.lang.ref.*;
-import  javax.swing.*;
-import  javax.swing.event.*;
-import  edu.umn.genomics.file.OpenInputSource;
+import edu.umn.genomics.file.OpenInputSource;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.prefs.*;
+import javax.swing.AbstractListModel;
+import javax.swing.ComboBoxModel;
 
 /**
- * Manages a user's JDBC Database account preferences and provides a ComboBoxModel 
- * of the list of accounts in the user's preferences.
+ * Manages a user's JDBC Database account preferences and provides a
+ * ComboBoxModel of the list of accounts in the user's preferences.
  *
- * @author             J Johnson
- * @version $Revision: 1.4 $ $Date: 2004/09/16 13:29:45 $    $Name: TableView1_3_2 $
- * @since                1.0
+ * @author J Johnson
+ * @version $Revision: 1.4 $ $Date: 2004/09/16 13:29:45 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  * @see javax.swing.ComboBoxModel
  * @see javax.swing.AbstractListModel
  * @see java.util.prefs.Preferences
@@ -51,47 +52,54 @@ import  edu.umn.genomics.file.OpenInputSource;
  */
 public class DBAccountListModel extends AbstractListModel implements ComboBoxModel {
     // Key names for the account properties
+
     private static final String USER = "user";
     private static final String PASSWD = "passwd";
     private static final String URL = "url";
     private static final String DRIVER = "driver";
     private static final String QUERY_HISTORY = "QueryHistory";
     // A list of account names
-    Vector acctList = new Vector();
+    ArrayList acctList = new ArrayList();
     // The account selected for the ComboBox
     Object selectedItem = null;
     // The preference node that is the parent node for all the individual account names
     Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     // Preference Listeners 
     PreferenceChangeListener pcl = new PreferenceChangeListener() {
+
         public void preferenceChange(PreferenceChangeEvent evt) {
             Preferences pref = evt.getNode();
             update(pref);
         }
     };
     NodeChangeListener ncl = new NodeChangeListener() {
+
         public void childAdded(NodeChangeEvent evt) {
             Preferences pref = evt.getChild();
             pref.addPreferenceChangeListener(pcl);
-            add(pref); 
+            add(pref);
         }
+
         public void childRemoved(NodeChangeEvent evt) {
             Preferences pref = evt.getChild();
-            remove(pref); 
+            remove(pref);
         }
     };
 
     /**
-     * Construct a DBAccountListModel of the user's database account preferences.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * Construct a DBAccountListModel of the user's database account
+     * preferences.
+     *
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public DBAccountListModel() throws BackingStoreException {
-      try {
-        Class prefclass = this.getClass();
-        prefs = Preferences.userNodeForPackage(prefclass);
-      } catch (Exception ex) {
-        System.err.println("prefclass " + ex);
-      }
+        try {
+            Class prefclass = this.getClass();
+            prefs = Preferences.userNodeForPackage(prefclass);
+        } catch (Exception ex) {
+            System.err.println("prefclass " + ex);
+        }
         prefs.addNodeChangeListener(ncl);
         String[] accnts = getAccountNames();
         Arrays.sort(accnts);
@@ -104,23 +112,26 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
 
     /**
      * Return the number of accounts in the list.
+     *
      * @return the number of accounts in the list.
      */
     public int getSize() {
-        return acctList.size();      
+        return acctList.size();
     }
 
     /**
      * Returns the account name at the specified index int the list.
+     *
      * @param index the index of account name in the list.
      * @return the account name at the specified index.
      */
     public Object getElementAt(int index) {
-        return acctList.get(index); 
+        return acctList.get(index);
     }
 
     /**
      * Set the selected accountName. The selected accountName may be null.
+     *
      * @param accountName the account name of the selected database account.
      */
     public void setSelectedItem(Object accountName) {
@@ -129,6 +140,7 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
 
     /**
      * Return the name of the selected database account.
+     *
      * @return the name of the selected database account.
      */
     public Object getSelectedItem() {
@@ -137,15 +149,19 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
 
     /**
      * Return an array of all database account names.
+     *
      * @return an array of all database account names.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public String[] getAccountNames() throws BackingStoreException {
         return prefs.childrenNames();
     }
 
     /**
-     * Add a database account preference node to the list, and notify listeners of the change.
+     * Add a database account preference node to the list, and notify listeners
+     * of the change.
+     *
      * @param pref the database account preference node.
      */
     private void add(Preferences pref) {
@@ -153,107 +169,112 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
         int idx = acctList.indexOf(acct);
         if (idx < 0) {
             for (ListIterator iter = acctList.listIterator(); iter.hasNext();) {
-                String item = (String)iter.next();
+                String item = (String) iter.next();
                 if (acct.compareToIgnoreCase(item) < 0) {
-                   idx = iter.previousIndex();
-                   break;
+                    idx = iter.previousIndex();
+                    break;
                 }
             }
             if (idx < 0) {
                 idx = acctList.size();
                 acctList.add(acct);
             } else {
-                acctList.add(idx,acct);
+                acctList.add(idx, acct);
             }
-            if ( acctList.size() == 1 && selectedItem == null && acct != null ) {
+            if (acctList.size() == 1 && selectedItem == null && acct != null) {
                 setSelectedItem(acct);
             }
-            fireIntervalAdded(this,idx,idx);
+            fireIntervalAdded(this, idx, idx);
         } else {
             update(pref);
         }
     }
 
     /**
-     * Remove a database account preference node from the list, and notify listeners of the change. 
+     * Remove a database account preference node from the list, and notify
+     * listeners of the change.
+     *
      * @param pref the database account preference node to remove.
      */
     private void remove(Preferences pref) {
         String acct = pref.name();
         int idx = acctList.indexOf(acct);
-        if ( acct != null && acct.equals(selectedItem) ) {
+        if (acct != null && acct.equals(selectedItem)) {
             if (idx > 0) {
-                setSelectedItem( getElementAt( idx - 1 ) );
+                setSelectedItem(getElementAt(idx - 1));
             } else {
-                setSelectedItem( getSize() == 1 ? null : getElementAt( idx + 1 ) );
+                setSelectedItem(getSize() == 1 ? null : getElementAt(idx + 1));
             }
         }
         if (idx >= 0) {
-            acctList.remove(idx); 
-            fireIntervalRemoved(this,idx,idx);
+            acctList.remove(idx);
+            fireIntervalRemoved(this, idx, idx);
         }
     }
 
     /**
      * Notify listeners that a database account preference node has changed.
+     *
      * @param pref the database account preference node that changed.
      */
     private void update(Preferences pref) {
         String acct = pref.name();
         int idx = acctList.indexOf(acct);
         if (idx >= 0) {
-            fireContentsChanged(this,idx,idx);
+            fireContentsChanged(this, idx, idx);
         }
     }
 
     /**
      * Get the value of a preference node property.
-     * @param accountName the name of the account from which to retrieve the property.
+     *
+     * @param accountName the name of the account from which to retrieve the
+     * property.
      * @param key the name of the property.
      * @param def the default value for the property.
      * @return the value of the property.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     private String getValue(String accountName, String key, String def) throws BackingStoreException {
         if (prefs.nodeExists(accountName)) {
-            return prefs.node(accountName).get(key,def);
+            return prefs.node(accountName).get(key, def);
         }
         return def;
     }
 
     /**
      * Set the value of a preference node property.
+     *
      * @param accountName the name of the account for which to set the property.
      * @param key the name of the property.
      * @param val the value for the property.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     private void setValue(String accountName, String key, String val) throws BackingStoreException {
         if (prefs.nodeExists(accountName)) {
-            prefs.node(accountName).put(key,val);
+            prefs.node(accountName).put(key, val);
             prefs.sync();
         }
     }
 
     /**
-     * Get Database Connection Parameters as values stored in a Properties instance. 
-     * This will return the following properties:
-     *   "account"
-     *   "url"
-     *   "driver"
-     *   "user"
-     *   "password"
+     * Get Database Connection Parameters as values stored in a Properties
+     * instance. This will return the following properties: "account" "url"
+     * "driver" "user" "password"
+     *
      * @param properties if not null, properties will be set in this instance.
-     * @param accountName the account name for which to set properties, if null, 
-     *        properties are set for the selected item, and if no item is selected 
-     *        properties are set for the first item.
+     * @param accountName the account name for which to set properties, if null,
+     * properties are set for the selected item, and if no item is selected
+     * properties are set for the first item.
      * @return the Connection properties.
      */
     public Properties getProperties(Properties properties, String accountName) {
         Properties prop = properties != null ? properties : new Properties();
-        String acctName = accountName != null ? accountName : (String)getSelectedItem();
+        String acctName = accountName != null ? accountName : (String) getSelectedItem();
         if (acctName == null && getSize() > 0) {
-            acctName = (String)getElementAt(0);
+            acctName = (String) getElementAt(0);
         }
         if (acctName != null) {
             try {
@@ -272,9 +293,12 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
 
     /**
      * Get the database server URL for the specified database account.
-     * @param accountName the name of the account from which to retrieve the property.
+     *
+     * @param accountName the name of the account from which to retrieve the
+     * property.
      * @return the database server URL for the specified database account.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public String getURL(String accountName) throws BackingStoreException {
         return getValue(accountName, URL, "");
@@ -282,9 +306,12 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
 
     /**
      * Get the database user name for the specified database account.
-     * @param accountName the name of the account from which to retrieve the property.
+     *
+     * @param accountName the name of the account from which to retrieve the
+     * property.
      * @return the database user name for the specified database account.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public String getUser(String accountName) throws BackingStoreException {
         return getValue(accountName, USER, System.getProperty("user.name"));
@@ -292,9 +319,12 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
 
     /**
      * Get the database user password for the specified database account.
-     * @param accountName the name of the account from which to retrieve the property.
+     *
+     * @param accountName the name of the account from which to retrieve the
+     * property.
      * @return the database user password for the specified database account.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public String getPassword(String accountName) throws BackingStoreException {
         return getValue(accountName, PASSWD, "");
@@ -302,9 +332,12 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
 
     /**
      * Get the JDBC driver class name for the specified database account.
-     * @param accountName the name of the account from which to retrieve the property.
+     *
+     * @param accountName the name of the account from which to retrieve the
+     * property.
      * @return the JDBC driver class name for the specified database account.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public String getDriver(String accountName) throws BackingStoreException {
         return getValue(accountName, DRIVER, "");
@@ -312,9 +345,11 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
 
     /**
      * Set the database server URL for the specified database account.
+     *
      * @param accountName the name of the account for which to set the property.
      * @param url the database server URL for the specified database account.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public void setURL(String accountName, String url) throws BackingStoreException {
         setValue(accountName, URL, url);
@@ -322,9 +357,11 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
 
     /**
      * Set the database user name for the specified database account.
+     *
      * @param accountName the name of the account for which to set the property.
      * @param user the database user name for the specified database account.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public void setUser(String accountName, String user) throws BackingStoreException {
         setValue(accountName, USER, user);
@@ -332,9 +369,12 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
 
     /**
      * Set the database user password for the specified database account.
+     *
      * @param accountName the name of the account for which to set the property.
-     * @param password the database user password for the specified database account.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @param password the database user password for the specified database
+     * account.
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public void setPassword(String accountName, String password) throws BackingStoreException {
         setValue(accountName, PASSWD, password);
@@ -342,9 +382,12 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
 
     /**
      * Set the JDBC driver class name for the specified database account.
+     *
      * @param accountName the name of the account for which to set the property.
-     * @param driver the JDBC driver class name for the specified database account.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @param driver the JDBC driver class name for the specified database
+     * account.
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public void setDriver(String accountName, String driver) throws BackingStoreException {
         setValue(accountName, DRIVER, driver);
@@ -352,8 +395,10 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
 
     /**
      * Add a database account preference.
+     *
      * @param accountName the name of the account.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      * @see #setURL
      * @see #setUser
      * @see #setPassword
@@ -366,8 +411,10 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
 
     /**
      * Remove a database account preference.
+     *
      * @param accountName the name of the account.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public void removeAccount(String accountName) throws BackingStoreException {
         prefs.node(accountName).removeNode();
@@ -376,31 +423,36 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
 
     /**
      * Establish a Connection to the given database account.
+     *
      * @param accountName the name of the account.
      * @return a connection to the database account.
      * @throws NullPointerException if the given accountName is null
      * @throws SQLException if there was an error connecting to the database
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public Connection getConnection(String accountName) throws NullPointerException, SQLException, BackingStoreException {
         if (accountName == null) {
-          throw new NullPointerException("accountName can't be null");
+            throw new NullPointerException("accountName can't be null");
         } else if (prefs.nodeExists(accountName)) {
             try {
                 Class.forName(getDriver(accountName));
             } catch (ClassNotFoundException ex) {
             }
             return DriverManager.getConnection(getURL(accountName),
-                                               getUser(accountName),
-                                               getPassword(accountName));
-        } 
+                    getUser(accountName),
+                    getPassword(accountName));
+        }
         return null;
     }
 
     /**
-     * Return an array of all the unique database server URLs in the user's preferences. 
+     * Return an array of all the unique database server URLs in the user's
+     * preferences.
+     *
      * @return an array of all the unique database server URLs.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public String[] getKnownURLs() throws BackingStoreException {
         TreeSet list = new TreeSet();
@@ -408,14 +460,16 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
         for (int i = 0; i < accnts.length; i++) {
             list.add(getURL(accnts[i]));
         }
-        return (String[])list.toArray(new String[list.size()]);
+        return (String[]) list.toArray(new String[list.size()]);
     }
 
     /**
-     * Return an array of all the unique JDBC driver class names that occur 
-     * in the user's preferences or that are listed in the jdbc.drivers property. 
+     * Return an array of all the unique JDBC driver class names that occur in
+     * the user's preferences or that are listed in the jdbc.drivers property.
+     *
      * @return an array of all the unique database server URLs.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      * @see java.sql.DriverManager
      */
     public String[] getKnownDrivers() throws BackingStoreException {
@@ -426,17 +480,20 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
         }
         String drivers = System.getProperty("jdbc.drivers");
         if (drivers != null) {
-            for (StringTokenizer st = new StringTokenizer(drivers,":"); st.hasMoreTokens();) {
+            for (StringTokenizer st = new StringTokenizer(drivers, ":"); st.hasMoreTokens();) {
                 list.add(st.nextToken());
             }
         }
-        return (String[])list.toArray(new String[list.size()]);
+        return (String[]) list.toArray(new String[list.size()]);
     }
 
     /**
-     * Return an array of all the unique database user names in the user's preferences. 
+     * Return an array of all the unique database user names in the user's
+     * preferences.
+     *
      * @return an array of all the unique database user names.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public String[] getKnownUsers() throws BackingStoreException {
         TreeSet list = new TreeSet();
@@ -444,126 +501,148 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
         for (int i = 0; i < accnts.length; i++) {
             list.add(getUser(accnts[i]));
         }
-        return (String[])list.toArray(new String[list.size()]);
+        return (String[]) list.toArray(new String[list.size()]);
     }
 
     /**
-     * 
+     *
      * @param accountName the name of the account for which to set the property.
-     * @param query 
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @param query
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public void addQuery(String accountName, String query) throws BackingStoreException {
-      if (accountName != null && query != null) {
-        if (prefs.nodeExists(accountName)) {
-          Preferences pref = prefs.node(accountName).node(QUERY_HISTORY);
-          pref.put(query, (new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss")).format(new Date()).toString());
+        if (accountName != null && query != null) {
+            if (prefs.nodeExists(accountName)) {
+                Preferences pref = prefs.node(accountName).node(QUERY_HISTORY);
+                pref.put(query, (new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss")).format(new Date()).toString());
+            }
         }
-      }
     }
 
     /**
-     * 
+     *
      * @param accountName the name of the account for which to set the property.
-     * @param query 
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @param query
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public void removeQuery(String accountName, String query) throws BackingStoreException {
-      if (accountName != null && query != null) {
-        if (prefs.nodeExists(accountName)) {
-          Preferences pref = prefs.node(accountName).node(QUERY_HISTORY);
-          pref.remove(query);
+        if (accountName != null && query != null) {
+            if (prefs.nodeExists(accountName)) {
+                Preferences pref = prefs.node(accountName).node(QUERY_HISTORY);
+                pref.remove(query);
+            }
         }
-      }
     }
 
     /**
-     * 
+     *
      * @param accountName the name of the account for which to set the property.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public void clearQueries(String accountName) throws BackingStoreException {
-      if (accountName != null) {
-        if (prefs.nodeExists(accountName)) {
-          Preferences pref = prefs.node(accountName).node(QUERY_HISTORY);
-          pref.clear();
+        if (accountName != null) {
+            if (prefs.nodeExists(accountName)) {
+                Preferences pref = prefs.node(accountName).node(QUERY_HISTORY);
+                pref.clear();
+            }
         }
-      }
     }
 
     /**
-     * 
+     *
      * @param accountName the name of the account for which to set the property.
-     * @throws BackingStoreException if there was an error retrieving preference information
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
      */
     public String[] getQueries(String accountName) throws BackingStoreException {
-      if (accountName != null) {
-        if (prefs.nodeExists(accountName)) {
-          Preferences pref = prefs.node(accountName).node(QUERY_HISTORY);
-          return pref.keys();
+        if (accountName != null) {
+            if (prefs.nodeExists(accountName)) {
+                Preferences pref = prefs.node(accountName).node(QUERY_HISTORY);
+                return pref.keys();
+            }
         }
-      }
-      return new String[0];
+        return new String[0];
     }
 
     /**
-     * Import Database account connection parameters from the preferences source.
+     * Import Database account connection parameters from the preferences
+     * source.
+     *
      * @param source the URL or pathname to a preferences file.
      * @throws NullPointerException if source is null.
-     * @throws SecurityException if a security manager is present and it denies RuntimePermission("preferences").
-     * @throws IOException if reading from the specified input stream results in an IOException.
-     * @throws InvalidPreferencesFormatException Data on input stream does not constitute 
-     *         a valid XML document with the mandated document type.
+     * @throws SecurityException if a security manager is present and it denies
+     * RuntimePermission("preferences").
+     * @throws IOException if reading from the specified input stream results in
+     * an IOException.
+     * @throws InvalidPreferencesFormatException Data on input stream does not
+     * constitute a valid XML document with the mandated document type.
      */
     public void importPreferences(String source) throws NullPointerException, SecurityException,
-                         IOException, InvalidPreferencesFormatException {
+            IOException, InvalidPreferencesFormatException {
         InputStream is = OpenInputSource.getInputStream(source);
         importPreferences(is);
     }
 
     /**
-     * Import Database account connection parameters from the preferences source.
+     * Import Database account connection parameters from the preferences
+     * source.
+     *
      * @param is an open input stream to a preferences source.
      * @throws NullPointerException if is is null.
-     * @throws SecurityException if a security manager is present and it denies RuntimePermission("preferences").
-     * @throws IOException if reading from the specified input stream results in an IOException.
-     * @throws InvalidPreferencesFormatException Data on input stream does not constitute 
-     *         a valid XML document with the mandated document type.
+     * @throws SecurityException if a security manager is present and it denies
+     * RuntimePermission("preferences").
+     * @throws IOException if reading from the specified input stream results in
+     * an IOException.
+     * @throws InvalidPreferencesFormatException Data on input stream does not
+     * constitute a valid XML document with the mandated document type.
      */
     public void importPreferences(InputStream is) throws NullPointerException, SecurityException,
-                         IOException, InvalidPreferencesFormatException {
+            IOException, InvalidPreferencesFormatException {
         prefs.importPreferences(is);
     }
 
     /**
      * Export Database account connection parameters to the given filename.
+     *
      * @param filename a preferences file.
-     * @param name If not null, only export the connection parameters for this account, otherwise
-     * export all account parameters.
-     * @throws NullPointerException 
-     * @throws SecurityException  if a security manager is present and it denies RuntimePermission("preferences").
-     * @throws IOException if writing to the specified output stream results in an IOException.
-     * @throws BackingStoreException if there was an error retrieving preference information
-     * @throws IllegalStateException if this node (or an ancestor) has been removed.
+     * @param name If not null, only export the connection parameters for this
+     * account, otherwise export all account parameters.
+     * @throws NullPointerException
+     * @throws SecurityException if a security manager is present and it denies
+     * RuntimePermission("preferences").
+     * @throws IOException if writing to the specified output stream results in
+     * an IOException.
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
+     * @throws IllegalStateException if this node (or an ancestor) has been
+     * removed.
      */
     public void exportPreferences(String filename, String name) throws NullPointerException, SecurityException,
-                         IOException, BackingStoreException, IllegalStateException {
+            IOException, BackingStoreException, IllegalStateException {
         exportPreferences(new FileOutputStream(filename), name);
     }
 
     /**
      * Export Database account connection parameters to the given filename.
+     *
      * @param os an open output stream to a preferences file.
-     * @param name If not null, only export the connection parameters for this account, otherwise
-     * export all account parameters.
+     * @param name If not null, only export the connection parameters for this
+     * account, otherwise export all account parameters.
      * @throws NullPointerException
-     * @throws SecurityException  if a security manager is present and it denies RuntimePermission("preferences").
-     * @throws IOException if writing to the specified output stream results in an IOException.
-     * @throws BackingStoreException if there was an error retrieving preference information
-     * @throws IllegalStateException if this node (or an ancestor) has been removed.
+     * @throws SecurityException if a security manager is present and it denies
+     * RuntimePermission("preferences").
+     * @throws IOException if writing to the specified output stream results in
+     * an IOException.
+     * @throws BackingStoreException if there was an error retrieving preference
+     * information
+     * @throws IllegalStateException if this node (or an ancestor) has been
+     * removed.
      */
     public void exportPreferences(OutputStream os, String name) throws NullPointerException, SecurityException,
-                         IOException, BackingStoreException, IllegalStateException {
+            IOException, BackingStoreException, IllegalStateException {
         if (name != null) {
             if (prefs.nodeExists(name)) {
                 Preferences pref = prefs.node(name);
@@ -573,6 +652,4 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
             prefs.exportSubtree(os);
         }
     }
-
-
 }

@@ -21,24 +21,27 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table.dv;  //DataViewer
 
 import java.io.Serializable;
 
 /**
- * @author       J Johnson
- * @version $Revision: 1.5 $ $Date: 2002/07/30 19:45:18 $  $Name: TableView1_3_2 $
- * @since        1.0
+ * @author J Johnson
+ * @version $Revision: 1.5 $ $Date: 2002/07/30 19:45:18 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public class Glyph2D implements Serializable, Glyph {
-  Glyph2D() {
-  }
-  public void setTranslation(double translation[]) {
-  }
-  public void setScale(double scale) {
-  }
-  public void scale(double scale) {
-  }
+
+    Glyph2D() {
+    }
+
+    public void setTranslation(double translation[]) {
+    }
+
+    public void setScale(double scale) {
+    }
+
+    public void scale(double scale) {
+    }
 }

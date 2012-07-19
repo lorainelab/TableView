@@ -21,31 +21,30 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.graph;
 
-import java.awt.*;
+import java.awt.Graphics;
 
 /**
- * An item to be drawn. 
- * 
- * @author       J Johnson
- * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:50 $  $Name: TableView1_3_2 $ 
- * @since        1.0
- * @see  javax.swing.table.TableModel
- * @see  javax.swing.ListSelectionModel
- * @see  Graph
+ * An item to be drawn.
+ *
+ * @author J Johnson
+ * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:50 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
+ * @see javax.swing.table.TableModel
+ * @see javax.swing.ListSelectionModel
+ * @see Graph
  */
 public class DrawableT implements Drawable {
-  /*
-   * Draw using the given graphics context at the given point.
-   * @param g the graphics context.
-   * @param xAxis The X axis of the graph.
-   * @param yAxis The Y axis of the graph.
-   */
-  public void draw(Graphics g, int x, int y) {
-    g.drawLine(x-1, y, x+1, y);
-    g.drawLine(x, y-1, x, y+1);
-  }
+    /*
+     * Draw using the given graphics context at the given point. @param g the
+     * graphics context. @param xAxis The X axis of the graph. @param yAxis The
+     * Y axis of the graph.
+     */
+
+    public void draw(Graphics g, int x, int y) {
+        g.drawLine(x - 1, y, x + 1, y);
+        g.drawLine(x, y - 1, x, y + 1);
+    }
 }

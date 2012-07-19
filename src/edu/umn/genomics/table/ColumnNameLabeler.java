@@ -21,55 +21,61 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table;
 
+import edu.umn.genomics.graph.AxisLabeler;
 import java.io.Serializable;
 import javax.swing.table.TableModel;
-import edu.umn.genomics.graph.*;
 
 /**
- * ColumnNameLabeler provides a formatted label for the column names
- * of a TableModel for positions along an axis. 
+ * ColumnNameLabeler provides a formatted label for the column names of a
+ * TableModel for positions along an axis.
  *
- * @author       J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/05/15 16:45:58 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ * @author J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/05/15 16:45:58 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public class ColumnNameLabeler implements AxisLabeler, Serializable {
-  TableModel tm;
-  int maxLen = Integer.MAX_VALUE;
 
-  /** 
-   * Label integral positions along a graph axis with TableModel column names.
-   * @param tableModel The TableModel from which to take the column names for axis labels.
-   */
-  public ColumnNameLabeler(TableModel tableModel) {
-    this.tm = tableModel;
-  }
+    TableModel tm;
+    int maxLen = Integer.MAX_VALUE;
 
-  /** 
-   * Label integral positions along a graph axis with TableModel column names.
-   * @param tableModel The TableModel from which to take the column names for axis labels.
-   * @param maxLen maxLen The maximum character length for the labels returned.
-   */
-  public ColumnNameLabeler(TableModel tableModel, int maxLen) {
-    this.tm = tableModel;
-    this.maxLen = maxLen;
-  }
-
-  /** 
-   * Return a label for the given value along an axis.
-   * @param value the value on the axis.
-   * @return a formatted label to display for the given value.
-   */
-  public String getLabel(double value) {
-    Object obj = tm.getColumnName((int)Math.round(value));
-    if ( obj != null ) {
-      String s = obj.toString();
-      return s.length() < maxLen ? s : s.substring(0,maxLen);
+    /**
+     * Label integral positions along a graph axis with TableModel column names.
+     *
+     * @param tableModel The TableModel from which to take the column names for
+     * axis labels.
+     */
+    public ColumnNameLabeler(TableModel tableModel) {
+        this.tm = tableModel;
     }
-    return "";
-  }
+
+    /**
+     * Label integral positions along a graph axis with TableModel column names.
+     *
+     * @param tableModel The TableModel from which to take the column names for
+     * axis labels.
+     * @param maxLen maxLen The maximum character length for the labels
+     * returned.
+     */
+    public ColumnNameLabeler(TableModel tableModel, int maxLen) {
+        this.tm = tableModel;
+        this.maxLen = maxLen;
+    }
+
+    /**
+     * Return a label for the given value along an axis.
+     *
+     * @param value the value on the axis.
+     * @return a formatted label to display for the given value.
+     */
+    public String getLabel(double value) {
+        Object obj = tm.getColumnName((int) Math.round(value));
+        if (obj != null) {
+            String s = obj.toString();
+            return s.length() < maxLen ? s : s.substring(0, maxLen);
+        }
+        return "";
+    }
 }

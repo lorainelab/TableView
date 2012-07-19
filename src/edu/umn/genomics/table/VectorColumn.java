@@ -24,9 +24,8 @@
 
 
 package edu.umn.genomics.table;
-import java.lang.*;
-import java.util.*;
-import java.lang.reflect.*;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * VectorColumn presents values of a List as a column in a TableModel.
@@ -39,10 +38,10 @@ import java.lang.reflect.*;
  */
 public class VectorColumn implements VirtualColumn {
   protected String name = "";
-  Vector values = new Vector();
+    ArrayList values = new ArrayList();
   boolean cellEditable = true;
   protected Class columnClass = null;
-  protected Vector commonColumnClasses = new Vector();
+  protected ArrayList commonColumnClasses = new ArrayList();
   
 
   /**
@@ -73,7 +72,7 @@ public class VectorColumn implements VirtualColumn {
     setName(columnName);
     setColumnClass(columnClass);
     if (values != null) {
-      this.values = new Vector(values);
+      this.values = new ArrayList(values);
     }
   }
 
@@ -118,10 +117,10 @@ public class VectorColumn implements VirtualColumn {
    * @param o the object being queried
    * @return The classes for this object.
    */
-  public static Vector getObjectClasses(Object o) {
-    Vector cl = new Vector();
+  public static ArrayList getObjectClasses(Object o) {
+    ArrayList cl = new ArrayList();
     for (Class cc = o.getClass(); cc != null; cc = cc.getSuperclass()) {
-      cl.addElement(cc);
+      cl.add(cc);
     }
     return cl;
   }
@@ -131,13 +130,13 @@ public class VectorColumn implements VirtualColumn {
    * the given column.
    * @return The common classes for the column cells.
    */
-  public Vector getCommonClasses() {
-    Vector commonClasses = null;
+  public ArrayList getCommonClasses() {
+    ArrayList commonClasses = null;
     if (values != null) {
       for (int row = 0; row < values.size(); row++) {
         Object o = values.get(row);
         if (o != null) {
-          Vector cl = getObjectClasses(o);
+          ArrayList cl = getObjectClasses(o);
           if (commonClasses == null) {
             commonClasses = cl;
           } else {
@@ -185,10 +184,10 @@ public class VectorColumn implements VirtualColumn {
   public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
     if (isCellEditable(rowIndex,columnIndex)) {
       if (values == null) {
-        values = new Vector();
+        values = new ArrayList();
       } 
       if (rowIndex >= values.size()) {
-        values.setSize(rowIndex+1);
+        values.ensureCapacity(rowIndex+1);
       }
       if (columnClass != null) {
         if (aValue != null && !columnClass.isAssignableFrom(aValue.getClass())) {
@@ -201,7 +200,7 @@ public class VectorColumn implements VirtualColumn {
           commonColumnClasses = getCommonClasses();
         }
       } else {  // commonClass could get less specific
-        Vector cl = getObjectClasses(aValue);
+        ArrayList cl = getObjectClasses(aValue);
         if (commonColumnClasses == null) {
           commonColumnClasses = cl;
         } else {

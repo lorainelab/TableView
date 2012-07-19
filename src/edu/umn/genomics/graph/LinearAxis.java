@@ -21,58 +21,61 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.graph;
-
-import java.util.*;
 /*
- * Still need to consider:
- *   min == max
- *   min > max
-*/
+ * Still need to consider: min == max min > max
+ */
 
 /**
- * The LinearAxis class provides a transformation between a value plotted 
- * along an axis to a pixel position.
- * @author       J Johnson
- * @version $Revision: 1.10 $ $Date: 2004/01/28 20:32:59 $  $Name: TableView1_3_2 $ 
- * @since        AV1.0
+ * The LinearAxis class provides a transformation between a value plotted along
+ * an axis to a pixel position.
+ *
+ * @author J Johnson
+ * @version $Revision: 1.10 $ $Date: 2004/01/28 20:32:59 $ $Name: TableView1_3_2
+ * $
+ * @since AV1.0
  */
 public class LinearAxis extends AbstractAxis implements Cloneable {
-  /** 
-   * Create a LinearAxis with default values: 
-   * min = -10, max = 10, and size = 0.
-   */
-  public LinearAxis() {
-    super();
-  }
-  /** 
-   * Create a LinearAxis with default values of min = -10, max = 10 
-   * and set the pixel size to the given size.
-   * @param size the pixel size for the axis.
-   */
-  public LinearAxis(int size) {
-    super(size);
-  }
-  /** 
-   * Create a LinearAxis with default values of min = -10, max = 10 
-   * and set the pixel size to the given size.
-   * @param size the pixel size for the axis.
-   * @param min the minimum value of the axis corresponding to 
-   *  the zero pixel position.
-   * @param max the maximum value of the axis corresponding to 
-   *  the pixel position at the size.
-   */
-  public LinearAxis(int size, double min, double max) {
-    super(size,min,max);
-  }
-  /** 
-   * Create a LinearAxis with the same min, max, and size values. 
-   * as the given axis.
-   * @param axis the axis from which to set min, max, and size values.
-   */
-  public LinearAxis(Axis axis) {
-    super(axis);
-  }
+
+    /**
+     * Create a LinearAxis with default values: min = -10, max = 10, and size =
+     * 0.
+     */
+    public LinearAxis() {
+        super();
+    }
+
+    /**
+     * Create a LinearAxis with default values of min = -10, max = 10 and set
+     * the pixel size to the given size.
+     *
+     * @param size the pixel size for the axis.
+     */
+    public LinearAxis(int size) {
+        super(size);
+    }
+
+    /**
+     * Create a LinearAxis with default values of min = -10, max = 10 and set
+     * the pixel size to the given size.
+     *
+     * @param size the pixel size for the axis.
+     * @param min the minimum value of the axis corresponding to the zero pixel
+     * position.
+     * @param max the maximum value of the axis corresponding to the pixel
+     * position at the size.
+     */
+    public LinearAxis(int size, double min, double max) {
+        super(size, min, max);
+    }
+
+    /**
+     * Create a LinearAxis with the same min, max, and size values. as the given
+     * axis.
+     *
+     * @param axis the axis from which to set min, max, and size values.
+     */
+    public LinearAxis(Axis axis) {
+        super(axis);
+    }
 }

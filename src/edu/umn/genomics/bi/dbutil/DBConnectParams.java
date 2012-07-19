@@ -21,42 +21,61 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.bi.dbutil;
+
 /**
- * An interface for holding the parameters required for making 
- * a JDBC connection to a data base.
- * @author       J Johnson
- * @version $Revision: 1.3 $ $Date: 2002/07/30 19:44:45 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ * An interface for holding the parameters required for making a JDBC connection
+ * to a data base.
+ *
+ * @author J Johnson
+ * @version $Revision: 1.3 $ $Date: 2002/07/30 19:44:45 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public interface DBConnectParams {
-  /**  Return the name for this connection.
-   * @return the  for this connection.
-   */
-  public String getName();
-  /**  Return the user account name.
-   * @return the user account name.
-   */
-  public String getUser();
-  /**  Return the user password.
-   * @return the user password.
-   */
-  public String getPassword();
-  /**  Return the data base URL.
-   * @return the data base URL.
-   */
-  public String getURL();
-  /**  Return the class name for the JDBC Driver Class.
-   * @return the class name for the JDBC Driver Class.
-   */
-  public String getDriverName();
-  /** Returns whether this DBConnectParams represents the same database
-   *  user account as the given dbConnectParams.  The name given 
-   *  to the DBConnectParams instances are ignored for this comparison. 
-   * @param dbConnectParams 
-   * @return whether these represent the same database user.
-   */
-  public boolean userEquals(DBConnectParams dbConnectParams);
+
+    /**
+     * Return the name for this connection.
+     *
+     * @return the for this connection.
+     */
+    public String getName();
+
+    /**
+     * Return the user account name.
+     *
+     * @return the user account name.
+     */
+    public String getUser();
+
+    /**
+     * Return the user password.
+     *
+     * @return the user password.
+     */
+    public String getPassword();
+
+    /**
+     * Return the data base URL.
+     *
+     * @return the data base URL.
+     */
+    public String getURL();
+
+    /**
+     * Return the class name for the JDBC Driver Class.
+     *
+     * @return the class name for the JDBC Driver Class.
+     */
+    public String getDriverName();
+
+    /**
+     * Returns whether this DBConnectParams represents the same database user
+     * account as the given dbConnectParams. The name given to the
+     * DBConnectParams instances are ignored for this comparison.
+     *
+     * @param dbConnectParams
+     * @return whether these represent the same database user.
+     */
+    public boolean userEquals(DBConnectParams dbConnectParams);
 }

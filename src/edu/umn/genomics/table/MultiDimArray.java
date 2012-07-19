@@ -21,259 +21,285 @@
  * GNU General Public License for more details.
  *
  */
-
 package edu.umn.genomics.table;
 
 import java.io.Serializable;
-import java.util.*;
 
 /**
- * Provides mapping of indices between a multidimensional array and a one-dimensional array.
- * @author       J Johnson
- * @version      %I%, %G%
- * @since        1.0
+ * Provides mapping of indices between a multidimensional array and a
+ * one-dimensional array.
+ *
+ * @author J Johnson
+ * @version %I%, %G%
+ * @since 1.0
  */
 public class MultiDimArray implements Serializable {
-  int[] dims;
-  /** 
-   * Create a MultiDimArray for the given dimensions.
-   * @param dims The dimensions for a multidimensional array.
-   * @exception NullPointerException If dims are null.
-   * @exception IllegalArgumentException If any of dims are < 1.
-   */
-  public MultiDimArray(int[] dims) throws NullPointerException, IllegalArgumentException {
-    // Check that dims != null and all dims > 0;
-    if (dims == null) {
-      throw new NullPointerException("MultiDimArray must have dimensions.");
-    }
-    int tmp[] = new int[dims.length];
-    int size = 1;
-    for (int i = 0; i < dims.length; i++) {
-      if (dims[i] <= 0) {
-        throw new IllegalArgumentException("MultiDimArray dimensions must be positive.");
-      }
-      tmp[i] = dims[i];
-      size *= dims[i];
-    }
-    this.dims = tmp;
-  }
-  public int getSize() {
-    if (dims != null) {
-      int n = 1;
-      for (int i = dims.length-1; i >= 0; i--) {
-         n *= dims[i];
-      }
-      return n;
-    } 
-    return 0;
-  }
 
-  public int[] getDims() {
-    return dims;
-  }
+    int[] dims;
 
-  /** 
-   * Get the one dimensional index that corresponds to the location in the multidimensional array.
-   * @param loc The location indices in the multidimensional array.
-   * @param dims The dimensions for a multidimensional array.
-   * @return the one dimensional index corresponding to the given multidimensional location.
-   * @exception NullPointerException If loc or dims are null.
-   * @exception IllegalArgumentException If any of loc  are < 0 or > dims.
-   */
-  public static int getIndex(int[] loc, int[] dims) {
-    // Check that loc != null loc.length = dims.length and all loc > 0;
-    if (loc == null) {
-        throw new NullPointerException("MultiDimArray location index array is null.");
-    } else if (dims == null) {
-        throw new NullPointerException("MultiDimArray dimensions are not set");
-    } else if (loc == null || dims == null || loc.length > dims.length) {
-        throw new IllegalArgumentException("getIndex: loc does not have the same dimensions "
-                                            + loc.length + " vs. " + dims.length);
-    }
-    int idx = 0;
-    for (int i = loc.length -1, j = 1; i >= 0; j*=dims[i],i--) {
-      if (loc[i] < 0) {
-        throw new IllegalArgumentException("MultiDimArray dimensions must be positive.");
-      } else if (loc[i] >= dims[i]) {
-        throw new IllegalArgumentException("MultiDimArray index " + i + ": " + loc[i] + " !< " + dims[i]);
-      }
-      idx += loc[i] * j;
-    }
-    return idx;
-  }
-
-  /*
-   * Return a list of one-dimensional indices that correspond to the given multidimensional location.
-   * The length of the loc array can be less than the length of the dims array, 
-   * thus a loc of [1,2] with dims of [2,3,4] would return [20,21,22,23].
-   * @param loc The location indices in the multidimensional array.
-   * @param dims The dimensions for a multidimensional array.
-   * @return an array of one dimensional index corresponding to the given multidimensional location.
-   */
-  public static int[] getIndexArray(int[] loc, int[] dims) {
-    int[] ia = null;
-    if (loc == null || dims == null || loc.length < 1 || dims.length < 1) { 
-      ia =  new int[0];
-    } else if (loc.length == dims.length) {
-      ia = new int[1];
-      ia[0] = getIndex(loc,dims);
-    } else if (loc.length < dims.length) {
-      int n = 1;
-      for (int i = dims.length-1; i >= loc.length; i--) {
-         n *= dims[i];
-      }
-      ia = new int[n];
-      int[] idx = new int[dims.length];
-      System.arraycopy(loc,0,idx,0,loc.length);
-      for (int i = 0; i < n; i++) {
-        ia[i] = getIndex(idx,dims);
-        incrIndex(idx,dims);
-      }
-    }
-    return ia;
-  }
-  /** 
-   * Get the one dimensional index that corresponds to the location in the multidimensional array.
-   * @param loc The location indices in the multidimensional array.
-   * @return the one dimensional index corresponding to the given multidimensional location.
-   * @exception NullPointerException If loc or dims are null.
-   * @exception IllegalArgumentException If any of loc  are < 0 or > dims.
-   */
-  public int getIndex(int[] loc) {
-    return getIndex(loc, getDims());
-  }
-  /**
-   * Increment the mutlidimensional index array such that the indices will 
-   * choose the next element of the array or the first element if the given 
-   * indices were at the last element.
-   * @param indices The indices to increment
-   * @param dim The dimensions on the indices
-   * @return the input param indices 
-   */
-  public static int[] incrIndex(int[] indices, int[] dim) {
-    if (indices.length <= dim.length) {
-      for (int i = indices.length - 1; i >= 0; i--) {
-        if (indices[i] + 1 < dim[i]) {
-          indices[i]++;
-          break;
-        } else {
-          indices[i] = 0;
+    /**
+     * Create a MultiDimArray for the given dimensions.
+     *
+     * @param dims The dimensions for a multidimensional array.
+     * @exception NullPointerException If dims are null.
+     * @exception IllegalArgumentException If any of dims are < 1.
+     */
+    public MultiDimArray(int[] dims) throws NullPointerException, IllegalArgumentException {
+        // Check that dims != null and all dims > 0;
+        if (dims == null) {
+            throw new NullPointerException("MultiDimArray must have dimensions.");
         }
-      }
-    }
-    return indices;
-  }
-
-  /**
-   * Decrement the mutlidimensional index array such that the indices will 
-   * choose the previous element of the array or the last element if the given 
-   * indices were at the first element.
-   * @param indices The indices to decrement
-   * @param dim The dimensions on the indices
-   * @return the input param indices 
-   */
-  public static int[] decrIndex(int[] indices, int[] dim) {
-    if (indices.length <= dim.length) {
-      for (int i = indices.length - 1; i >= 0; i--) {
-        if (indices[i] > 0) {
-          indices[i]--;
-          break;
-        } else {
-          indices[i] = dim[i]-1;
+        int tmp[] = new int[dims.length];
+        int size = 1;
+        for (int i = 0; i < dims.length; i++) {
+            if (dims[i] <= 0) {
+                throw new IllegalArgumentException("MultiDimArray dimensions must be positive.");
+            }
+            tmp[i] = dims[i];
+            size *= dims[i];
         }
-      }
+        this.dims = tmp;
     }
-    return indices;
-  }
 
-  /**
-   * Increment the mutlidimensional index array starting with the leftmost index 
-   * such that the indices will choose the next element of the array or 
-   * the first element if the given  indices were at the last element.  
-   * @param indices The indices to increment
-   * @param dim The dimensions on the indices
-   * @return the input param indices 
-   */
-  public static int[] incrMajorIndex(int[] indices, int[] dim) {
-    if (indices.length <= dim.length) {
-      for (int i = 0; i < indices.length; i++) {
-        if (indices[i] + 1 < dim[i]) {
-          indices[i]++;
-          break;
-        } else {
-          indices[i] = 0;
+    public int getSize() {
+        if (dims != null) {
+            int n = 1;
+            for (int i = dims.length - 1; i >= 0; i--) {
+                n *= dims[i];
+            }
+            return n;
         }
-      }
+        return 0;
     }
-    return indices;
-  }
 
-  /**
-   * Decrement the mutlidimensional index array starting with the leftmost index 
-   * such that the indices will choose the previous element of the array or 
-   * the last element if the given  indices were at the first element.  
-   * @param indices The indices to decrement
-   * @param dim The dimensions on the indices
-   * @return the input param indices 
-   */
-  public static int[] decrMajorIndex(int[] indices, int[] dim) {
-    if (indices.length <= dim.length) {
-      for (int i = 0; i < indices.length; i++) {
-        if (indices[i] > 0) {
-          indices[i]--;
-          break;
-        } else {
-          indices[i] = dim[i]-1;
+    public int[] getDims() {
+        return dims;
+    }
+
+    /**
+     * Get the one dimensional index that corresponds to the location in the
+     * multidimensional array.
+     *
+     * @param loc The location indices in the multidimensional array.
+     * @param dims The dimensions for a multidimensional array.
+     * @return the one dimensional index corresponding to the given
+     * multidimensional location.
+     * @exception NullPointerException If loc or dims are null.
+     * @exception IllegalArgumentException If any of loc are < 0 or > dims.
+     */
+    public static int getIndex(int[] loc, int[] dims) {
+        // Check that loc != null loc.length = dims.length and all loc > 0;
+        if (loc == null) {
+            throw new NullPointerException("MultiDimArray location index array is null.");
+        } else if (dims == null) {
+            throw new NullPointerException("MultiDimArray dimensions are not set");
+        } else if (loc == null || dims == null || loc.length > dims.length) {
+            throw new IllegalArgumentException("getIndex: loc does not have the same dimensions "
+                    + loc.length + " vs. " + dims.length);
         }
-      }
+        int idx = 0;
+        for (int i = loc.length - 1, j = 1; i >= 0; j *= dims[i], i--) {
+            if (loc[i] < 0) {
+                throw new IllegalArgumentException("MultiDimArray dimensions must be positive.");
+            } else if (loc[i] >= dims[i]) {
+                throw new IllegalArgumentException("MultiDimArray index " + i + ": " + loc[i] + " !< " + dims[i]);
+            }
+            idx += loc[i] * j;
+        }
+        return idx;
     }
-    return indices;
-  }
 
-  /**
-   * Increment the mutlidimensional index array such that the indices will 
-   * choose the next element of the array or the first element if the given 
-   * indices were at the last element.
-   * @param indices The indices to increment
-   * @return the input param indices 
-   */
-  public int[] incrIndex(int[] indices) {
-    return incrIndex(indices, getDims());
-  }
-  /**
-   * Get the mutlidimensional index array that corresponds to the one dimensional index.
-   * @param index The one dimensional index
-   * @param dim The dimensions on the indices
-   * @return the multidimensional indices 
-   * @exception ArrayIndexOutOfBoundsException If index < 0 or index > array designated by dim.
-   */
-  public static int[] getIndices(int index, int[] dim) throws ArrayIndexOutOfBoundsException {
-    if (index < 0) {
-      throw new ArrayIndexOutOfBoundsException(index);
+    /*
+     * Return a list of one-dimensional indices that correspond to the given
+     * multidimensional location. The length of the loc array can be less than
+     * the length of the dims array, thus a loc of [1,2] with dims of [2,3,4]
+     * would return [20,21,22,23]. @param loc The location indices in the
+     * multidimensional array. @param dims The dimensions for a multidimensional
+     * array. @return an array of one dimensional index corresponding to the
+     * given multidimensional location.
+     */
+    public static int[] getIndexArray(int[] loc, int[] dims) {
+        int[] ia = null;
+        if (loc == null || dims == null || loc.length < 1 || dims.length < 1) {
+            ia = new int[0];
+        } else if (loc.length == dims.length) {
+            ia = new int[1];
+            ia[0] = getIndex(loc, dims);
+        } else if (loc.length < dims.length) {
+            int n = 1;
+            for (int i = dims.length - 1; i >= loc.length; i--) {
+                n *= dims[i];
+            }
+            ia = new int[n];
+            int[] idx = new int[dims.length];
+            System.arraycopy(loc, 0, idx, 0, loc.length);
+            for (int i = 0; i < n; i++) {
+                ia[i] = getIndex(idx, dims);
+                incrIndex(idx, dims);
+            }
+        }
+        return ia;
     }
-    int idx = index;
-    int[] indices = new int[dim.length];
-    indices[dim.length-1] = 1;
-    for (int i = dim.length-2; i >= 0; i--) {
-      indices[i] = dim[i+1] * indices[i+1];
+
+    /**
+     * Get the one dimensional index that corresponds to the location in the
+     * multidimensional array.
+     *
+     * @param loc The location indices in the multidimensional array.
+     * @return the one dimensional index corresponding to the given
+     * multidimensional location.
+     * @exception NullPointerException If loc or dims are null.
+     * @exception IllegalArgumentException If any of loc are < 0 or > dims.
+     */
+    public int getIndex(int[] loc) {
+        return getIndex(loc, getDims());
     }
-    for (int i = 0; i < dim.length; i++) {
-      int d = idx > 0 ? idx / indices[i] : 0;
-      idx -= d * indices[i];
-      indices[i] = d;
+
+    /**
+     * Increment the mutlidimensional index array such that the indices will
+     * choose the next element of the array or the first element if the given
+     * indices were at the last element.
+     *
+     * @param indices The indices to increment
+     * @param dim The dimensions on the indices
+     * @return the input param indices
+     */
+    public static int[] incrIndex(int[] indices, int[] dim) {
+        if (indices.length <= dim.length) {
+            for (int i = indices.length - 1; i >= 0; i--) {
+                if (indices[i] + 1 < dim[i]) {
+                    indices[i]++;
+                    break;
+                } else {
+                    indices[i] = 0;
+                }
+            }
+        }
+        return indices;
     }
-    if (indices[0] >= dim[0]) {
-      throw new ArrayIndexOutOfBoundsException(index);
+
+    /**
+     * Decrement the mutlidimensional index array such that the indices will
+     * choose the previous element of the array or the last element if the given
+     * indices were at the first element.
+     *
+     * @param indices The indices to decrement
+     * @param dim The dimensions on the indices
+     * @return the input param indices
+     */
+    public static int[] decrIndex(int[] indices, int[] dim) {
+        if (indices.length <= dim.length) {
+            for (int i = indices.length - 1; i >= 0; i--) {
+                if (indices[i] > 0) {
+                    indices[i]--;
+                    break;
+                } else {
+                    indices[i] = dim[i] - 1;
+                }
+            }
+        }
+        return indices;
     }
-    return indices; 
-  }
-  /**
-   * Get the mutlidimensional index array that corresponds to the one dimensional index.
-   * @param index The one dimensional index
-   * @return the multidimensional indices 
-   * @exception ArrayIndexOutOfBoundsException If index < 0 or index > array designated by dim.
-   */
-  public int[] getIndices(int index) throws ArrayIndexOutOfBoundsException {
-    return getIndices(index,getDims());
-  }
+
+    /**
+     * Increment the mutlidimensional index array starting with the leftmost
+     * index such that the indices will choose the next element of the array or
+     * the first element if the given indices were at the last element.
+     *
+     * @param indices The indices to increment
+     * @param dim The dimensions on the indices
+     * @return the input param indices
+     */
+    public static int[] incrMajorIndex(int[] indices, int[] dim) {
+        if (indices.length <= dim.length) {
+            for (int i = 0; i < indices.length; i++) {
+                if (indices[i] + 1 < dim[i]) {
+                    indices[i]++;
+                    break;
+                } else {
+                    indices[i] = 0;
+                }
+            }
+        }
+        return indices;
+    }
+
+    /**
+     * Decrement the mutlidimensional index array starting with the leftmost
+     * index such that the indices will choose the previous element of the array
+     * or the last element if the given indices were at the first element.
+     *
+     * @param indices The indices to decrement
+     * @param dim The dimensions on the indices
+     * @return the input param indices
+     */
+    public static int[] decrMajorIndex(int[] indices, int[] dim) {
+        if (indices.length <= dim.length) {
+            for (int i = 0; i < indices.length; i++) {
+                if (indices[i] > 0) {
+                    indices[i]--;
+                    break;
+                } else {
+                    indices[i] = dim[i] - 1;
+                }
+            }
+        }
+        return indices;
+    }
+
+    /**
+     * Increment the mutlidimensional index array such that the indices will
+     * choose the next element of the array or the first element if the given
+     * indices were at the last element.
+     *
+     * @param indices The indices to increment
+     * @return the input param indices
+     */
+    public int[] incrIndex(int[] indices) {
+        return incrIndex(indices, getDims());
+    }
+
+    /**
+     * Get the mutlidimensional index array that corresponds to the one
+     * dimensional index.
+     *
+     * @param index The one dimensional index
+     * @param dim The dimensions on the indices
+     * @return the multidimensional indices
+     * @exception ArrayIndexOutOfBoundsException If index < 0 or index > array
+     * designated by dim.
+     */
+    public static int[] getIndices(int index, int[] dim) throws ArrayIndexOutOfBoundsException {
+        if (index < 0) {
+            throw new ArrayIndexOutOfBoundsException(index);
+        }
+        int idx = index;
+        int[] indices = new int[dim.length];
+        indices[dim.length - 1] = 1;
+        for (int i = dim.length - 2; i >= 0; i--) {
+            indices[i] = dim[i + 1] * indices[i + 1];
+        }
+        for (int i = 0; i < dim.length; i++) {
+            int d = idx > 0 ? idx / indices[i] : 0;
+            idx -= d * indices[i];
+            indices[i] = d;
+        }
+        if (indices[0] >= dim[0]) {
+            throw new ArrayIndexOutOfBoundsException(index);
+        }
+        return indices;
+    }
+
+    /**
+     * Get the mutlidimensional index array that corresponds to the one
+     * dimensional index.
+     *
+     * @param index The one dimensional index
+     * @return the multidimensional indices
+     * @exception ArrayIndexOutOfBoundsException If index < 0 or index > array
+     * designated by dim.
+     */
+    public int[] getIndices(int index) throws ArrayIndexOutOfBoundsException {
+        return getIndices(index, getDims());
+    }
 }

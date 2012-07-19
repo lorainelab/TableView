@@ -21,48 +21,58 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.graph;
 
-import java.text.*;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.FieldPosition;
+
 /**
  * The AxisLabeler provides a label for positions along an axis.
  *
- * @author       J Johnson
- * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:49 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ * @author J Johnson
+ * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:49 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public class DecimalLabeler extends DecimalFormat implements AxisLabeler {
-  /** 
-   * Create a DecimalLabeler with the default pattern and symbols from 
-   * DecimalFormat class.
-   * @see java.text.DecimalFormat
-   */
-  public DecimalLabeler() {
-    super();
-  }
-  /** 
-   *  Create a DecimalFormat from the given pattern and the symbols 
-   * for the default locale.
-   * @see java.text.DecimalFormat
-   */
-  public DecimalLabeler(String pattern) {
-    super(pattern);
-  }
-  /** 
-   * Create a DecimalFormat from the given pattern and symbols.
-   * @see java.text.DecimalFormat
-   */
-  public DecimalLabeler(String pattern, DecimalFormatSymbols symbols) {
-    super(pattern, symbols);
-  }
-  /**
-   * Return a label for the given value along an axis.
-   * @param value the value on the axis.
-   * @return a formatted label to display for the given value.
-   */
-  public String getLabel(double value) {
-    return format(value, new StringBuffer(), new FieldPosition(0)).toString();
-  }
+
+    /**
+     * Create a DecimalLabeler with the default pattern and symbols from
+     * DecimalFormat class.
+     *
+     * @see java.text.DecimalFormat
+     */
+    public DecimalLabeler() {
+        super();
+    }
+
+    /**
+     * Create a DecimalFormat from the given pattern and the symbols for the
+     * default locale.
+     *
+     * @see java.text.DecimalFormat
+     */
+    public DecimalLabeler(String pattern) {
+        super(pattern);
+    }
+
+    /**
+     * Create a DecimalFormat from the given pattern and symbols.
+     *
+     * @see java.text.DecimalFormat
+     */
+    public DecimalLabeler(String pattern, DecimalFormatSymbols symbols) {
+        super(pattern, symbols);
+    }
+
+    /**
+     * Return a label for the given value along an axis.
+     *
+     * @param value the value on the axis.
+     * @return a formatted label to display for the given value.
+     */
+    public String getLabel(double value) {
+        return format(value, new StringBuffer(), new FieldPosition(0)).toString();
+    }
 }

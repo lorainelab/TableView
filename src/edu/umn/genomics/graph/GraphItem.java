@@ -21,99 +21,117 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.graph;
 
 import java.awt.*;
-import java.util.*;
 
 /**
- * An item to be displayed on a graph. 
- * 
- * @author       J Johnson
- * @version $Revision: 1.5 $ $Date: 2004/01/28 20:32:57 $  $Name: TableView1_3_2 $ 
- * @since        1.0
- * @see  javax.swing.table.TableModel
- * @see  javax.swing.ListSelectionModel
- * @see  Graph
+ * An item to be displayed on a graph.
+ *
+ * @author J Johnson
+ * @version $Revision: 1.5 $ $Date: 2004/01/28 20:32:57 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
+ * @see javax.swing.table.TableModel
+ * @see javax.swing.ListSelectionModel
+ * @see Graph
  */
 public interface GraphItem {
-  /**
-   * Set the color of the graph item.
-   * @param color for this graph item.
-   */
-  public void setColor(Color color);
-  /**
-   * Return the color of the graph item.
-   * @return color of the graph item.
-   */
-  public Color getColor();
-  /**
-   * Set the label of the graph item.
-   * @param label for this graph item.
-   */
-  /**
-   * Set the color for each drawable of the graph item.
-   * @param indexedColor color for each drawable of this graph item.
-   */
-  public void setIndexedColor(IndexedColor indexedColor);
 
-  /**
-   * Return the color for each drawable of the graph item.
-   * @return  the color for each drawable of the graph item.
-   */
-  public IndexedColor getIndexedColor();
+    /**
+     * Set the color of the graph item.
+     *
+     * @param color for this graph item.
+     */
+    public void setColor(Color color);
 
-  public void setLabel(String label);
-  /**
-   * Return the label of the graph item.
-   * @return label of the graph item.
-   */
-  public String getLabel();
+    /**
+     * Return the color of the graph item.
+     *
+     * @return color of the graph item.
+     */
+    public Color getColor();
 
-  /** 
-   * Add a Listener to be notified of changes.
-   * @param l the listener to be added.
-   */
-  public void addGraphItemListener(GraphItemListener l);
-  /** 
-   * Remove the listener from the notification list.
-   * @param l the listener to be removed.
-   */
-  public void removeGraphItemListener(GraphItemListener l);
+    /**
+     * Set the label of the graph item.
+     *
+     * @param label for this graph item.
+     */
+    /**
+     * Set the color for each drawable of the graph item.
+     *
+     * @param indexedColor color for each drawable of this graph item.
+     */
+    public void setIndexedColor(IndexedColor indexedColor);
 
-  /** 
-   * Draw the graph item on the graph display.
-   * @param c the component upon which to draw.
-   * @param g the graphics context.
-   * @param r the area of the graph within the component.
-   * @param xAxis The X axis of the graph.
-   * @param yAxis The Y axis of the graph.
-   */
-  public void draw(Component c, Graphics g, Rectangle r, Axis xAxis, Axis yAxis);
-  /** 
-   * Returns whether this graph item intersects the given rectangle.
-   * @param r the area to test for intersection.
-   * @param xAxis The X axis of the graph.
-   * @param yAxis The Y axis of the graph.
-   * @return true if the item intersects the given rectangle, else false.
-   */
-  public boolean intersects(Rectangle r, Axis xAxis, Axis yAxis);
-  /** 
-   * Returns whether this graph item intersects the given point.
-   * @param p the point to test for intersection.
-   * @param xAxis The X axis of the graph.
-   * @param yAxis The Y axis of the graph.
-   * @return true if the item intersects the given point, else false.
-   */
-  public boolean intersects(Point p, Axis xAxis, Axis yAxis);
-  /** 
-   * Returns whether this graph item intersects the given point.
-   * @param p the point to test for intersection.
-   * @param xAxis The X axis of the graph.
-   * @param yAxis The Y axis of the graph.
-   * @return indices of datapoints that intersects the given point, else null.
-   */
-  public int[] getIndicesAt(Point p, Axis xAxis, Axis yAxis);
+    /**
+     * Return the color for each drawable of the graph item.
+     *
+     * @return the color for each drawable of the graph item.
+     */
+    public IndexedColor getIndexedColor();
+
+    public void setLabel(String label);
+
+    /**
+     * Return the label of the graph item.
+     *
+     * @return label of the graph item.
+     */
+    public String getLabel();
+
+    /**
+     * Add a Listener to be notified of changes.
+     *
+     * @param l the listener to be added.
+     */
+    public void addGraphItemListener(GraphItemListener l);
+
+    /**
+     * Remove the listener from the notification list.
+     *
+     * @param l the listener to be removed.
+     */
+    public void removeGraphItemListener(GraphItemListener l);
+
+    /**
+     * Draw the graph item on the graph display.
+     *
+     * @param c the component upon which to draw.
+     * @param g the graphics context.
+     * @param r the area of the graph within the component.
+     * @param xAxis The X axis of the graph.
+     * @param yAxis The Y axis of the graph.
+     */
+    public void draw(Component c, Graphics g, Rectangle r, Axis xAxis, Axis yAxis);
+
+    /**
+     * Returns whether this graph item intersects the given rectangle.
+     *
+     * @param r the area to test for intersection.
+     * @param xAxis The X axis of the graph.
+     * @param yAxis The Y axis of the graph.
+     * @return true if the item intersects the given rectangle, else false.
+     */
+    public boolean intersects(Rectangle r, Axis xAxis, Axis yAxis);
+
+    /**
+     * Returns whether this graph item intersects the given point.
+     *
+     * @param p the point to test for intersection.
+     * @param xAxis The X axis of the graph.
+     * @param yAxis The Y axis of the graph.
+     * @return true if the item intersects the given point, else false.
+     */
+    public boolean intersects(Point p, Axis xAxis, Axis yAxis);
+
+    /**
+     * Returns whether this graph item intersects the given point.
+     *
+     * @param p the point to test for intersection.
+     * @param xAxis The X axis of the graph.
+     * @param yAxis The Y axis of the graph.
+     * @return indices of datapoints that intersects the given point, else null.
+     */
+    public int[] getIndicesAt(Point p, Axis xAxis, Axis yAxis);
 }

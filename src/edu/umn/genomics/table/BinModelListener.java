@@ -21,23 +21,23 @@
  * GNU General Public License for more details.
  *
  */
-
 package edu.umn.genomics.table;
 
-import java.io.Serializable;
-import java.util.*;
+import java.util.EventListener;
 
 /**
  * Listens for changes to a BinModel.
- * @author       J Johnson
- * @version      %I%, %G%
- * @since        1.0
+ *
+ * @author J Johnson
+ * @version %I%, %G%
+ * @since 1.0
  */
 public interface BinModelListener extends EventListener {
-  /** 
-   * The method called when a BinModel is changed.
-   * @param e the BinModelEvent.
-   */
-  public void binModelChanged(BinModelEvent e);
-}
 
+    /**
+     * The method called when a BinModel is changed.
+     *
+     * @param e the BinModelEvent.
+     */
+    public void binModelChanged(BinModelEvent e);
+}

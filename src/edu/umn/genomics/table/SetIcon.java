@@ -21,147 +21,152 @@
  * GNU General Public License for more details.
  * 
  */
-
 package edu.umn.genomics.table;
 
-import java.io.Serializable;
-import java.util.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import javax.swing.Icon;
 
 /**
  * SetIcon provides set operation icons.
- * @author       J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/09/17 16:23:54 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ *
+ * @author J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/09/17 16:23:54 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  * @see SetOperator
  */
 public class SetIcon implements Icon {
-  int w = 19;
-  int h = 19;
-  Color c1 = Color.red.darker();
-  Color c2 = Color.cyan;
-  int op = SetOperator.UNION;
-  SetIcon(int op) {
-    this.op = op;
-  }
-  SetIcon(Color c1, Color c2, int op) {
-    this.c1 = c1;
-    this.c2 = c2;
-    this.op = op;
-  }
-  public int getSetOperator() {
-    return op;
-  }
-  public int getIconWidth() {
-    return w;
-  }
-  public int getIconHeight() {
-    return h;
-  }
-  public void paintIcon(Component c, Graphics g, int x, int y) {
-    int d = (int)(w * .6);
-    int x1 =  (int)(w * .333) - d/2;
-    int x2 =  (int)(w * .667) - d/2;
-    int y1 = (h - d) / 2;
 
-    switch (op) {
-    case SetOperator.BRUSHOVER:
-      g.setColor(c1);
-      g.drawLine(x+w/2-d/2,y+h/2,x+w/2+d/2,y+h/2);
-      g.drawLine(x+w/2,y+y1,x+w/2,y+y1+d);
-      g.setColor(c2);
-      g.drawLine(x+w/2-d/2,y+h/2+1,x+w/2+d/2,y+h/2+1);
-      g.drawLine(x+w/2+1,y+y1,x+w/2+1,y+y1+d);
-      break;
-    case SetOperator.REPLACE:
-      g.setColor(c1);
-      g.fillOval(x + x1, y+y1, d, d);
-    
-      g.setColor(c2);
-      g.fillOval(x + x2, y+y1, d, d);
+    int w = 19;
+    int h = 19;
+    Color c1 = Color.red.darker();
+    Color c2 = Color.cyan;
+    int op = SetOperator.UNION;
 
-      g.setColor(c1.darker());
-      g.drawOval(x + x2, y+y1, d, d);
-
-      g.setColor(c1.darker());
-      g.drawOval(x + x1, y+y1, d, d);
-
-      break;
-    case SetOperator.UNION:
-      g.setColor(c2);
-      g.fillOval(x + x1, y+y1, d, d);
-    
-      g.setColor(c2);
-      g.fillOval(x + x2, y+y1, d, d);
-
-      g.setColor(c1.darker());
-      g.drawOval(x + x2, y+y1, d, d);
-
-      g.setColor(c1.darker());
-      g.drawOval(x + x1, y+y1, d, d);
-
-      break;
-
-    case SetOperator.INTERSECTION:
-      g.setColor(c1);
-      g.fillOval(x + x1, y+y1, d, d);
-    
-      g.setColor(c1);
-      g.fillOval(x + x2, y+y1, d, d);
-
-      g.setColor(c2);
-      g.fillArc(x + x1, y+y1, d, d, 45, -90);
-
-      g.setColor(c2);
-      g.fillArc(x + x2, y+y1, d, d, 135, 90);
-
-      g.setColor(c1.darker());
-      g.drawOval(x + x1, y+y1, d, d);
-
-      g.setColor(c1.darker());
-      g.drawOval(x + x2, y+y1, d, d);
-      break;
-
-    case SetOperator.DIFFERENCE:
-      g.setColor(c2);
-      g.fillOval(x + x1, y+y1, d, d);
-
-      g.setColor(c1);
-      g.fillOval(x + x2, y+y1, d, d);
-
-      g.setColor(c1.darker());
-      g.drawOval(x + x2, y+y1, d, d);
-
-      g.setColor(c1.darker());
-      g.drawOval(x + x1, y+y1, d, d);
-
-      break;
-
-    case SetOperator.XOR:
-      g.setColor(c2);
-      g.fillOval(x + x1, y+y1, d, d);
-
-      g.setColor(c2);
-      g.fillOval(x + x2, y+y1, d, d);
-
-      g.setColor(c1);
-      g.fillArc(x + x1, y+y1, d, d, 45, -90);
-
-      g.setColor(c1);
-      g.fillArc(x + x2, y+y1, d, d, 135, 90);
-
-      g.setColor(c1.darker());
-      g.drawOval(x + x1, y+y1, d, d);
-
-      g.setColor(c1.darker());
-      g.drawOval(x + x2, y+y1, d, d);
-
-      break;
-
+    SetIcon(int op) {
+        this.op = op;
     }
-  }
-}
 
+    SetIcon(Color c1, Color c2, int op) {
+        this.c1 = c1;
+        this.c2 = c2;
+        this.op = op;
+    }
+
+    public int getSetOperator() {
+        return op;
+    }
+
+    public int getIconWidth() {
+        return w;
+    }
+
+    public int getIconHeight() {
+        return h;
+    }
+
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+        int d = (int) (w * .6);
+        int x1 = (int) (w * .333) - d / 2;
+        int x2 = (int) (w * .667) - d / 2;
+        int y1 = (h - d) / 2;
+
+        switch (op) {
+            case SetOperator.BRUSHOVER:
+                g.setColor(c1);
+                g.drawLine(x + w / 2 - d / 2, y + h / 2, x + w / 2 + d / 2, y + h / 2);
+                g.drawLine(x + w / 2, y + y1, x + w / 2, y + y1 + d);
+                g.setColor(c2);
+                g.drawLine(x + w / 2 - d / 2, y + h / 2 + 1, x + w / 2 + d / 2, y + h / 2 + 1);
+                g.drawLine(x + w / 2 + 1, y + y1, x + w / 2 + 1, y + y1 + d);
+                break;
+            case SetOperator.REPLACE:
+                g.setColor(c1);
+                g.fillOval(x + x1, y + y1, d, d);
+
+                g.setColor(c2);
+                g.fillOval(x + x2, y + y1, d, d);
+
+                g.setColor(c1.darker());
+                g.drawOval(x + x2, y + y1, d, d);
+
+                g.setColor(c1.darker());
+                g.drawOval(x + x1, y + y1, d, d);
+
+                break;
+            case SetOperator.UNION:
+                g.setColor(c2);
+                g.fillOval(x + x1, y + y1, d, d);
+
+                g.setColor(c2);
+                g.fillOval(x + x2, y + y1, d, d);
+
+                g.setColor(c1.darker());
+                g.drawOval(x + x2, y + y1, d, d);
+
+                g.setColor(c1.darker());
+                g.drawOval(x + x1, y + y1, d, d);
+
+                break;
+
+            case SetOperator.INTERSECTION:
+                g.setColor(c1);
+                g.fillOval(x + x1, y + y1, d, d);
+
+                g.setColor(c1);
+                g.fillOval(x + x2, y + y1, d, d);
+
+                g.setColor(c2);
+                g.fillArc(x + x1, y + y1, d, d, 45, -90);
+
+                g.setColor(c2);
+                g.fillArc(x + x2, y + y1, d, d, 135, 90);
+
+                g.setColor(c1.darker());
+                g.drawOval(x + x1, y + y1, d, d);
+
+                g.setColor(c1.darker());
+                g.drawOval(x + x2, y + y1, d, d);
+                break;
+
+            case SetOperator.DIFFERENCE:
+                g.setColor(c2);
+                g.fillOval(x + x1, y + y1, d, d);
+
+                g.setColor(c1);
+                g.fillOval(x + x2, y + y1, d, d);
+
+                g.setColor(c1.darker());
+                g.drawOval(x + x2, y + y1, d, d);
+
+                g.setColor(c1.darker());
+                g.drawOval(x + x1, y + y1, d, d);
+
+                break;
+
+            case SetOperator.XOR:
+                g.setColor(c2);
+                g.fillOval(x + x1, y + y1, d, d);
+
+                g.setColor(c2);
+                g.fillOval(x + x2, y + y1, d, d);
+
+                g.setColor(c1);
+                g.fillArc(x + x1, y + y1, d, d, 45, -90);
+
+                g.setColor(c1);
+                g.fillArc(x + x2, y + y1, d, d, 135, 90);
+
+                g.setColor(c1.darker());
+                g.drawOval(x + x1, y + y1, d, d);
+
+                g.setColor(c1.darker());
+                g.drawOval(x + x2, y + y1, d, d);
+
+                break;
+
+        }
+    }
+}

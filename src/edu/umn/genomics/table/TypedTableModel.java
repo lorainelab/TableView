@@ -26,13 +26,11 @@
 package edu.umn.genomics.table;
 
 import java.io.Serializable;
-import java.util.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import java.text.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  * A TypedTableModel object extends the DefaultTableModel by overriding
@@ -48,8 +46,8 @@ import java.awt.Rectangle;
 public class TypedTableModel extends DefaultTableModel 
                                   implements Serializable {
   /** All classes common to all members of each column. */
-  Vector commonColumnClasses = new Vector();
-  Vector columnClasses = new Vector();
+    ArrayList commonColumnClasses = new ArrayList();
+    ArrayList columnClasses = new ArrayList();
 
   /**
    *  Constructs a default TypedTableModel which is a table of
@@ -84,8 +82,8 @@ public class TypedTableModel extends DefaultTableModel
    * @see #setDataVector
    * @see #setValueAt
    */
-  public TypedTableModel(Vector columnNames, int numRows) {
-    super(columnNames, numRows);
+  public TypedTableModel(ArrayList columnNames, int numRows) {
+    super(columnNames.toArray(), numRows);
   }
 
   /**
@@ -114,8 +112,8 @@ public class TypedTableModel extends DefaultTableModel
    * @see #getDataVector
    * @see #setDataVector
    */
-  public TypedTableModel(Vector data, Vector columnNames) {
-    super(data, columnNames);
+  public TypedTableModel(ArrayList<Object []> data, ArrayList columnNames) {
+    super((Object [][])data.toArray(), columnNames.toArray());
   }
 
   /**
@@ -141,10 +139,10 @@ public class TypedTableModel extends DefaultTableModel
    * @param o the object being queried
    * @return The classes for this object.
    */
-  public static Vector getObjectClasses(Object o) {
-    Vector cl = new Vector();
+  public static ArrayList getObjectClasses(Object o) {
+    ArrayList cl = new ArrayList();
     for (Class cc = o.getClass(); cc != null; cc = cc.getSuperclass()) {
-      cl.addElement(cc);
+      cl.add(cc);
     }
     return cl;
   }
@@ -155,13 +153,13 @@ public class TypedTableModel extends DefaultTableModel
    * @param columnIndex the column being queried
    * @return The common classes for the column cells.
    */
-  public Vector getCommonClasses(int columnIndex) {
-    Vector commonClasses = null;
+  public ArrayList getCommonClasses(int columnIndex) {
+    ArrayList commonClasses = null;
     if (columnIndex >= 0 && columnIndex < getColumnCount()) {
       for (int row = 0; row < getRowCount(); row++) {
         Object o = getValueAt(row,columnIndex);
         if (o != null) {
-          Vector cl = getObjectClasses(o);
+          ArrayList cl = getObjectClasses(o);
           if (commonClasses == null) {
             commonClasses = cl;
           } else {
@@ -179,25 +177,27 @@ public class TypedTableModel extends DefaultTableModel
    * @param columnIndex the column being queried
    * @return The common classes for the collection members.
    */
+    @Override
   public Class getColumnClass(int columnIndex) {
     if (columnIndex >= 0 && columnIndex < getColumnCount()) {
       if (columnClasses != null && columnIndex < columnClasses.size() && columnClasses.get(columnIndex) != null) {
         return (Class)columnClasses.get(columnIndex);
       }
-      Vector commonClasses = null;
+      ArrayList commonClasses = null;
       if (columnIndex >= commonColumnClasses.size()) {
         for (int i = commonColumnClasses.size(); i < getColumnCount(); i++) {
-          commonColumnClasses.addElement(null);
+          commonColumnClasses.add(null);
         }
       } 
-      if (commonColumnClasses.elementAt(columnIndex) == null) {
+      if (commonColumnClasses.get(columnIndex) == null) {
         commonClasses = getCommonClasses(columnIndex);
-        commonColumnClasses.setElementAt(commonClasses, columnIndex);
+        commonColumnClasses.remove(columnIndex);
+        commonColumnClasses.add(columnIndex, commonClasses);
       } else {
-        commonClasses = (Vector)commonColumnClasses.elementAt(columnIndex);
+        commonClasses = (ArrayList)commonColumnClasses.get(columnIndex);
       }
       if (commonClasses != null && commonClasses.size() > 0) {
-        return (Class)commonClasses.elementAt(0);
+        return (Class)commonClasses.get(0);
       }
     }
     return Object.class;
@@ -214,10 +214,10 @@ public class TypedTableModel extends DefaultTableModel
   public void setColumnClass(int columnIndex, Class columnClass) throws ClassCastException {
     if (columnIndex >= 0 && columnIndex < getColumnCount() && columnClass != null) {
       if (columnClasses == null) {
-        columnClasses = new Vector(getColumnCount());
+        columnClasses = new ArrayList(getColumnCount());
       }
       if (columnIndex >= columnClasses.size()) {
-        columnClasses.setSize(columnIndex+1);
+        columnClasses.ensureCapacity(columnIndex+1);
       }
       for (int ri = 0; ri < getRowCount(); ri++) { 
         Object obj = getValueAt(ri, columnIndex);
@@ -243,6 +243,7 @@ public class TypedTableModel extends DefaultTableModel
    * @see #isCellEditable
    * @see #setColumnClass
    */
+    @Override
   public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
     if (rowIndex >= 0 && rowIndex < getRowCount() && columnIndex >= 0 && columnIndex < getColumnCount()) {
       if (columnClasses != null && columnIndex < columnClasses.size() && columnClasses.get(columnIndex) != null) {
@@ -255,8 +256,8 @@ public class TypedTableModel extends DefaultTableModel
         super.setValueAt(aValue, rowIndex, columnIndex);
         if (aValue != null && columnIndex >= 0 && 
             columnIndex <= commonColumnClasses.size() && 
-            commonColumnClasses.elementAt(columnIndex) != null) {
-          Vector cl = getObjectClasses(aValue);
+            commonColumnClasses.get(columnIndex) != null) {
+          ArrayList cl = getObjectClasses(aValue);
           getCommonClasses(columnIndex).retainAll(cl);
         }
       }
@@ -272,7 +273,8 @@ public class TypedTableModel extends DefaultTableModel
    * @see DefaultTableModel#setDataVector(Vector,Vector)
    * @see #setColumnClass
    */
-  public void setDataVector(Vector dataVector, Vector columnIdentifiers) {
+    @Override
+  public void setDataVector(Object[][] dataVector, Object[] columnIdentifiers) {
     columnClasses = null;
     super.setDataVector(dataVector, columnIdentifiers);
   }
@@ -285,9 +287,9 @@ public class TypedTableModel extends DefaultTableModel
    *            is not assignable to the given columnClass for the corresponding column.
    * @see #setColumnClass
    */
-  public void insertRow(int row, Vector rowData) {
+  public void insertRow(int row, ArrayList rowData) {
     verifyRowClasses(rowData);
-    super.insertRow(row, rowData);
+    super.insertRow(row, rowData.toArray());
   }
 
   /**
@@ -368,7 +370,7 @@ public class TypedTableModel extends DefaultTableModel
    * @exception ClassCastException Thrown when a data element in the row
    *            is not assignable to the given columnClass for the corresponding column.
    */
-  private void verifyRowClasses(Vector rowData) throws ClassCastException {
+  private void verifyRowClasses(ArrayList rowData) throws ClassCastException {
     if (columnClasses != null) {
       for(int ci = 0; ci < rowData.size() && ci < columnClasses.size() && ci < getColumnCount(); ci++) {
         Object  obj = rowData.get(ci);
