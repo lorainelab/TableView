@@ -196,6 +196,10 @@
 	</jar>
     </target>
     
+    <target name="profile-nb" if="netbeans.home">
+	<ant target="profile-nb" antfile="nbproject/ide-targets.xml" />
+    </target>
+    
     <target name="run" depends="compile" description="run TableView">
         <java fork="true" maxmemory="1024m" 
               classname="edu.umn.genomics.table.TableView">
@@ -213,5 +217,5 @@
             <fileset file="${name}.jar" />
         </delete>
     </target>
-    
+        
 </project>
