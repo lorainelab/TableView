@@ -188,11 +188,10 @@
 	</copy>
     </target>
     
-    <target name="jar" depends="compile" description="Create jar to distribute">
+    <target name="jar" depends="compile" description="Create jar">
         <mkdir dir="${dist.root}" />
-        <jar jarfile="${dist.root}/${name}.jar" update="false" manifest="./META-INF/MANIFEST.MF">
-		<fileset dir="${build.dir}" />
-                <zipgroupfileset dir="${lib.dir}" includes="*.jar"/>
+        <jar jarfile="${dist.root}/${name}.jar" update="false">
+            <fileset dir="${build.dir}" />
 	</jar>
     </target>
     
@@ -208,7 +207,13 @@
         </java>
     </target>
     
-    <target name="dist"></target>
+    <target name="dist" depends="compile" description="Create distributable jars">
+        <mkdir dir="${dist.dir}" />
+        <jar jarfile="${dist.dir}/${name}.jar" update="false" manifest="./META-INF/MANIFEST.MF">
+            <fileset dir="${build.dir}" />
+            <zipgroupfileset dir="${lib.dir}" includes="*.jar"/>
+	</jar>
+    </target>
     
     <target name="clean" depends="init" description="Delete compiled data">
         <delete includeEmptyDirs="true" quiet="true">
