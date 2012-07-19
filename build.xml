@@ -168,8 +168,17 @@
 		<compilerarg compiler="modern" line="${compiler.args}"/>
     	</javac>
     </presetdef>
-        
-    <target name="compile" depends="init" description="Compiles java classes.">
+    
+    <target name="tableview-classpath" depends="init" description="Sets classpath variable">
+        <path id="tv.classpath">
+            <dirset dir="${build.dir}" />
+            <fileset dir="${lib.dir}">
+                <include name="*.jar"/>
+            </fileset>
+        </path>
+    </target>
+    
+    <target name="compile" depends="tableview-classpath" description="Compiles java classes.">
         <mkdir dir="${build.dir}" />
         <my.javac srcdir="${src.dir}" 
                   destdir="${build.dir}" 
@@ -179,23 +188,32 @@
 	</copy>
     </target>
     
-    <target name="jar" depends="compile" description="Create jar to distribute">
+    <target name="jar" depends="compile" description="Create jar">
         <mkdir dir="${dist.root}" />
-        <jar jarfile="${dist.root}/${name}.jar" update="false" manifest="./META-INF/MANIFEST.MF">
-		<fileset dir="${build.dir}" />
-                <zipgroupfileset dir="${lib.dir}" includes="*.jar"/>
+        <jar jarfile="${dist.root}/${name}.jar" update="false">
+            <fileset dir="${build.dir}" />
 	</jar>
+    </target>
+    
+    <target name="profile-nb" if="netbeans.home">
+	<ant target="profile-nb" antfile="nbproject/ide-targets.xml" />
     </target>
     
     <target name="run" depends="compile" description="run TableView">
         <java fork="true" maxmemory="1024m" 
-              classname="edu.umn.genomics.table.TableView"
-              classpath="${build.dir}:${lib.path}">
+              classname="edu.umn.genomics.table.TableView">
+              <classpath refid="tv.classpath"/>
             <sysproperty key="apple.laf.useScreenMenuBar" value="true" />
         </java>
     </target>
     
-    <target name="dist"></target>
+    <target name="dist" depends="compile" description="Create distributable jars">
+        <mkdir dir="${dist.dir}" />
+        <jar jarfile="${dist.dir}/${name}.jar" update="false" manifest="./META-INF/MANIFEST.MF">
+            <fileset dir="${build.dir}" />
+            <zipgroupfileset dir="${lib.dir}" includes="*.jar"/>
+	</jar>
+    </target>
     
     <target name="clean" depends="init" description="Delete compiled data">
         <delete includeEmptyDirs="true" quiet="true">
@@ -204,5 +222,5 @@
             <fileset file="${name}.jar" />
         </delete>
     </target>
-    
+        
 </project>
