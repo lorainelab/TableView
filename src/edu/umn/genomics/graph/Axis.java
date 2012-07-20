@@ -21,150 +21,129 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.graph;
 
 /*
- * Still need to consider: min == max min > max
- */
+ * Still need to consider:
+ *   min == max
+ *   min > max
+*/
+
 /**
- * The Axis class provides a transformation between values along an axis and
- * linear screen position.
- *
- * @author J Johnson
- * @version $Revision: 1.5 $ $Date: 2004/01/28 20:32:55 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * The Axis class provides a transformation between values along an axis 
+ * and linear screen position.  
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.5 $ $Date: 2004/01/28 20:32:55 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
  */
 public interface Axis {
 
-    /**
-     *
-     */
-    public Object clone();
+  /**
+   *
+   */
+  public Object clone(); 
+  
+  /**
+   * Sets the size of the axis.
+   * The size dictates the number of values calulated along the axis.  
+   * This would likely be the number of pixels for the length 
+   * of the axis on a two dimensional rectangular grid.
+   * @param size  the length in pixels.
+   */
+  public void setSize(int size);
+  /**
+   * Returns the size of the axis.
+   * @return the size of the axis.
+   */
+  public int getSize();
+  /**
+   * Sets the minimum value at the start of the axis.
+   * @param value  the value at the start of the axis.
+   */
+  public void setMin(double value);
+  /**
+   * Returns the minimum value of the axis.
+   * @return  the minimum value of the axis.
+   */
+  public double getMin();
+  /**
+   * Sets the maximum value at the end of the axis.
+   * @param  value the maximum value at the end of the axis.
+   */
+  public void setMax(double value);
+  /**
+   * Returns the maximum value of the axis.
+   * @return  the maximum value of the axis.
+   */
+  public double getMax();
+  /** 
+   * Return whether the given Axis has the same min, max, and size values.
+   * @param obj the Axis to compare
+   * @return true if the given object is an Axis with the same  
+   * min, max, and size values.
+   */
+  public boolean equals(Object obj);
+  /**
+   *  Calculate where to place tickmarks along the axis.
+   *  Attempts to place the ticks at major numbers, for example:
+   *  for axis from 0 - 50, ticks would be placed at multiples of 10.
+   *  for axis from .05 - .55, ticks would be placed at multiples of .1.
+   */
+  public void setTicks();
+  /**
+   *  Place tickmarks along the axis.
+   *  @param tickValues The values at which to place the ticks. 
+   */
+  public void setTicks(double[] tickValues);
+  /**
+   * Returns evenly spaced values along the axis.
+   * The array contains pairs of numbers: the first is the pixel offset 
+   * from the start of the axis, the second is the value at that location.
+   * @return  tick marks along the axis.
+   */
+  public double[] getTicks();
+  /**
+   * Returns an array of values for each integral location along the axis.
+   * @return  values along the axis.
+   */
+  public double[] getValues();
+  /**
+   * Returns the value at the position along the axis.
+   * @param position  the position along the axis for which to return a value. 
+   * @return  value at this position on the axis.
+   */
+  public double getValue(int position);
+  /**
+   * Returns the relative position (0. to 1.) along the axis for the value.
+   * @param value  the value to map to a position along the axis. 
+   * @return  the relative position on the axis.
+   */
+  public double getRelPosition(double value);
+  /**
+   * Returns the pixel position along the axis for the value.
+   * @param value  the value to map to a position along the axis. 
+   * @return  the relative position on the axis.
+   */
+  public double getPosition(double value);
+  /**
+   * Returns an integral position along the axis for the value.
+   * @param value  the value to map to a position along the axis. 
+   * @return  the position on the axis.
+   */
+  public int getIntPosition(double value);
 
-    /**
-     * Sets the size of the axis. The size dictates the number of values
-     * calulated along the axis. This would likely be the number of pixels for
-     * the length of the axis on a two dimensional rectangular grid.
-     *
-     * @param size the length in pixels.
-     */
-    public void setSize(int size);
+/*
+  public void setDefaultRange(double min, double max);
+  public void setRange(double min, double max);
+  public void setRange(double[] range);
+  public double[] getRange();
+*/
 
-    /**
-     * Returns the size of the axis.
-     *
-     * @return the size of the axis.
-     */
-    public int getSize();
-
-    /**
-     * Sets the minimum value at the start of the axis.
-     *
-     * @param value the value at the start of the axis.
-     */
-    public void setMin(double value);
-
-    /**
-     * Returns the minimum value of the axis.
-     *
-     * @return the minimum value of the axis.
-     */
-    public double getMin();
-
-    /**
-     * Sets the maximum value at the end of the axis.
-     *
-     * @param value the maximum value at the end of the axis.
-     */
-    public void setMax(double value);
-
-    /**
-     * Returns the maximum value of the axis.
-     *
-     * @return the maximum value of the axis.
-     */
-    public double getMax();
-
-    /**
-     * Return whether the given Axis has the same min, max, and size values.
-     *
-     * @param obj the Axis to compare
-     * @return true if the given object is an Axis with the same min, max, and
-     * size values.
-     */
-    @Override
-    public boolean equals(Object obj);
-
-    /**
-     * Calculate where to place tickmarks along the axis. Attempts to place the
-     * ticks at major numbers, for example: for axis from 0 - 50, ticks would be
-     * placed at multiples of 10. for axis from .05 - .55, ticks would be placed
-     * at multiples of .1.
-     */
-    public void setTicks();
-
-    /**
-     * Place tickmarks along the axis.
-     *
-     * @param tickValues The values at which to place the ticks.
-     */
-    public void setTicks(double[] tickValues);
-
-    /**
-     * Returns evenly spaced values along the axis. The array contains pairs of
-     * numbers: the first is the pixel offset from the start of the axis, the
-     * second is the value at that location.
-     *
-     * @return tick marks along the axis.
-     */
-    public double[] getTicks();
-
-    /**
-     * Returns an array of values for each integral location along the axis.
-     *
-     * @return values along the axis.
-     */
-    public double[] getValues();
-
-    /**
-     * Returns the value at the position along the axis.
-     *
-     * @param position the position along the axis for which to return a value.
-     * @return value at this position on the axis.
-     */
-    public double getValue(int position);
-
-    /**
-     * Returns the relative position (0. to 1.) along the axis for the value.
-     *
-     * @param value the value to map to a position along the axis.
-     * @return the relative position on the axis.
-     */
-    public double getRelPosition(double value);
-
-    /**
-     * Returns the pixel position along the axis for the value.
-     *
-     * @param value the value to map to a position along the axis.
-     * @return the relative position on the axis.
-     */
-    public double getPosition(double value);
-
-    /**
-     * Returns an integral position along the axis for the value.
-     *
-     * @param value the value to map to a position along the axis.
-     * @return the position on the axis.
-     */
-    public int getIntPosition(double value);
-
-    /*
-     * public void setDefaultRange(double min, double max); public void
-     * setRange(double min, double max); public void setRange(double[] range);
-     * public double[] getRange();
-     */
-    public void addAxisListener(AxisListener listener);
-
-    public void removeAxisListener(AxisListener listener);
+  public void addAxisListener(AxisListener listener);
+  public void removeAxisListener(AxisListener listener);
+  
 }
+

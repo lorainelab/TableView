@@ -21,30 +21,29 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.graph;
 
 import java.awt.Color;
 
 /**
  * Associates a Color value for each index value.
- *
- * @author J Johnson
- * @version $Revision: 1.3 $ $Date: 2003/04/14 14:36:51 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.3 $ $Date: 2003/04/14 14:36:51 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
  */
 public interface IndexedColor {
+  /**
+   * Returns the length of the list.
+   */
+  public int getSize();
 
-    /**
-     * Returns the length of the list.
-     */
-    public int getSize();
-
-    /**
-     * Returns the color at the specified index.
-     *
-     * @param index the index into the color list.
-     * @return the color at the specified index.
-     */
-    public Color getColorAt(int index);
+  /**
+   * Returns the color at the specified index.
+   * @param index the index into the color list.
+   * @return the color at the specified index.
+   */
+  public Color getColorAt(int index);
 }

@@ -21,27 +21,26 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
-import java.io.IOException;
+import java.io.Serializable;
+import java.io.*;
 
 /**
- * Associates a named table data source and the TableModel interface to that
- * data source.
+ * Associates a named table data source and the
+ * TableModel interface to that data source.
  *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/08/04 18:57:00 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/08/04 18:57:00 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
  */
 public interface OpenTableSource {
-
-    /**
-     * Open the data source and create a TableModel.
-     *
-     * @param tableSource The URL or file path for the table data.
-     * @throws IOException An exception occurred when opening or reading the
-     * File or URL.
-     */
-    public void openTableSource(String tableSource) throws IOException;
+  /**
+   * Open the data source and create a TableModel.
+   * @param tableSource The URL or file path for the table data.
+   * @throws IOException An exception occurred when opening or reading the File or URL.
+   */
+  public void openTableSource(String tableSource) throws IOException;
 }

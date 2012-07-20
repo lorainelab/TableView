@@ -21,108 +21,100 @@
  * GNU General Public License for more details.
  * 
  */
-package edu.umn.genomics.bi.dbutil;
 
-import java.awt.BorderLayout;
-import java.sql.DatabaseMetaData;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.table.TableModel;
+
+package edu.umn.genomics.bi.dbutil;
+import java.awt.*;
+import java.sql.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.table.*;
 
 /**
- * Displays information about a database using DatabaseMetaData returned from a
- * connection.
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/07/28 16:36:19 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * Displays information about a database using DatabaseMetaData returned from a connection.
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/07/28 16:36:19 $  $Name: TableView1_3_2 $
+ * @since        1.0
  */
-public class DBInfoPanel extends JPanel {
+public class  DBInfoPanel extends JPanel {
+  JTabbedPane tabP;
 
-    JTabbedPane tabP;
+  /**
+   * Construct a display panel for database metadata information.
+   */
+  public DBInfoPanel() {
+    tabP = new JTabbedPane();
+    setLayout(new BorderLayout()); 
+    add(tabP);
+  }
 
-    /**
-     * Construct a display panel for database metadata information.
-     */
-    public DBInfoPanel() {
-        tabP = new JTabbedPane();
-        setLayout(new BorderLayout());
-        add(tabP);
-    }
+  /**
+   * Construct a display panel for database metadata information.
+   * @param dbmd the metadata source for the display.
+   */
+  public DBInfoPanel(DatabaseMetaData dbmd) {
+    this();
+    setMetaData(dbmd);
+  }
 
-    /**
-     * Construct a display panel for database metadata information.
-     *
-     * @param dbmd the metadata source for the display.
-     */
-    public DBInfoPanel(DatabaseMetaData dbmd) {
-        this();
-        setMetaData(dbmd);
-    }
+  /**
+   * Display database information from this database metadata source.
+   * @param dbmd the metadata source for the display.
+   */
+  public void setMetaData(DatabaseMetaData dbmd) {
+    tabP.removeAll();
+    if (dbmd == null) 
+      return;
+    JTable jt;
 
-    /**
-     * Display database information from this database metadata source.
-     *
-     * @param dbmd the metadata source for the display.
-     */
-    public void setMetaData(DatabaseMetaData dbmd) {
-        tabP.removeAll();
-        if (dbmd == null) {
-            return;
-        }
-        JTable jt;
-
-        jt = new JTable(AboutDB.getVersions(dbmd));
-        jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tabP.addTab("Versions", null,
+    jt = new JTable(AboutDB.getVersions(dbmd));
+    jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    tabP.addTab("Versions", null,
                 new JScrollPane(jt),
                 "Database and driver versions");
 
-        jt = new JTable(AboutDB.getCapabilities(dbmd));
-        jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tabP.addTab("Capabilities", null,
+    jt = new JTable(AboutDB.getCapabilities(dbmd));
+    jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    tabP.addTab("Capabilities", null,
                 new JScrollPane(jt),
                 "Database Capabilities Supported");
 
-        jt = new JTable(AboutDB.getLimits(dbmd));
-        jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tabP.addTab("Limits", null,
+    jt = new JTable(AboutDB.getLimits(dbmd));
+    jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    tabP.addTab("Limits", null,
                 new JScrollPane(jt),
                 "Database Limits");
 
-        jt = new JTable(AboutDB.getStringValues(dbmd));
-        jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tabP.addTab("Values", null,
+    jt = new JTable(AboutDB.getStringValues(dbmd));
+    jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    tabP.addTab("Values", null,
                 new JScrollPane(jt),
                 "Database Terms");
 
-        jt = new JTable(AboutDB.getSQLKeywords(dbmd));
-        jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tabP.addTab("SQL Keywords", null,
+    jt = new JTable(AboutDB.getSQLKeywords(dbmd));
+    jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    tabP.addTab("SQL Keywords", null,
                 new JScrollPane(jt),
                 "Database SQLKeywords");
 
-        jt = new JTable(AboutDB.getFunctions(dbmd));
-        jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tabP.addTab("Functions", null,
+    jt = new JTable(AboutDB.getFunctions(dbmd));
+    jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    tabP.addTab("Functions", null,
                 new JScrollPane(jt),
                 "Database Functions");
 
-        try {
-            TableModel tm = AboutDB.getTableModel(dbmd.getTypeInfo());
-            if (tm instanceof ResultTableModel) {
-                ((ResultTableModel) tm).allowEditing(false);
-            }
-            jt = new JTable(tm);
-            jt.getColumnModel().getColumn(1).setCellRenderer(new SQLTypeTableCellRenderer());
-            jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            tabP.addTab("SQL Types", null,
-                    new JScrollPane(jt),
-                    "Database Supported SQL Type Information");
-        } catch (Exception ex) {
-        }
+    try {
+    TableModel tm = AboutDB.getTableModel(dbmd.getTypeInfo());
+    if (tm instanceof ResultTableModel) {
+      ((ResultTableModel)tm).allowEditing(false);
     }
+    jt = new JTable(tm);
+    jt.getColumnModel().getColumn(1).setCellRenderer(new SQLTypeTableCellRenderer());
+    jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    tabP.addTab("SQL Types", null,
+                new JScrollPane(jt),
+                "Database Supported SQL Type Information");
+    } catch (Exception ex) {
+    }
+  }
 }

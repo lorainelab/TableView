@@ -21,36 +21,30 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
 /**
  * Provides a partitioning on an ordered list such as a ListModel or TableModel.
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2004/08/02 20:23:43 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2004/08/02 20:23:43 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
  */
 public interface Partition {
-
-    /**
-     * Get the name assigned to this partitioning.
-     *
-     * @return the name assigned to this partitioning.
-     */
-    public String getPartitionName();
-
-    /**
-     * Get a PartitionIndexMap that maps partitions to list indices.
-     *
-     * @return the map of partitions to list indices.
-     */
-    public PartitionIndexMap getPartitionIndexMap();
-
-    /**
-     * Get the PartitionLabeler that return a label for each Partition index.
-     *
-     * @return the PartitionLabeler.
-     */
-    public PartitionLabeler getPartitionLabeler();
+  /**
+   * Get the name assigned to this partitioning.
+   * @return the name assigned to this partitioning.
+   */
+  public String getPartitionName();
+  /**
+   * Get a PartitionIndexMap that maps partitions to list indices.
+   * @return the map of partitions to list indices.
+   */
+  public PartitionIndexMap getPartitionIndexMap();
+  /**
+   * Get the PartitionLabeler that return a label for each Partition index.
+   * @return the PartitionLabeler.
+   */
+  public PartitionLabeler getPartitionLabeler();
 }

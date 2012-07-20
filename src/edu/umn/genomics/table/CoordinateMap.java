@@ -21,49 +21,44 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
 /**
  * CoordinateMap provides a mapping of coordinates to an index.
  *
- * @author J Johnson
- * @version $Revision: 1.2 $ $Date: 2002/07/30 19:45:02 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.2 $ $Date: 2002/07/30 19:45:02 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
  */
 public interface CoordinateMap {
-
-    /**
-     * @return the all coordinate values.
-     */
-    public double[] getCoordinates();
-
-    /**
-     * @param row the row index in the table
-     * @param coordinate if non-null returned with coordinate values filled in.
-     * @return the coordinate values at the given row index.
-     */
-    public double[] getCoordinateAt(int row, double coordinate[]);
-
-    /**
-     * @param coordinateIndex
-     * @return the row index for the given coordinate index.
-     */
-    public int getRowAt(int coordinateIndex);
-
-    /**
-     * @param row
-     * @return the coordinate index for the given row index.
-     */
-    public int getCoordinateIndex(int row);
-
-    /**
-     * @return the number of coordinate points represented.
-     */
-    public int getCoordinateCount();
-
-    /**
-     * @return the number of dimensions in a coordinate point.
-     */
-    public int getDim();
+  /**
+   * @return the all coordinate values.
+   */
+  public double[] getCoordinates();
+  /**
+   * @param row the row index in the table
+   * @param coordinate if non-null returned with coordinate values filled in.  
+   * @return the coordinate values at the given row index.
+   */
+  public double[] getCoordinateAt(int row, double coordinate[]);
+  /**
+   * @param coordinateIndex 
+   * @return the row index for the given coordinate index.
+   */
+  public int getRowAt(int coordinateIndex);
+  /**
+   * @param row 
+   * @return the coordinate index for the given row index.
+   */
+  public int getCoordinateIndex(int row);
+  /**
+   * @return the number of coordinate points represented.
+   */
+  public int getCoordinateCount();
+  /**
+   * @return the number of dimensions in a coordinate point.
+   */
+  public int getDim();
 }

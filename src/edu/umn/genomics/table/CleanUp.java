@@ -21,22 +21,23 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
 /**
- * CleanUp provides a method for clearing or removing resources suchas as
- * Listeners for the instance.
- *
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/04/15 15:47:54 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * CleanUp provides a method for clearing or removing resources 
+ * suchas as Listeners for the instance.
+ * 
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/04/15 15:47:54 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
  */
 public interface CleanUp {
 
-    /**
-     * Allow this instance to remove resources and any listeners it has added.
-     */
-    public void cleanUp();
+ /**
+  * Allow this instance to remove resources and any listeners it has added. 
+  */
+  public void cleanUp();
 }

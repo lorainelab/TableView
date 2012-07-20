@@ -21,79 +21,78 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.file;
 
 import java.io.*;
-import java.net.URL;
+import java.net.*;
+
 
 /**
- * OpenInputSource provides methods to open a named source that is either a URL
- * or a File.
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/05/15 16:16:24 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * OpenInputSource provides methods to open a named source 
+ * that is either a URL or a File.
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/05/15 16:16:24 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
  */
 public class OpenInputSource {
-
-    /**
-     * Open the given URL or file pathname for reading.
-     *
-     * @param source the URL or pathname to open.
-     * @return an input stream opened on the source.
-     */
-    public static InputStream getInputStream(String source) throws IOException {
-        // URL?
+  /**
+   * Open the given URL or file pathname for reading.
+   * @param source the URL or pathname to open.
+   * @return an input stream opened on the source.
+   */
+  public static InputStream getInputStream(String source) throws IOException {
+    // URL?
+    try {
+      URL url = new URL(source);
+      try {
+        InputStream is = url.openStream();
+        return is;
+      } catch (Exception se) {
+      }
+    }  catch (Exception ue) {
+    }
+    // local file?
+    try {
+      InputStream is = new FileInputStream(source);
+      return is;
+    } catch (IOException e) {
+      if (source.charAt(0) == '~') {
+        // Try a Unix shell tilde expansion
         try {
-            URL url = new URL(source);
-            try {
-                InputStream is = url.openStream();
-                return is;
-            } catch (Exception se) {
-            }
-        } catch (Exception ue) {
-        }
-        // local file?
-        try {
-            InputStream is = new FileInputStream(source);
-            return is;
-        } catch (IOException e) {
-            if (source.charAt(0) == '~') {
-                // Try a Unix shell tilde expansion
-                try {
-                    String shell = "/usr/bin/csh";
-                    if ((new File(shell)).exists()) {
-                        String args[] = new String[3];
-                        args[0] = shell;
-                        args[1] = "-c";
-                        args[2] = "echo " + source;
-                        Process p = Runtime.getRuntime().exec(args);
-                        BufferedReader br = new BufferedReader(
+          String shell = "/usr/bin/csh";
+          if ((new File(shell)).exists()) {
+            String args[] = new String[3];
+            args[0] = shell;
+            args[1] = "-c";
+            args[2] = "echo " + source;
+            Process p = Runtime.getRuntime().exec(args);
+            BufferedReader br = new BufferedReader(
                                 new InputStreamReader(p.getInputStream()));
-                        String path = "";
-                        String so;
-                        while ((so = br.readLine()) != null) {
-                            path += so;
-                        }
-                        InputStream is = new FileInputStream(path);
-                        return is;
-                    }
-                } catch (Exception rte) {
-                    System.err.println(rte);
-                }
+            String path = "";
+            String so;
+            while ((so = br.readLine()) != null) {
+              path += so;
             }
-            throw e;
+            InputStream is = new FileInputStream(path);
+            return is;
+          }
+        } catch (Exception rte) {
+          System.err.println(rte);
         }
+      }
+      throw e;
     }
+  }
 
-    /**
-     * Open the given URL or file pathname for reading.
-     *
-     * @param source the URL or pathname to open.
-     * @return a Reader opened on the source.
-     */
-    public static BufferedReader getBufferedReader(String source) throws IOException {
-        return new BufferedReader(new InputStreamReader(getInputStream(source)));
-    }
+  /**
+   * Open the given URL or file pathname for reading.
+   * @param source the URL or pathname to open.
+   * @return a Reader opened on the source.
+   */
+  public static BufferedReader getBufferedReader(String source) throws IOException {
+    return new BufferedReader(new InputStreamReader(getInputStream(source)));
+  }
 }

@@ -21,93 +21,77 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.graph;
 
 import java.awt.Point;
 
 /**
  * A Graph displays items mapped to its axes.
- *
- * @author J Johnson
- * @version $Revision: 1.3 $ $Date: 2003/07/28 15:07:09 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see GraphItem
- * @see Axis
+ * @author       J Johnson
+ * @version $Revision: 1.3 $ $Date: 2003/07/28 15:07:09 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
+ * @see  GraphItem
+ * @see  Axis
  */
 public interface Graph {
 
-    /**
-     * Set the axis for the X dimension.
-     *
-     * @param xAxis
-     */
-    public void setXAxis(Axis xAxis);
+  /**
+   * Set the axis for the X dimension.
+   * @param xAxis 
+   */
+  public void setXAxis(Axis xAxis);
+  /**
+   * Return the axis for the X dimension.
+   * @return the X Axis 
+   */
+  public Axis getXAxis();
+  /**
+   * Set the axis for the Y dimension.
+   * @param yAxis 
+   */
+  public void setYAxis(Axis yAxis);
+  /**
+   * Return the axis for the Y dimension.
+   * @return the Y Axis 
+   */
+  public Axis getYAxis();
 
-    /**
-     * Return the axis for the X dimension.
-     *
-     * @return the X Axis
-     */
-    public Axis getXAxis();
+  /**
+   * Add the graph item to the graph.
+   * @param graphItem Item to be added to the graph.
+   */
+  public void addGraphItem(GraphItem graphItem);
+  /**
+   * Remove the graph item from the graph.
+   * @param graphItem Item to be removed from the graph.
+   */
+  public void removeGraphItem(GraphItem graphItem);
+  /**
+   * Return the graph items for this graph.
+   * @return the graph items for this graph.
+   */
+  public GraphItem[] getGraphItems();
 
-    /**
-     * Set the axis for the Y dimension.
-     *
-     * @param yAxis
-     */
-    public void setYAxis(Axis yAxis);
+  /**
+   * Return the axis values for the given pixel location on this graph.
+   * @param p The point location on the graph.
+   * @return the x and y values for the given pixel location.
+   */
+  public double[] getValueAt(Point p);
+  /**
+   * Return the axis values for the given pixel location on this graph.
+   * @param x The x pixel location on the graph.
+   * @param y The y pixel location on the graph.
+   * @return the x and y values for the given pixel location.
+   */
+  public double[] getValueAt(int x, int y);
 
-    /**
-     * Return the axis for the Y dimension.
-     *
-     * @return the Y Axis
-     */
-    public Axis getYAxis();
-
-    /**
-     * Add the graph item to the graph.
-     *
-     * @param graphItem Item to be added to the graph.
-     */
-    public void addGraphItem(GraphItem graphItem);
-
-    /**
-     * Remove the graph item from the graph.
-     *
-     * @param graphItem Item to be removed from the graph.
-     */
-    public void removeGraphItem(GraphItem graphItem);
-
-    /**
-     * Return the graph items for this graph.
-     *
-     * @return the graph items for this graph.
-     */
-    public GraphItem[] getGraphItems();
-
-    /**
-     * Return the axis values for the given pixel location on this graph.
-     *
-     * @param p The point location on the graph.
-     * @return the x and y values for the given pixel location.
-     */
-    public double[] getValueAt(Point p);
-
-    /**
-     * Return the axis values for the given pixel location on this graph.
-     *
-     * @param x The x pixel location on the graph.
-     * @param y The y pixel location on the graph.
-     * @return the x and y values for the given pixel location.
-     */
-    public double[] getValueAt(int x, int y);
-
-    /**
-     * Whether to draw grid lines on the graph corresponding to tickmarks on the
-     * axes.
-     *
-     * @param show if true draw grid lines.
-     */
-    public void showGrid(boolean show);
+  /** 
+   * Whether to draw grid lines on the graph corresponding to tickmarks
+   * on the axes.
+   * @param show if true draw grid lines.
+   */
+  public void showGrid(boolean show);
 }

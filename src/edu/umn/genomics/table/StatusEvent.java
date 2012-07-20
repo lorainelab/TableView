@@ -21,50 +21,46 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
+import java.io.Serializable;
 import java.util.EventObject;
 
 /**
  * An event indicating a change in status, which maybe due to an Exception.
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2002/09/18 17:57:54 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see edu.umn.genomics.table.StatusListener
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2002/09/18 17:57:54 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
+ * @see  edu.umn.genomics.table.StatusListener
  */
 public class StatusEvent extends EventObject {
-
-    String msg = null;
-    Exception ex = null;
-    /*
-     * to the given value. @param source The source of this event. @param
-     * message a status message (may be null). @param exception an exception
-     * that prompted this event (may be null).
-     */
-
-    public StatusEvent(Object source, String message, Exception exception) {
-        super(source);
-        this.msg = message;
-        this.ex = exception;
-    }
-
-    /**
-     * Return the status message.
-     *
-     * @return the status message.
-     */
-    public String getStatus() {
-        return msg != null ? msg : ex != null ? ex.toString() : "";
-    }
-
-    /**
-     * Return the exception associated with this status.
-     *
-     * @return the exception associated with this status.
-     */
-    public Exception getException() {
-        return ex;
-    }
+  String msg = null;
+  Exception ex = null;
+  /*
+   * to the given value.
+   * @param source The source of this event.
+   * @param message a status message (may be null).
+   * @param exception an exception that prompted this event (may be null).
+   */
+  public StatusEvent(Object source, String message, Exception exception) {
+    super(source);
+    this.msg = message;
+    this.ex = exception;
+  }
+  /**
+   * Return the status message.
+   * @return the status message.
+   */
+  public String getStatus() {
+    return msg != null ? msg : ex != null ? ex.toString() : "";
+  }
+  /**
+   * Return the exception associated with this status.
+   * @return the exception associated with this status.
+   */
+  public Exception getException() {
+    return ex;
+  }
 }

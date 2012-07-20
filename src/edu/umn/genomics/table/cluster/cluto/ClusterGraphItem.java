@@ -21,160 +21,155 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table.cluster.cluto;
 
-import edu.umn.genomics.graph.AbstractGraphItem;
-import edu.umn.genomics.graph.Axis;
-import edu.umn.genomics.graph.IndexedColor;
 import java.awt.*;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
-import java.awt.geom.PathIterator;
-import jcluto.ClutoMatrix;
+import java.util.*;
+import java.awt.geom.*;
+import edu.umn.genomics.table.*;
+import edu.umn.genomics.graph.*;
+import jcluto.*;
 
 /**
- * @author J Johnson
- * @version $Revision: 1.2 $ $Date: 2004/01/28 20:33:00 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see javax.swing.table.TableModel
- * @see javax.swing.ListSelectionModel
+ * @author       J Johnson
+ * @version $Revision: 1.2 $ $Date: 2004/01/28 20:33:00 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
+ * @see  javax.swing.table.TableModel
+ * @see  javax.swing.ListSelectionModel
  */
 public class ClusterGraphItem extends AbstractGraphItem {
 
-    ClutoMatrix matrix;
-    int[] rows = null;
-    Color color = Color.black;
-    IndexedColor indexedColor = null;
-    String label = null;
+  ClutoMatrix matrix; 
+  int[] rows = null;
+  Color color = Color.black;
+  IndexedColor indexedColor = null;
+  String label = null;
 
-    public ClusterGraphItem(ClutoMatrix matrix, int[] rows) {
-        this.rows = rows;
-        this.matrix = matrix;
-    }
+  public ClusterGraphItem(ClutoMatrix matrix, int[] rows) {
+    this.rows = rows; 
+    this.matrix = matrix;
+  } 
 
-    /**
-     * Draw the graph item on the graph display.
-     *
-     * @param c the component upon which to draw.
-     * @param g the graphics context.
-     * @param r the area of the graph within the component.
-     * @param xAxis The X axis of the graph.
-     * @param yAxis The Y axis of the graph.
-     */
-    public void draw(Component c, Graphics g, Rectangle r, Axis xAxis, Axis yAxis) {
-        ClusterGraphIterator pathIter = new ClusterGraphIterator(matrix, rows, xAxis, yAxis);
-        GeneralPath genPath = new GeneralPath();
-        genPath.append(pathIter, false);
-        Color prevColor = g.getColor();
-        g.setColor(color);
-        ((Graphics2D) g).draw(genPath);
-        g.setColor(prevColor);
-    }
+  /** 
+   * Draw the graph item on the graph display.
+   * @param c the component upon which to draw.
+   * @param g the graphics context.
+   * @param r the area of the graph within the component.
+   * @param xAxis The X axis of the graph.
+   * @param yAxis The Y axis of the graph.
+   */
+  public void draw(Component c, Graphics g, Rectangle r, Axis xAxis, Axis yAxis) {
+    ClusterGraphIterator pathIter = new ClusterGraphIterator(matrix, rows, xAxis, yAxis); 
+    GeneralPath genPath = new GeneralPath();
+    genPath.append(pathIter,false);
+    Color prevColor = g.getColor();
+    g.setColor(color);
+    ((Graphics2D)g).draw(genPath); 
+    g.setColor(prevColor);
+  }
 
-    /**
-     * Returns whether this graph item intersects the given rectangle.
-     *
-     * @param r the area to test for intersection.
-     * @param xAxis The X axis of the graph.
-     * @param yAxis The Y axis of the graph.
-     * @return true if the item intersects the given rectangle, else false.
-     */
-    public boolean intersects(Rectangle r, Axis xAxis, Axis yAxis) {
-        Line2D line = new Line2D.Float();
-        ClusterGraphIterator pathIter = new ClusterGraphIterator(matrix, rows, xAxis, yAxis);
-        float[] coord = new float[2];
-        float x1 = 0f;
-        float y1 = 0f;
-        for (; !pathIter.isDone(); pathIter.next()) {
-            int move = pathIter.currentSegment(coord);
-            if (move == PathIterator.SEG_MOVETO) {
-                x1 = coord[0];
-                y1 = coord[1];
-            } else {
-                line.setLine(x1, y1, coord[0], coord[1]);
-                if (line.intersects(r)) {
-                    return true;
-                }
-                x1 = coord[0];
-                y1 = coord[1];
-            }
+  /** 
+   * Returns whether this graph item intersects the given rectangle.
+   * @param r the area to test for intersection.
+   * @param xAxis The X axis of the graph.
+   * @param yAxis The Y axis of the graph.
+   * @return true if the item intersects the given rectangle, else false.
+   */
+  public boolean intersects(Rectangle r, Axis xAxis, Axis yAxis) {
+    Line2D line = new Line2D.Float();
+    ClusterGraphIterator pathIter = new ClusterGraphIterator(matrix, rows, xAxis, yAxis);
+    float[] coord = new float[2];
+    float x1 = 0f;
+    float y1 = 0f;
+    for (; !pathIter.isDone(); pathIter.next()) {
+      int move = pathIter.currentSegment(coord);
+      if (move == PathIterator.SEG_MOVETO) {
+        x1 = coord[0];
+        y1 = coord[1];
+      } else {
+        line.setLine(x1, y1, coord[0], coord[1]);
+        if (line.intersects(r)) {
+          return true;
         }
-        return false;
+        x1 = coord[0];
+        y1 = coord[1];
+      }
     }
+    return false;
+  }
 
-    /**
-     * Returns whether this graph item intersects the given point.
-     *
-     * @param p the point to test for intersection.
-     * @param xAxis The X axis of the graph.
-     * @param yAxis The Y axis of the graph.
-     * @return true if the item intersects the given point, else false.
-     */
-    public boolean intersects(Point p, Axis xAxis, Axis yAxis) {
-        Rectangle r = new Rectangle(p.x, p.y, 1, 1);
-        Line2D line = new Line2D.Float();
-        ClusterGraphIterator pathIter = new ClusterGraphIterator(matrix, rows, xAxis, yAxis);
-        float[] coord = new float[2];
-        float x1 = 0f;
-        float y1 = 0f;
-        for (; !pathIter.isDone(); pathIter.next()) {
-            int move = pathIter.currentSegment(coord);
-            if (move == PathIterator.SEG_MOVETO) {
-                x1 = coord[0];
-                y1 = coord[1];
-            } else {
-                line.setLine(x1, y1, coord[0], coord[1]);
-                if (line.intersects(r)) {
-                    return true;
-                }
-                x1 = coord[0];
-                y1 = coord[1];
-            }
+  /** 
+   * Returns whether this graph item intersects the given point.
+   * @param p the point to test for intersection.
+   * @param xAxis The X axis of the graph.
+   * @param yAxis The Y axis of the graph.
+   * @return true if the item intersects the given point, else false.
+   */
+  public boolean intersects(Point p, Axis xAxis, Axis yAxis) {
+    Rectangle r = new Rectangle(p.x, p.y,1,1); 
+    Line2D line = new Line2D.Float();
+    ClusterGraphIterator pathIter = new ClusterGraphIterator(matrix, rows, xAxis, yAxis);
+    float[] coord = new float[2];
+    float x1 = 0f;
+    float y1 = 0f;
+    for (; !pathIter.isDone(); pathIter.next()) {
+      int move = pathIter.currentSegment(coord);
+      if (move == PathIterator.SEG_MOVETO) {
+        x1 = coord[0];
+        y1 = coord[1];
+      } else {
+        line.setLine(x1, y1, coord[0], coord[1]);
+        if (line.intersects(r)) {
+          return true;
         }
-        return false;
+        x1 = coord[0];
+        y1 = coord[1];
+      }
     }
+    return false;
+  }
 
-    /**
-     * Returns whether this graph item intersects the given point.
-     *
-     * @param p the point to test for intersection.
-     * @param xAxis The X axis of the graph.
-     * @param yAxis The Y axis of the graph.
-     * @return indices of datapoints that intersects the given point, else null.
-     */
-    public int[] getIndicesAt(Point p, Axis xAxis, Axis yAxis) {
-        Rectangle r = new Rectangle(p.x, p.y, 1, 1);
-        int[] rowhits = new int[rows.length];
-        int cnt = 0;
-        int ri = -1;
-        Line2D line = new Line2D.Float();
-        ClusterGraphIterator pathIter = new ClusterGraphIterator(matrix, rows, xAxis, yAxis);
-        float[] coord = new float[2];
-        float x1 = 0f;
-        float y1 = 0f;
-        for (; !pathIter.isDone(); pathIter.next()) {
-            int move = pathIter.currentSegment(coord);
-            if (move == PathIterator.SEG_MOVETO) {
-                ri++;
-                x1 = coord[0];
-                y1 = coord[1];
-            } else {
-                line.setLine(x1, y1, coord[0], coord[1]);
-                if (line.intersects(r)) {
-                    rowhits[cnt++] = ri;
-                }
-                x1 = coord[0];
-                y1 = coord[1];
-            }
+  /** 
+   * Returns whether this graph item intersects the given point.
+   * @param p the point to test for intersection.
+   * @param xAxis The X axis of the graph.
+   * @param yAxis The Y axis of the graph.
+   * @return indices of datapoints that intersects the given point, else null.
+   */
+  public int[] getIndicesAt(Point p, Axis xAxis, Axis yAxis) {
+    Rectangle r = new Rectangle(p.x, p.y,1,1); 
+    int[] rowhits = new int[rows.length];
+    int cnt = 0;
+    int ri = -1;
+    Line2D line = new Line2D.Float();
+    ClusterGraphIterator pathIter = new ClusterGraphIterator(matrix, rows, xAxis, yAxis);
+    float[] coord = new float[2];
+    float x1 = 0f;
+    float y1 = 0f;
+    for ( ; !pathIter.isDone(); pathIter.next()) {
+      int move = pathIter.currentSegment(coord);
+      if (move == PathIterator.SEG_MOVETO) {
+        ri++;
+        x1 = coord[0];
+        y1 = coord[1];
+      } else {
+        line.setLine(x1, y1, coord[0], coord[1]);
+        if (line.intersects(r)) {
+          rowhits[cnt++] = ri;
         }
-        if (cnt < rows.length) {
-            int[] tmp = rowhits;
-            rowhits = new int[cnt];
-            if (cnt > 0) {
-                System.arraycopy(tmp, 0, rowhits, 0, cnt);
-            }
-        }
-        return rowhits;
+        x1 = coord[0];
+        y1 = coord[1];
+      }
     }
+    if (cnt < rows.length) {
+      int[] tmp = rowhits;
+      rowhits = new int[cnt];
+      if (cnt > 0) {
+        System.arraycopy(tmp,0,rowhits,0,cnt);
+      }
+    }
+    return rowhits;
+  }
 }

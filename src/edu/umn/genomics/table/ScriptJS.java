@@ -21,106 +21,106 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.util.Iterator;
-import java.util.Map;
-import javax.swing.table.TableModel;
+import java.io.*;
+import java.util.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.Function;
 import org.mozilla.javascript.*;
+import org.mozilla.javascript.optimizer.*;
+import org.mozilla.javascript.tools.shell.*;
 import org.mozilla.javascript.tools.ToolErrorReporter;
-import org.mozilla.javascript.tools.shell.Global;
-import org.mozilla.javascript.tools.shell.Main;
 
 /**
  * ScriptJS provides JavaScript formulas from tables.
- *
- * @author J Johnson
- * @version $Revision: 1.2 $ $Date: 2004/08/02 20:23:46 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see javax.swing.table.TableModel
- * @see javax.swing.ListSelectionModel
- * @see Cells
+ * @author       J Johnson
+ * @version $Revision: 1.2 $ $Date: 2004/08/02 20:23:46 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
+ * @see  javax.swing.table.TableModel 
+ * @see  javax.swing.ListSelectionModel
+ * @see  Cells
  */
 public class ScriptJS implements ScriptInterpreter {
-
-    static Scriptable sharedScope = null;
-    Scriptable myScope = null;
-
-    private Scriptable getSharedScope() {
-        if (sharedScope == null) {
-            Context cx = Context.enter();
-            try {
-                cx.setCompileFunctionsWithDynamicScope(true);
-                sharedScope = cx.initStandardObjects(null);
-                ImporterTopLevel itl = new ImporterTopLevel(cx);
-                NativeJavaPackage[] njp = new NativeJavaPackage[pkgs.length];
-                for (int i = 0; i < ScriptInterpreter.packageList.size(); i++) {
-                    njp[i] = new NativeJavaPackage((String) ScriptInterpreter.packageList.get(i));
-                }
-                itl.importPackage(cx, sharedScope, njp, null);
-                try {
-                    ScriptableObject.defineClass(sharedScope, this.getClass());
-                } catch (Exception ex) {
-                    System.err.println(ex);
-                }
-            } finally {
-                Context.exit();
-            }
+  static Scriptable sharedScope = null;
+  Scriptable myScope = null;
+  private Scriptable getSharedScope() {
+    if (sharedScope == null) {
+      Context cx = Context.enter();
+      try {
+        cx.setCompileFunctionsWithDynamicScope(true);
+        sharedScope = cx.initStandardObjects(null);
+        ImporterTopLevel itl = new ImporterTopLevel(cx);
+        NativeJavaPackage[] njp = new NativeJavaPackage[pkgs.length];
+        for (int i = 0; i < ScriptInterpreter.packageList.size(); i++) {
+          njp[i] = new NativeJavaPackage((String)ScriptInterpreter.packageList.get(i));
         }
-        return sharedScope;
-    }
-    InputStream in;
-    PrintStream out;
-    PrintStream err;
-    Map vars;
-
-    public ScriptJS(InputStream in, PrintStream out, PrintStream err, Map vars) {
-        initialize(in, out, err, vars);
-    }
-
-    /**
-     * Set the streams for input to and output from the script interpretter, and
-     * initialize global variables.
-     *
-     * @param in The input stream for the script interpretter.
-     * @param out The output stream from the script interpretter.
-     * @param err The error stream for the script interpretter.
-     * @param vars A map of global variable names to the Objects they represent.
-     */
-    public void initialize(InputStream in, PrintStream out, PrintStream err, Map vars) {
-        this.in = in;
-        this.out = out;
-        this.err = err;
-        this.vars = vars;
-    }
-
-    public ScriptJS() {
-        this(System.in, System.out, System.err, null);
-    }
-
-    public void run() {
-        Context cx = Context.enter(new Context());
-        Global global = Main.getGlobal();
-        global.setIn(in); // InputStream
-        global.setOut(out); // PrintStream
-        global.setErr(err); // PrintStream
-        cx.setErrorReporter(new ToolErrorReporter(false, global.getErr()));
-        if (vars != null) {
-            for (Iterator iter = vars.keySet().iterator(); iter.hasNext();) {
-                String key = iter.next().toString();
-                Object obj = vars.get(key);
-                global.put(key, global, obj);
-            }
+        itl.importPackage(cx, sharedScope, njp,  null);
+        try {
+          ScriptableObject.defineClass(sharedScope,this.getClass());
+        } catch (Exception ex) {
+          System.err.println(ex);
         }
-        Main.processSource(cx, null);
+      } finally {
+        cx.exit();
+      }
     }
+    return sharedScope;
+  }
 
-    public static void main(String[] args) {
-        ScriptJS js = new ScriptJS();
-        new Thread(js).start();
-        //js.run();
+  InputStream in;
+  PrintStream out;
+  PrintStream err;
+  Map vars;
+
+  public ScriptJS(InputStream in, PrintStream out, PrintStream err, Map vars) {
+    initialize(in, out, err, vars);
+  }
+
+  /**
+   * Set the streams for input to and output from the script interpretter,
+   * and initialize global variables.
+   * @param in The input stream for the script interpretter.
+   * @param out The output stream from the script interpretter.
+   * @param err The error stream for the script interpretter.
+   * @param vars A map of global variable names to the Objects they represent.
+   */
+  public void initialize(InputStream in, PrintStream out, PrintStream err, Map vars) {
+    this.in = in;
+    this.out = out;
+    this.err = err;
+    this.vars = vars;
+  }
+
+  public ScriptJS() {
+    this(System.in, System.out, System.err, null); 
+  } 
+
+  public void run() {
+    Context cx = Context.enter(new Context());
+    Global global = Main.getGlobal();
+    global.setIn(in); // InputStream
+    global.setOut(out); // PrintStream
+    global.setErr(err); // PrintStream
+    cx.setErrorReporter(new ToolErrorReporter(false, global.getErr()));
+    if (vars != null) {
+      for ( Iterator iter = vars.keySet().iterator(); iter.hasNext() ;) {
+        String key = iter.next().toString();
+        Object obj = vars.get(key);
+        global.put(key, global, obj);
+      }
     }
+    Main.processSource(cx,null);
+  }
+
+  public static void main( String[] args) {
+    ScriptJS js = new ScriptJS();
+    new Thread(js).start();
+    //js.run();
+  }
+
 }

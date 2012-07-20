@@ -21,36 +21,31 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.graph;
 
 /**
  * LineFormula calculates points on a line using a slope intercept formula.
- *
- * @author J Johnson
- * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:53 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:53 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
  */
-public class LineFormula {
-
-    double m;
-    double i;
-
-    public LineFormula(double slope, double yintercept) {
-        m = slope;
-        i = yintercept;
-    }
-
-    public double getY(double x) {
-        return m * x + i;
-    }
-
-    public double getX(double y) {
-        return (y - i) / m;
-    }
-
-    @Override
-    public String toString() {
-        return m + "x + " + i;
-    }
+public class LineFormula  {
+  double m;
+  double i;
+  public LineFormula(double slope, double yintercept) {
+    m = slope;
+    i = yintercept;
+  }
+  public double getY(double x) {
+    return m * x + i;
+  }
+  public double getX(double y) {
+    return  (y - i) / m;
+  }
+  public String toString() {
+    return m + "x + " + i;
+  }
 }

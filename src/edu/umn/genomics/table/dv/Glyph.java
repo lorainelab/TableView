@@ -21,26 +21,35 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table.dv;  //DataViewer
 
+
+
 /**
- * @author J Johnson
- * @version $Revision: 1.3 $ $Date: 2002/07/30 19:45:18 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.3 $ $Date: 2002/07/30 19:45:18 $  $Name: TableView1_3_2 $
+ * @since        1.0
  */
 public interface Glyph {
+  public void setTranslation(double translation[]);
+  public void setScale(double scale);
+  public void scale(double scale);
 
-    public void setTranslation(double translation[]);
-
-    public void setScale(double scale);
-
-    public void scale(double scale);
-
-    /*
-     * public void setScale(double scale[]); public void setRotation(double
-     * rotation[]) { } public void setColor(Color color) { } public void
-     * setTransparency(double transparency) { } public void setShape(Object
-     * shape) { } public void setLabel(Object label) { }
-     */
+/*
+  public void setScale(double scale[]);
+  public void setRotation(double rotation[]) {
+  }
+  public void setColor(Color color) {
+  }
+  public void setTransparency(double transparency) {
+  }
+  public void setShape(Object shape) {
+  }
+  public void setLabel(Object label) {
+  }
+*/
 }
+
+

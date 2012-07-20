@@ -21,119 +21,105 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table.dv;  //DataViewer
 
 import java.io.Serializable;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.TableModel;
+import javax.swing.event.*;
+import javax.swing.table.*;
 
 /**
- * @author J Johnson
- * @version $Revision: 1.9 $ $Date: 2002/07/30 19:45:16 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.9 $ $Date: 2002/07/30 19:45:16 $  $Name: TableView1_3_2 $
+ * @since        1.0
  */
 public class DataMap3D extends DataMap implements Serializable {
-
-    float dpts[] = null;
-    int dptIncr = 3;
-
-    DataMap3D(String name, TableModel tableModel) {
-        super(name, tableModel);
+  float dpts[] = null;
+  int dptIncr = 3;
+  DataMap3D(String name, TableModel tableModel) {
+    super(name, tableModel);
+  }
+  public float[] getPoints() {
+    if (dpts == null) {
+      int nrow = tableModel.getRowCount();
+      dpts = new float[nrow * dptIncr];
+      getPointTranslation(0, nrow, dpts, 0, dptIncr); 
     }
+    return dpts;
+  }
+  /**
+   * Called when the column to axis mapping has been changed.
+   */
+  protected void reMapAxes() {
+    dpts = null;
+  }
 
-    public float[] getPoints() {
-        if (dpts == null) {
-            int nrow = tableModel.getRowCount();
-            dpts = new float[nrow * dptIncr];
-            getPointTranslation(0, nrow, dpts, 0, dptIncr);
+  public void tableChanged(TableModelEvent e) {
+    if (e == null) {
+      return;
+    } 
+    if (e.getFirstRow() == TableModelEvent.HEADER_ROW) {
+      dpts = null;
+      if ( ((TableModel)e.getSource()).getRowCount() > 0) {
+        autoMap();
+      }
+    } else {
+      if (dpts != null) {
+        int first = e.getFirstRow();
+        int last = e.getLastRow();
+        int nrow = last - first + 1;
+        float tmp[];
+        switch (e.getType()) {
+        case TableModelEvent.UPDATE:
+          getPointTranslation(first, nrow, dpts, first*dptIncr, dptIncr); 
+          break;
+        case TableModelEvent.INSERT:
+          tmp = dpts;
+          dpts = new float[tmp.length + nrow * dptIncr];
+          if (first > 0) {
+            System.arraycopy(tmp, 0, dpts, 0, first*dptIncr) ;
+          } 
+          if (last < tmp.length/dptIncr-1) {
+            int ti = (last+1)*dptIncr;
+            int n = tmp.length - first*dptIncr;
+            System.arraycopy(tmp, first*dptIncr, dpts, ti, n);
+          } 
+          getPointTranslation(first, nrow, dpts, first*dptIncr, dptIncr); 
+          break;
+        case TableModelEvent.DELETE:
+          tmp = dpts;
+          dpts = new float[tmp.length - nrow * dptIncr];
+          if (first > 0) {
+            System.arraycopy(tmp, 0, dpts, 0, first*dptIncr) ;
+          } 
+          if (last < tmp.length/dptIncr-1) {
+            int ti = (last+1)*dptIncr;
+            int n = tmp.length - (last+1)*dptIncr;
+            System.arraycopy(tmp, ti, dpts, first*dptIncr, n) ;
+          } 
+          break;
         }
-        return dpts;
+      }
     }
-
-    /**
-     * Called when the column to axis mapping has been changed.
-     */
-    @Override
-    protected void reMapAxes() {
-        dpts = null;
-    }
-
-    @Override
-    public void tableChanged(TableModelEvent e) {
-        if (e == null) {
-            return;
-        }
-        if (e.getFirstRow() == TableModelEvent.HEADER_ROW) {
-            dpts = null;
-            if (((TableModel) e.getSource()).getRowCount() > 0) {
-                autoMap();
-            }
-        } else {
-            if (dpts != null) {
-                int first = e.getFirstRow();
-                int last = e.getLastRow();
-                int nrow = last - first + 1;
-                float tmp[];
-                switch (e.getType()) {
-                    case TableModelEvent.UPDATE:
-                        getPointTranslation(first, nrow, dpts, first * dptIncr, dptIncr);
-                        break;
-                    case TableModelEvent.INSERT:
-                        tmp = dpts;
-                        dpts = new float[tmp.length + nrow * dptIncr];
-                        if (first > 0) {
-                            System.arraycopy(tmp, 0, dpts, 0, first * dptIncr);
-                        }
-                        if (last < tmp.length / dptIncr - 1) {
-                            int ti = (last + 1) * dptIncr;
-                            int n = tmp.length - first * dptIncr;
-                            System.arraycopy(tmp, first * dptIncr, dpts, ti, n);
-                        }
-                        getPointTranslation(first, nrow, dpts, first * dptIncr, dptIncr);
-                        break;
-                    case TableModelEvent.DELETE:
-                        tmp = dpts;
-                        dpts = new float[tmp.length - nrow * dptIncr];
-                        if (first > 0) {
-                            System.arraycopy(tmp, 0, dpts, 0, first * dptIncr);
-                        }
-                        if (last < tmp.length / dptIncr - 1) {
-                            int ti = (last + 1) * dptIncr;
-                            int n = tmp.length - (last + 1) * dptIncr;
-                            System.arraycopy(tmp, ti, dpts, first * dptIncr, n);
-                        }
-                        break;
-                }
-            }
-        }
-        super.tableChanged(e);  // notify Observers
-    }
-
-    public void setPositionSource(String column[]) {
-    }
-
-    public void setPositionSource(int column[]) {
-    }
-
-    public void setColorSource(int column) {
-    }
-
-    public void setTransparencySource(int column) {
-    }
-
-    public void setScaleSource(int column) {
-    }
-
-    public void setScaleSource(int column[]) {
-    }
-
-    public void setColorMap() {
-    }
-
-    public void points() {
-    }
-
-    public void glyph() {
-    }
+    super.tableChanged(e);  // notify Observers
+  }
+  public void setPositionSource(String column[]) {
+  }
+  public void setPositionSource(int column[]) {
+  }
+  public void setColorSource(int column) {
+  }
+  public void setTransparencySource(int column) {
+  }
+  public void setScaleSource(int column) {
+  }
+  public void setScaleSource(int column[]) {
+  }
+  public void setColorMap() {
+  }
+  public void points() {
+  }
+  public void glyph() {
+  }
 }

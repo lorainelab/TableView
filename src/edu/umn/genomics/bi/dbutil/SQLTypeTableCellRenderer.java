@@ -21,40 +21,40 @@
  * GNU General Public License for more details.
  * 
  */
+
 package edu.umn.genomics.bi.dbutil;
 
-import javax.swing.table.DefaultTableCellRenderer;
+import java.sql.Types;
+import java.util.*;
+import java.lang.reflect.*;
+import java.awt.*;
+import javax.swing.table.*;
 
 /**
  * Displays the java.sql.Types name for a java.sql.Types value.
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/07/28 16:36:21 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/07/28 16:36:21 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
  */
 public class SQLTypeTableCellRenderer extends DefaultTableCellRenderer {
-
-    static SQLTypeNames sqlTypeName = SQLTypeNames.getSharedInstance();
-
-    /**
-     * Overrides the setValue method method to display the java.sql.Types field
-     * name for the value argument.
-     */
-    @Override
-    public void setValue(Object value) {
-        try {
-            String s = null;
-            if (value != null && value instanceof Number) {
-                s = sqlTypeName.get(((Number) value).intValue());
-            }
-            if (s != null) {
-                super.setValue(s);
-            } else {
-                super.setValue(value);
-            }
-        } catch (Exception ex) {
-            System.err.println(this + " :  " + ex);
-        }
+  static SQLTypeNames sqlTypeName = SQLTypeNames.getSharedInstance();
+  /**
+   * Overrides the setValue method method to display the java.sql.Types field 
+   * name for the value argument.
+   */
+  public void setValue(Object value) {
+    try {
+      String s = null;
+      if (value != null && value instanceof Number) {
+        s = sqlTypeName.get(((Number)value).intValue());
+      }
+      if (s != null) {
+        super.setValue(s);
+      } else {
+        super.setValue(value);
+      }
+    } catch (Exception ex) {
+      System.err.println(this + " :  " + ex);
     }
+  }
 }

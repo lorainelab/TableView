@@ -21,46 +21,45 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.bi.dbutil;
 
-import java.awt.Component;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JList;
+import java.sql.Types;
+import java.util.*;
+import java.lang.reflect.*;
+import java.awt.*;
+import javax.swing.*;
 
 /**
  * Displays the java.sql.Types name for a java.sql.Types value.
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/07/28 16:36:20 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/07/28 16:36:20 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
  */
 public class SQLTypeListRenderer extends DefaultListCellRenderer {
-
-    static SQLTypeNames sqlTypeName = SQLTypeNames.getSharedInstance();
-
-    /**
-     */
-    @Override
-    public Component getListCellRendererComponent(
-            JList list,
-            Object value,
-            int index,
-            boolean isSelected,
-            boolean cellHasFocus) {
-        try {
-            String s = null;
-            if (value != null && value instanceof Number) {
-                s = sqlTypeName.get(((Number) value).intValue());
-            }
-            if (s != null) {
-                super.setText(s);
-            } else {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            }
-        } catch (Exception ex) {
-            System.err.println(this + " " + ex);
-        }
-        return this;
+  static SQLTypeNames sqlTypeName = SQLTypeNames.getSharedInstance();
+  /**
+   */
+  public Component getListCellRendererComponent(
+                           JList list,
+                           Object value,
+                           int index,
+                           boolean isSelected,
+                           boolean cellHasFocus) {
+    try {
+      String s = null;
+      if (value != null && value instanceof Number) {
+        s = sqlTypeName.get(((Number)value).intValue());
+      } 
+      if (s != null) {
+        super.setText(s);
+      } else {
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+      }
+    } catch (Exception ex) {
+      System.err.println(this + " " + ex);
     }
+    return this;
+  }
 }

@@ -21,69 +21,70 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
-import edu.umn.genomics.table.dv.DataView3D;
-import java.awt.BorderLayout;
 import java.io.Serializable;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.TableModel;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.table.*;
+import javax.swing.event.*;
+import edu.umn.genomics.table.dv.*;
 
 /**
  * Plot3DView provides common TableModel View elements.
- *
- * @author J Johnson
- * @version $Revision: 1.2 $ $Date: 2002/07/30 19:45:07 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see ColumnMap
- * @see TableContext
- * @see javax.swing.table.TableModel
- * @see javax.swing.ListSelectionModel
+ * @author       J Johnson
+ * @version $Revision: 1.2 $ $Date: 2002/07/30 19:45:07 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
+ * @see  ColumnMap
+ * @see  TableContext
+ * @see  javax.swing.table.TableModel
+ * @see  javax.swing.ListSelectionModel
  */
 public class Plot3DView extends DvWrapper implements Serializable {
 
-    /**
-     * Constructs a view display. Nothing will be displayed until a data model
-     * is set.
-     *
-     * @see #setTableModel(TableModel tableModel)
-     */
-    public Plot3DView() {
-        super();
-        init();
-    }
+  /**
+   * Constructs a view display.  Nothing will be displayed 
+   * until a data model is set.
+   * @see #setTableModel(TableModel tableModel)
+   */
+  public Plot3DView() {
+    super();
+    init();
+  }
 
-    /**
-     * Constructs a view display which is initialized with tableModel as the
-     * data model, and a default selection model.
-     *
-     * @param tableModel the data model for the parallel coordinate display
-     */
-    public Plot3DView(TableModel tableModel) {
-        super(tableModel);
-        init();
-    }
+  /**
+   * Constructs a view  display which is initialized with 
+   * tableModel as the data model, and a default selection model.
+   * @param tableModel the data model for the parallel coordinate display
+   */
+  public Plot3DView(TableModel tableModel) {
+    super(tableModel);
+    init();
+  }
 
-    /**
-     * Constructs a view display which is initialized with tableModel as the
-     * data model, and the given selection model.
-     *
-     * @param tableModel the data model for the parallel coordinate display
-     * @param lsm the ListSelectionModel for the parallel coordinate display
-     */
-    public Plot3DView(TableModel tableModel, ListSelectionModel lsm) {
-        super(tableModel, lsm);
-        init();
-    }
+  /**
+   * Constructs a view  display which is initialized with 
+   * tableModel as the data model, and the given selection model.
+   * @param tableModel the data model for the parallel coordinate display
+   * @param lsm  the ListSelectionModel for the parallel coordinate display
+   */
+  public Plot3DView(TableModel tableModel, ListSelectionModel lsm) {
+    super(tableModel, lsm);
+    init();
+  }
 
-    private void init() {
-        dv = new DataView3D();
-        if (ctx != null) {
-            dv.setSetOperatorModel(ctx.getSetOperator(tm));
-        }
-        setLayout(new BorderLayout());
-        add(dv);
-        setDataMap();
+  private void init() {
+    dv = new DataView3D();
+    if (ctx != null) {
+      dv.setSetOperatorModel(ctx.getSetOperator(tm));
     }
+    setLayout(new BorderLayout());
+    add(dv);
+    setDataMap();
+  }
+
 }

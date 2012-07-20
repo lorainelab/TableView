@@ -21,122 +21,102 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
 /**
  * Provides a mapping between two sets of indices.
  *
- * @author J Johnson
- * @version $Revision: 1.3 $ $Date: 2002/07/30 19:45:09 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.3 $ $Date: 2002/07/30 19:45:09 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
  */
 public class SimpleIndexMap implements IndexMap {
-
-    int srcPerDst = 1;
-    int dstPerSrc = 1;
-    int dstOffset = 0;
-    int srcSize = 0;
-    int dstSize = 0;
-
-    public SimpleIndexMap() {
-    }
-
-    public SimpleIndexMap(int srcPerDst, int dstPerSrc, int dstOffset,
-            int srcSize, int dstSize) {
-        this.srcPerDst = srcPerDst;
-        this.dstPerSrc = dstPerSrc;
-        this.dstOffset = dstOffset;
-        this.srcSize = srcSize;
-        this.dstSize = dstSize;
-    }
-
-    /**
-     * Return true if this is a one to one mapping.
-     *
-     * @return true if this is a one to one mapping, else efalse.
-     */
-    public boolean isOneToOne() {
-        return true;
-    }
-
-    /**
-     * Set the size of the source index.
-     *
-     * @param srcSize the size of the source index.
-     */
-    public void setSrcSize(int srcSize) {
-        this.srcSize = srcSize;
-    }
-
-    /**
-     * Get the size of the source index.
-     *
-     * @return the size of the source index.
-     */
-    public int getSrcSize() {
-        return srcSize;
-    }
-
-    /**
-     * Set the size of the destination index.
-     *
-     * @param dstSize the size of the destination index.
-     */
-    public void setDstSize(int dstSize) {
-        this.dstSize = dstSize;
-    }
-
-    /**
-     * Get the size of the destination index.
-     *
-     * @return the size of the destination index.
-     */
-    public int getDstSize() {
-        return dstSize;
-    }
-
-    /**
-     * Return the source indices for the given destination index.
-     *
-     * @param dstIndex the index into the destination list.
-     * @return the source indices mapped from the destination index.
-     */
-    public int getSrc(int dstIndex) {
-        return dstIndex * srcPerDst / dstPerSrc - dstOffset;
-    }
-
-    /**
-     * Return the destination indices for the given source index.
-     *
-     * @param srcIndex the index into the source list.
-     * @return the destination indices mapped from the source index.
-     */
-    public int getDst(int srcIndex) {
-        return srcIndex * dstPerSrc / srcPerDst + dstOffset;
-    }
-
-    /**
-     * Return the source indices for the given destination index.
-     *
-     * @param dstIndex the index into the destination list.
-     * @return the source indices mapped from the destination index.
-     */
-    public int[] getSrcs(int dstIndex) {
-        int retVal[] = new int[1];
-        retVal[0] = getSrc(dstIndex);
-        return retVal;
-    }
-
-    /**
-     * Return the destination indices for the given source index.
-     *
-     * @param srcIndex the index into the source list.
-     * @return the destination indices mapped from the source index.
-     */
-    public int[] getDsts(int srcIndex) {
-        int retVal[] = new int[1];
-        retVal[0] = getDst(srcIndex);
-        return retVal;
-    }
+  int srcPerDst = 1;
+  int dstPerSrc = 1;
+  int dstOffset = 0;
+  int srcSize = 0;
+  int dstSize = 0;
+  public SimpleIndexMap() {
+  }
+  public SimpleIndexMap(int srcPerDst, int dstPerSrc, int dstOffset, 
+                        int srcSize, int dstSize) {
+    this.srcPerDst = srcPerDst;
+    this.dstPerSrc = dstPerSrc;
+    this.dstOffset = dstOffset;
+    this.srcSize = srcSize;
+    this.dstSize = dstSize;
+  }
+  /**
+   * Return true if this is a one to one mapping.
+   * @return true if this is a one to one mapping, else efalse.
+   */
+  public boolean isOneToOne() {
+    return true;
+  }
+  /** 
+   * Set the size of the source index.
+   * @param srcSize the size of the source index.
+   */
+  public void setSrcSize(int srcSize) {
+    this.srcSize = srcSize;
+  }
+  /** 
+   * Get the size of the source index.
+   * @return the size of the source index.
+   */
+  public int getSrcSize() {
+    return srcSize;
+  }
+  /** 
+   * Set the size of the destination index.
+   * @param dstSize the size of the destination index.
+   */
+  public void setDstSize(int dstSize) {
+    this.dstSize = dstSize;
+  }
+  /** 
+   * Get the size of the destination index.
+   * @return the size of the destination index.
+   */
+  public int getDstSize() {
+    return dstSize;
+  }
+   /**
+   * Return the source indices for the given destination index.
+   * @param dstIndex the index into the destination list.
+   * @return the source indices mapped from the destination index.
+   */
+  public int getSrc(int dstIndex) {
+    return dstIndex * srcPerDst / dstPerSrc - dstOffset;
+  }
+  /**
+   * Return the destination indices for the given source index.
+   * @param srcIndex the index into the source list.
+   * @return the destination indices mapped from the source index.
+   */
+  public int getDst(int srcIndex) {
+    return srcIndex * dstPerSrc / srcPerDst + dstOffset;
+  }
+  /**
+   * Return the source indices for the given destination index.
+   * @param dstIndex the index into the destination list.
+   * @return the source indices mapped from the destination index.
+   */
+  public int[] getSrcs(int dstIndex) {
+    int retVal[] = new int[1];
+    retVal[0] =  getSrc(dstIndex);
+    return retVal;
+  }
+  /**
+   * Return the destination indices for the given source index.
+   * @param srcIndex the index into the source list.
+   * @return the destination indices mapped from the source index.
+   */
+  public int[] getDsts(int srcIndex) {
+    int retVal[] = new int[1];
+    retVal[0] =  getDst(srcIndex);
+    return retVal;
+  }
 }

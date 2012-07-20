@@ -21,30 +21,29 @@
  * GNU General Public License for more details.
  *
  */
+
 package edu.umn.genomics.table;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Use a Partition or a PartitionIndexMap to create Bins.
- *
- * @author J Johnson
- * @version %I%, %G%
- * @since 1.0
+ * @author       J Johnson
+ * @version      %I%, %G%
+ * @since        1.0
  */
 public interface PartitionBinModel extends BinModel {
-
-    /**
-     * Partition the values into bins.
-     *
-     * @param partitionMap partitions the values into bins, with the bin count =
-     * partitionMap.getDstCount()
-     */
-    public void setBins(PartitionIndexMap partitionMap);
-
-    /**
-     * Partition the values into bins.
-     *
-     * @param partition partitions the values into bins, with the bin count =
-     * partitionMap.getDstCount()
-     */
-    public void setBins(Partition partition);
+  /**
+   * Partition the values into bins.
+   * @param partitionMap partitions the values into bins, 
+   *        with the bin count = partitionMap.getDstCount()
+   */ 
+  public void setBins(PartitionIndexMap partitionMap);
+  /**
+   * Partition the values into bins.
+   * @param partition partitions the values into bins, 
+   *        with the bin count = partitionMap.getDstCount()
+   */ 
+  public void setBins(Partition partition);
 }

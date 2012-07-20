@@ -21,40 +21,40 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table.cluster;
 
-import java.util.Enumeration;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.tree.*;
+import javax.swing.table.*;
 
 /**
  * A CompositeCluster is composed of other Clusters.
- *
- * @author J Johnson
- * @version $Revision: 1.3 $ $Date: 2003/04/15 15:47:57 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.3 $ $Date: 2003/04/15 15:47:57 $  $Name: TableView1_3_2 $ 
+ * @since        1.0
  */
 public class CompositeCluster extends Cluster {
-
-    public CompositeCluster() {
-        setAllowsChildren(true);
+  public CompositeCluster() {
+    setAllowsChildren(true);
+  }
+  public CompositeCluster(Cluster c1, Cluster c2) {
+    this();
+    add(c1);
+    add(c2);
+  }
+  public String toString() {
+    String s = "[";
+    for (Enumeration e = children();  e.hasMoreElements();) {
+      Cluster c = (Cluster)e.nextElement();
+      if (c != null) {
+        s += c.toString();
+      }
     }
-
-    public CompositeCluster(Cluster c1, Cluster c2) {
-        this();
-        add(c1);
-        add(c2);
-    }
-
-    @Override
-    public String toString() {
-        String s = "[";
-        for (Enumeration e = children(); e.hasMoreElements();) {
-            Cluster c = (Cluster) e.nextElement();
-            if (c != null) {
-                s += c.toString();
-            }
-        }
-        s += "]";
-        return s;
-    }
+    s += "]";
+    return s;
+  }
 }
+

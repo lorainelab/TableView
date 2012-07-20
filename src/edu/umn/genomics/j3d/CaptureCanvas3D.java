@@ -21,89 +21,77 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.j3d;  //DataViewer
 
-import java.awt.Dimension;
+import javax.media.j3d.Canvas3D;
+import javax.media.j3d.Raster;
+import javax.media.j3d.DepthComponent;
+import javax.media.j3d.GraphicsContext3D;
+import javax.media.j3d.ImageComponent2D;
 import java.awt.image.BufferedImage;
+import java.awt.Dimension;
 import java.util.Observable;
 import java.util.Observer;
-import javax.media.j3d.Canvas3D;
-import javax.media.j3d.ImageComponent2D;
-import javax.media.j3d.Raster;
 
 /**
  * This class extends the Canvas3D class to capture the rendered image.
- *
- * @author James E Johnson
- * @version $Revision: 1.3 $ $Date: 2002/07/30 19:44:57 $ $Name: TableView1_3_2
- * $
+ * @author       James E Johnson
+ * @version $Revision: 1.3 $ $Date: 2002/07/30 19:44:57 $  $Name: TableView1_3_2 $ 
  * @since dv1.0
  */
 public class CaptureCanvas3D extends Canvas3D {
-
-    /**
-     * Extend the Observable class so we can overide the setChanged() method.
-     */
-    class Observed extends Observable {
-
-        @Override
-        public void setChanged() {
-            super.setChanged();
-        }
+  /** Extend the Observable class so we can overide the setChanged() method. */
+  class Observed extends Observable {
+    public void setChanged() {
+      super.setChanged();
     }
-    /**
-     * Observers to notify.
-     */
-    private Observed observable = new Observed();
-    /**
-     * Flag to capture an image.
-     */
-    private boolean captureImage = false;
-
-    /**
-     * Create the CaptureCanvas3D.
-     *
-     * @param graphicsConfiguration
-     */
-    public CaptureCanvas3D(java.awt.GraphicsConfiguration graphicsConfiguration) {
-        super(graphicsConfiguration);
+  }
+  /** Observers to notify. */ 
+  private Observed observable = new Observed();
+  /** Flag to capture an image.  */ 
+  private boolean captureImage = false;
+  /** Create the CaptureCanvas3D.
+    * @param graphicsConfiguration 
+    */
+  public CaptureCanvas3D(java.awt.GraphicsConfiguration graphicsConfiguration) {
+    super(graphicsConfiguration);
+  }
+  /** This routine is called by the Java 3D rendering loop after 
+    * completing all rendering to the canvas.  It reads the raster image
+    * and notifies registered observers.
+    */
+  public void postSwap() {
+    if (captureImage) {
+      Dimension d = getSize();
+      Raster raster = new Raster();
+      raster.setSize(d);
+      raster.setImage(
+        new ImageComponent2D(
+          ImageComponent2D.FORMAT_RGB, 
+          new BufferedImage(d.width,d.height,BufferedImage.TYPE_INT_RGB)
+        )
+      );
+      getGraphicsContext3D().readRaster(raster);
+      // Now strip out the image info
+      if (captureImage) {
+        observable.setChanged();
+        observable.notifyObservers(raster.getImage().getImage());        
+        observable.deleteObservers();
+        captureImage = false;
+      }
     }
-
-    /**
-     * This routine is called by the Java 3D rendering loop after completing all
-     * rendering to the canvas. It reads the raster image and notifies
-     * registered observers.
-     */
-    @Override
-    public void postSwap() {
-        if (captureImage) {
-            Dimension d = getSize();
-            Raster raster = new Raster();
-            raster.setSize(d);
-            raster.setImage(
-                    new ImageComponent2D(
-                    ImageComponent2D.FORMAT_RGB,
-                    new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB)));
-            getGraphicsContext3D().readRaster(raster);
-            // Now strip out the image info
-            if (captureImage) {
-                observable.setChanged();
-                observable.notifyObservers(raster.getImage().getImage());
-                observable.deleteObservers();
-                captureImage = false;
-            }
-        }
-    }
-
-    /**
-     * Request a captured image of the Canvas. This Object will call the
-     * observer's update method with a BufferImage as the argument.
-     *
-     * @param observer The object to notify when the image is available.
-     */
-    public void captureImage(Observer observer) {
-        observable.addObserver(observer);
-        captureImage = true;
-        paint(getGraphics()); // repaint so we can capture the image in postSwap.
-    }
+  }
+  /** Request a captured image of the Canvas.  This Object will call 
+   *  the observer's update method with a BufferImage as the argument. 
+   *
+   *  @param observer The object to notify when the image is available.
+   */
+  public void captureImage(Observer observer) {
+    observable.addObserver(observer);
+    captureImage = true;
+    paint(getGraphics()); // repaint so we can capture the image in postSwap.
+  }
 }
+

@@ -21,190 +21,171 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.bi.dbutil;
-
-import edu.umn.genomics.file.OpenInputSource;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.InvalidPreferencesFormatException;
-import java.util.prefs.Preferences;
-
+import  java.util.prefs.*;
+import  java.io.*;
+import  java.net.*;
+import  edu.umn.genomics.file.OpenInputSource;
 /**
  * Maintain database account preference data.
- *
- * @author J Johnson
- * @version $Revision: 1.5 $ $Date: 2003/07/28 15:07:07 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.5 $ $Date: 2003/07/28 15:07:07 $  $Name: TableView1_3_2 $
+ * @since        1.0
  * @see java.util.prefs.Preferences
  */
 public class DBPreferences {
+  private static final String NAME = "name";
+  private static final String USER = "user";
+  private static final String PASSWD = "passwd";
+  private static final String URL = "url";
+  private static final String DRIVER = "driver";
 
-    private static final String NAME = "name";
-    private static final String USER = "user";
-    private static final String PASSWD = "passwd";
-    private static final String URL = "url";
-    private static final String DRIVER = "driver";
-
-    /**
-     * Return Database account preferences.
-     *
-     * @return an array of Database account connection parameters.
-     */
-    public static DBConnectParams[] getDBAccounts() {
-        DBConnectParams[] dbpa = null;
-        try {
-            Preferences prefs =
-                    Preferences.userNodeForPackage(edu.umn.genomics.bi.dbutil.DBPreferences.class);
-            String db[] = prefs.childrenNames();
-            dbpa = new DBConnectParams[db.length];
-            for (int i = 0; i < db.length; i++) {
-                Preferences pref = prefs.node(db[i]);
-                String name = pref.get(NAME, "");
-                String user = pref.get(USER, System.getProperty("user.name"));
-                String passwd = pref.get(PASSWD, "");
-                String url = pref.get(URL, "jdbc:oracle:thin:@localhost:1521:ORA");
-                String driver = pref.get(DRIVER, "oracle.jdbc.driver.OracleDriver");
-                dbpa[i] = new DBUser(name, user, passwd, url, driver);
-            }
-        } catch (Exception ex) {
-            System.err.println(" DBPreferences " + ex);
-        }
-        return dbpa;
+  /**
+   * Return Database account preferences.
+   * @return an array of Database account connection parameters.
+   */
+  public static DBConnectParams[] getDBAccounts() {
+    DBConnectParams[] dbpa = null;
+    try {
+      Preferences prefs = 
+        Preferences.userNodeForPackage(edu.umn.genomics.bi.dbutil.DBPreferences.class);
+      String db[] = prefs.childrenNames();
+      dbpa = new DBConnectParams[db.length];
+      for (int i = 0; i < db.length; i++) {
+        Preferences pref = prefs.node(db[i]);
+        String name = pref.get(NAME, "");
+        String user = pref.get(USER, System.getProperty("user.name"));
+        String passwd = pref.get(PASSWD, "");
+        String url = pref.get(URL, "jdbc:oracle:thin:@localhost:1521:ORA");
+        String driver = pref.get(DRIVER, "oracle.jdbc.driver.OracleDriver");
+        dbpa[i] = new DBUser(name, user, passwd, url, driver); 
+      }
+    } catch (Exception ex) {
+      System.err.println(" DBPreferences " + ex);
     }
+    return dbpa;
+  }
 
-    public static DBConnectParams getDatabaseAccount(String accountName) {
-        Preferences prefs =
-                Preferences.userNodeForPackage(edu.umn.genomics.bi.dbutil.DBPreferences.class);
-        try {
-            if (prefs.nodeExists(accountName)) {
-                Preferences pref = prefs.node(accountName);
-                String name = pref.get(NAME, "");
-                String user = pref.get(USER, System.getProperty("user.name"));
-                String passwd = pref.get(PASSWD, "");
-                String url = pref.get(URL, "");
-                String driver = pref.get(DRIVER, "");
-                return new DBUser(name, user, passwd, url, driver);
-            }
-        } catch (Exception ex) {
-            System.err.println(" DBPreferences " + ex);
-        }
-        return null;
+  public static DBConnectParams getDatabaseAccount(String accountName) {
+    Preferences prefs =
+        Preferences.userNodeForPackage(edu.umn.genomics.bi.dbutil.DBPreferences.class);
+    try {
+      if (prefs.nodeExists(accountName)) {
+        Preferences pref = prefs.node(accountName);
+        String name = pref.get(NAME, "");
+        String user = pref.get(USER, System.getProperty("user.name"));
+        String passwd = pref.get(PASSWD, "");
+        String url = pref.get(URL, "");
+        String driver = pref.get(DRIVER, "");
+        return new DBUser(name, user, passwd, url, driver);
+      }
+    } catch (Exception ex) {
+      System.err.println(" DBPreferences " + ex);
     }
+    return null;
+  }
+  
 
-    /**
-     * Save the Database account connection parameters in the user preferences.
-     *
-     * @param dbconnections an array of Database account connection parameters.
-     */
-    public static void saveDBAccounts(DBConnectParams[] dbconnections) {
-        for (int i = 0; i < dbconnections.length; i++) {
-            saveDBAccount(dbconnections[i]);
-        }
+  /**
+   * Save the Database account connection parameters in the user preferences.
+   * @param dbconnections an array of Database account connection parameters.
+   */
+  public static void saveDBAccounts(DBConnectParams[] dbconnections) {
+    for (int i = 0; i < dbconnections.length; i++) {
+      saveDBAccount(dbconnections[i]);
     }
+  }
 
-    /**
-     * Save the Database account connection parameters in the user preferences.
-     *
-     * @param dbconnection Database account connection parameters.
-     */
-    public static void saveDBAccount(DBConnectParams dbconnection) {
-        Preferences prefs =
-                Preferences.userNodeForPackage(edu.umn.genomics.bi.dbutil.DBPreferences.class);
-        Preferences pref = prefs.node(dbconnection.getName());
-        pref.put(NAME, dbconnection.getName());
-        pref.put(USER, dbconnection.getUser());
-        pref.put(PASSWD, dbconnection.getPassword());
-        pref.put(URL, dbconnection.getURL());
-        pref.put(DRIVER, dbconnection.getDriverName());
-    }
+  /**
+   * Save the  Database account connection parameters in the user preferences.
+   * @param dbconnection Database account connection parameters.
+   */
+  public static void saveDBAccount(DBConnectParams dbconnection) {
+    Preferences prefs = 
+      Preferences.userNodeForPackage(edu.umn.genomics.bi.dbutil.DBPreferences.class);
+    Preferences pref = prefs.node(dbconnection.getName());
+    pref.put(NAME, dbconnection.getName());
+    pref.put(USER, dbconnection.getUser());
+    pref.put(PASSWD, dbconnection.getPassword());
+    pref.put(URL, dbconnection.getURL());
+    pref.put(DRIVER, dbconnection.getDriverName());
+  }
 
-    /**
-     * Delete the Database account connection parameters from the user
-     * preferences.
-     *
-     * @param dbconnection Database account connection parameters.
-     */
-    public static void deleteDBAccount(DBConnectParams dbconnection) {
-        deleteDBAccount(dbconnection.getName());
-    }
+  /**
+   * Delete the Database account connection parameters from the user preferences.
+   * @param dbconnection Database account connection parameters.
+   */
+  public static void deleteDBAccount(DBConnectParams dbconnection) {
+    deleteDBAccount(dbconnection.getName());
+  }
 
-    /**
-     * Delete the Database account connection parameters from the user
-     * preferences.
-     *
-     * @param name the name of a Database account.
-     */
-    public static void deleteDBAccount(String name) {
-        try {
-            Preferences prefs =
-                    Preferences.userNodeForPackage(edu.umn.genomics.bi.dbutil.DBPreferences.class);
-            if (prefs.nodeExists(name)) {
-                prefs.node(name).removeNode();
-            }
-        } catch (Exception ex) {
-            System.err.println(" DBPreferences " + ex);
-        }
+  /**
+   * Delete the Database account connection parameters from the user preferences.
+   * @param name the name of a Database account.
+   */
+  public static void deleteDBAccount(String name) {
+    try {
+      Preferences prefs = 
+        Preferences.userNodeForPackage(edu.umn.genomics.bi.dbutil.DBPreferences.class);
+      if (prefs.nodeExists(name)) {
+        prefs.node(name).removeNode();
+      }
+    } catch (Exception ex) {
+      System.err.println(" DBPreferences " + ex);
     }
+  }
 
-    /**
-     * Import Database account connection parameters from the preferences
-     * source.
-     *
-     * @param source the URL or pathname to a preferences file.
-     */
-    public static void importPreferences(String source) throws NullPointerException, SecurityException,
-            IOException, InvalidPreferencesFormatException {
-        InputStream is = OpenInputSource.getInputStream(source);
-        importPreferences(is);
-    }
+  /**
+   * Import Database account connection parameters from the preferences source. 
+   * @param source the URL or pathname to a preferences file.
+   */
+  public static void importPreferences(String source) throws NullPointerException, SecurityException, 
+             IOException, InvalidPreferencesFormatException {
+    InputStream is = OpenInputSource.getInputStream(source);
+    importPreferences(is);
+  }
 
-    /**
-     * Import Database account connection parameters from the preferences
-     * source.
-     *
-     * @param is an open input stream to a preferences source.
-     */
-    public static void importPreferences(InputStream is) throws NullPointerException, SecurityException,
-            IOException, InvalidPreferencesFormatException {
-        Preferences prefs =
-                Preferences.userNodeForPackage(edu.umn.genomics.bi.dbutil.DBPreferences.class);
-        Preferences.importPreferences(is);
-    }
+  /**
+   * Import Database account connection parameters from the preferences source. 
+   * @param is an open input stream to a preferences source.
+   */
+  public static void importPreferences(InputStream is) throws NullPointerException, SecurityException, 
+             IOException, InvalidPreferencesFormatException {
+    Preferences prefs =
+      Preferences.userNodeForPackage(edu.umn.genomics.bi.dbutil.DBPreferences.class);
+    prefs.importPreferences(is);
+  }
 
-    /**
-     * Export Database account connection parameters to the given filename.
-     *
-     * @param filename a preferences file.
-     * @param name If not null, only export the connection parameters for this
-     * account, otherwise export all account parameters.
-     */
-    public static void exportPreferences(String filename, String name) throws NullPointerException, SecurityException,
-            IOException, BackingStoreException, IllegalStateException {
-        exportPreferences(new FileOutputStream(filename), name);
-    }
+  /**
+   * Export Database account connection parameters to the given filename. 
+   * @param filename a preferences file.
+   * @param name If not null, only export the connection parameters for this account, otherwise 
+   * export all account parameters.
+   */
+  public static void exportPreferences(String filename, String name) throws NullPointerException, SecurityException, 
+             IOException, BackingStoreException, IllegalStateException {
+    exportPreferences(new FileOutputStream(filename), name);
+  }
 
-    /**
-     * Export Database account connection parameters to the given filename.
-     *
-     * @param os an open output stream to a preferences file.
-     * @param name If not null, only export the connection parameters for this
-     * account, otherwise export all account parameters.
-     */
-    public static void exportPreferences(OutputStream os, String name) throws NullPointerException, SecurityException,
-            IOException, BackingStoreException, IllegalStateException {
-        Preferences prefs =
-                Preferences.userNodeForPackage(edu.umn.genomics.bi.dbutil.DBPreferences.class);
-        if (name != null) {
-            if (prefs.nodeExists(name)) {
-                Preferences pref = prefs.node(name);
-                pref.exportSubtree(os);
-            }
-        } else {
-            prefs.exportSubtree(os);
-        }
+  /**
+   * Export Database account connection parameters to the given filename. 
+   * @param os an open output stream to a preferences file.
+   * @param name If not null, only export the connection parameters for this account, otherwise 
+   * export all account parameters.
+   */
+  public static void exportPreferences(OutputStream os, String name) throws NullPointerException, SecurityException, 
+             IOException, BackingStoreException, IllegalStateException {
+    Preferences prefs =
+      Preferences.userNodeForPackage(edu.umn.genomics.bi.dbutil.DBPreferences.class);
+    if (name != null) {
+      if (prefs.nodeExists(name)) {
+        Preferences pref = prefs.node(name);
+        pref.exportSubtree(os);
+      }
+    } else {
+      prefs.exportSubtree(os);
     }
-}
+  }
+} 
