@@ -140,7 +140,7 @@ public abstract class AbstractHistogramModel implements HistogramModel {
                 binRemoved[0] = m;
             }
         }
-        models.set(index, model);
+        models.add(index, model);
         model.addBinModelListener(binModelListener);
         handleBinModelChange(null);
         BinModel[] binChanged = {model};

@@ -1893,13 +1893,17 @@ public class ParallelCoordinatePanel extends AbstractTableModelView
         if (axisList == null) {
             axisList = new ArrayList();
         }
+        Axis axis;
         if (columnIndex >= axisList.size()) {
-            axisList.ensureCapacity(columnIndex + 1);
-        }
-        Axis axis = (Axis) axisList.get(columnIndex);
-        if (axis == null) {
             axis = getDefaultAxis(columnIndex);
-            axisList.set(columnIndex, axis);
+            axisList.add(columnIndex, axis);
+        }
+        else{
+            axis = (Axis) axisList.get(columnIndex);
+            if (axis == null) {
+                axis = getDefaultAxis(columnIndex);
+                axisList.add(columnIndex, axis);
+            }
         }
         return axis;
     }

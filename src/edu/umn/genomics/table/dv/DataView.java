@@ -344,7 +344,10 @@ public class DataView extends JPanel implements Serializable, Observer {
         rv.add("cone");
         rv.add("points");           // temp
         String dataReps[] = new String[rv.size()];  // temp
-        dataReps = (String[]) rv.toArray();
+        Object[] temp = rv.toArray();
+        for(int i=0;i<dataReps.length;i++){
+            dataReps[i] = (String)temp[i];
+        }
 
         ButtonGroup repGroup = new ButtonGroup();
         for (int i = 0; i < dataReps.length; i++) {

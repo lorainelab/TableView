@@ -284,7 +284,7 @@ public abstract class AbstractSimilarity implements ClusterSimilarity {
                     }
                     if (rcmin > 0) {
                         Cluster nn = (Cluster) clusters.get(rcmin);
-                        nearest.set(r, nn);
+                        nearest.add(r, nn);
                         da[r] = rdist;
                         if (debug > 0) {
                             System.err.println(" " + r + "\tinitial" + "\t" + rcmin + "\t\t" + rdist);
