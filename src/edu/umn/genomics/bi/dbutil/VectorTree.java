@@ -171,14 +171,12 @@ public class VectorTree {
             ArrayList v = root;
             for (int p = newDepth - 1; p > oldDepth; p--) {
                 Object o = getNode(null, branchCount, p >= minRef && p <= maxRef);
-                if(v.size() > 0)
-                    v.remove(0);
+                v.remove(0);
                 v.add(0, o);
                 v = getNodeVector(o);
             }
             int d = newDepth - oldDepth;
-            if(v.size() > 0)
-                v.remove(0);
+            v.remove(0);
             v.add(0, getNode(oldroot, branchCount, d >= minRef && d <= maxRef));
         } else if (newDepth < oldDepth) { // Move a branch up to root
             ArrayList v = root;

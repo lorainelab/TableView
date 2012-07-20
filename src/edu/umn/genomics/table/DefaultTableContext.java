@@ -143,10 +143,7 @@ public class DefaultTableContext implements TableContext {
                         cmap = new DefaultColumnMap(tm, columnIndex);
                     }
                     cmap.setSelectionModel(getRowSelectionModel(tm));
-                    if(maps.size() >= columnIndex)
-                        maps.add(columnIndex, cmap);
-                    else
-                        maps.add(cmap);
+                    maps.set(columnIndex, cmap);
                 }
             }
             return cmap;

@@ -27,7 +27,6 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import javax.swing.ListSelectionModel;
@@ -394,7 +393,7 @@ public class BaseColumnMap extends AbstractColumnMap
             if (buckets < 1) {
                 int len = colH.size() * offset;
                 b = new int[len];
-                ArrayList list = new ArrayList(colH.values());
+                ArrayList list = (ArrayList) colH.values();
                 for (Object e : list) {
                     Elem el = (Elem) e;
                     int i = offset

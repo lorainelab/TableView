@@ -220,7 +220,7 @@ public abstract class AbstractColumnFormula implements Serializable, TableModelF
             values.ensureCapacity(rowIndex + 1);
         }
         // set value
-        values.add(rowIndex, aValue);
+        values.set(rowIndex, aValue);
         // mark bit
         valueSet.set(rowIndex);
     }
