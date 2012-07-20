@@ -641,7 +641,7 @@ public class VirtualTableModelView extends JPanel {
                                 ssplit.setVisible(edu.umn.genomics.table.TableModelFormula.class.isAssignableFrom(selClass));
                                 if (ssplit.isVisible()) {
                                     try {
-                                        String help = (String) selClass.getMethod("getHelpText", null).invoke(null, null);
+                                        String help = (String) selClass.getMethod("getHelpText", (Class) null).invoke(null, (Object) null);
                                         editorPane.setText(help != null ? help : "");
                                     } catch (Exception ex) {
                                         editorPane.setText("");
