@@ -349,7 +349,7 @@ public class ScatterPlot extends JPanel
       lsm = newModel;
       lsm.addListSelectionListener(this);
       if (gp != null) {
-        gp.setIndexedColor(new IndexSelectColor(Color.cyan, null, lsm));
+        gp.setIndexedColor(new IndexSelectColor(Color.red, null, lsm));
         gp.setIndexedDrawable(new IndexSelectDrawable(new DrawableX(), null, lsm));
       }
     }
