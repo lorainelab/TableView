@@ -23,27 +23,26 @@
  */
 package edu.umn.genomics.table;
 
-import java.io.Serializable;
-import java.io.*;
-import java.net.*;
-import java.awt.*;
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.prefs.*;
-//import java.awt.print.*; //PrintJob
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import javax.swing.tree.*;
-import edu.umn.genomics.bi.dbutil.*;
-import edu.umn.genomics.table.dv.*;
-import edu.umn.genomics.table.cluster.*;
-import edu.umn.genomics.component.SaveImage;
+import edu.umn.genomics.bi.dbutil.DBAccountListModel;
+import edu.umn.genomics.bi.dbutil.DBConnectParams;
+import edu.umn.genomics.bi.dbutil.DBUser;
 import edu.umn.genomics.file.OpenInputSource;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.InvalidPreferencesFormatException;
+import java.util.prefs.Preferences;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.TableModel;
+import javax.swing.tree.*;
 
 // interfaces:
 // CellMap.java:			public interface CellMap {
@@ -548,12 +547,22 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         mb.add(viewMenu);
         JMenu helpMenu = new JMenu("Help");
         helpMenu.setMnemonic('h');
-        mi = (JMenuItem) helpMenu.add(new JMenuItem("Tutorial"));
-        mi.setMnemonic('t');
-        mi.setActionCommand("Tutorial");
+        mi = (JMenuItem) helpMenu.add(new JMenuItem("Documentation"));
+        mi.setMnemonic('d');
+        mi.setActionCommand("Documentation");
         mi.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent ae) {
+                try {
+                    URI u = new URI("https://github.com/lorainelab/TableView/wiki/Tableview-Users-Guide");
+                    if ("file".equalsIgnoreCase(u.getScheme())) {
+                        Desktop.getDesktop().open(new File(u));
+                        return;
+                    }
+                    Desktop.getDesktop().browse(u);
+                } catch (IOException ex) {
+                } catch (URISyntaxException ex) {
+                }
             }
         });
         mi.getAccessibleContext().setAccessibleDescription("tutorial");
