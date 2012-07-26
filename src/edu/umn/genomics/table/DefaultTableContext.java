@@ -24,17 +24,19 @@
 
 
 package edu.umn.genomics.table;
-import java.lang.reflect.*;
-import java.util.*;
+import edu.umn.genomics.component.SaveImage;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.table.*;
-import javax.swing.tree.*;
-import edu.umn.genomics.component.*;
-import edu.umn.genomics.table.cluster.*;
+import javax.swing.table.TableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeModel;
 
 /*
   All returned values are interfaces so that they can be implemented as needed.

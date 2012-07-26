@@ -21,54 +21,56 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table;
 
 import java.io.Serializable;
-import java.util.*;
 import java.text.DateFormatSymbols;
+import java.util.Calendar;
 
 /**
  * Provides labels for bins in a Date Partition
- * @author       J Johnson
- * @version $Revision: 1.1 $ $Date: 2004/08/02 20:23:40 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ *
+ * @author J Johnson
+ * @version $Revision: 1.1 $ $Date: 2004/08/02 20:23:40 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public class DatePartitionLabeler implements BinLabeler, Serializable {
-  int calendarField;
-  DateFormatSymbols dfs = new DateFormatSymbols();
 
-  public DatePartitionLabeler(int calendarField) {
-    this.calendarField = calendarField;
-  }
+    int calendarField;
+    DateFormatSymbols dfs = new DateFormatSymbols();
 
-  /** 
-   * Return a label for the given bin in the Date partition.
-   * @param binIndex the index of the bin.
-   * @return a formatted label to display for the given binIndex.
-   */
-  public String getLabel(int binIndex) {
-    String[] vals;
-    switch(calendarField) {
-    case Calendar.DAY_OF_MONTH :
-    case Calendar.DAY_OF_YEAR :
-    case Calendar.WEEK_OF_MONTH :
-    case Calendar.WEEK_OF_YEAR :
-      return "" + ++binIndex;
-    case Calendar.DAY_OF_WEEK :
-      vals = dfs.getShortWeekdays();
-      if (binIndex >= 0 && binIndex < vals.length) {
-        return vals[binIndex];
-      }
-      return "Other";
-    case Calendar.MONTH :
-      vals = dfs.getShortMonths();
-      if (binIndex >= 0 && binIndex < vals.length) {
-        return vals[binIndex];
-      }
-      return "Other";
+    public DatePartitionLabeler(int calendarField) {
+        this.calendarField = calendarField;
     }
-    return "" + binIndex;
-  }
+
+    /**
+     * Return a label for the given bin in the Date partition.
+     *
+     * @param binIndex the index of the bin.
+     * @return a formatted label to display for the given binIndex.
+     */
+    public String getLabel(int binIndex) {
+        String[] vals;
+        switch (calendarField) {
+            case Calendar.DAY_OF_MONTH:
+            case Calendar.DAY_OF_YEAR:
+            case Calendar.WEEK_OF_MONTH:
+            case Calendar.WEEK_OF_YEAR:
+                return "" + ++binIndex;
+            case Calendar.DAY_OF_WEEK:
+                vals = dfs.getShortWeekdays();
+                if (binIndex >= 0 && binIndex < vals.length) {
+                    return vals[binIndex];
+                }
+                return "Other";
+            case Calendar.MONTH:
+                vals = dfs.getShortMonths();
+                if (binIndex >= 0 && binIndex < vals.length) {
+                    return vals[binIndex];
+                }
+                return "Other";
+        }
+        return "" + binIndex;
+    }
 }
