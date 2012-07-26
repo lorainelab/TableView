@@ -21,26 +21,23 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.graph;
 
 import java.util.EventObject;
 
 /*
- * Still need to consider:
- *   min == max
- *   min > max
-*/
-
+ * Still need to consider: min == max min > max
+ */
 /**
- * 
- * @author       J Johnson
- * @version $Revision: 1.1 $ $Date: 2004/01/28 20:32:57 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ *
+ * @author J Johnson
+ * @version $Revision: 1.1 $ $Date: 2004/01/28 20:32:57 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public class GraphItemEvent extends EventObject {
-  public GraphItemEvent(Object source) {
-    super(source);
-  }
+
+    public GraphItemEvent(Object source) {
+        super(source);
+    }
 }

@@ -21,113 +21,116 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.graph;
 
-import java.lang.reflect.*;
-import java.util.*;
-import java.text.DecimalFormat;
-import java.text.ParsePosition;
+import java.util.Vector;
+
 /**
- * LineDataModel presents LineFormula lines as line segments within 
- * the graph area.  
- * @author       J Johnson
- * @version $Revision: 1.3 $ $Date: 2003/07/28 15:07:11 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ * LineDataModel presents LineFormula lines as line segments within the graph
+ * area.
+ *
+ * @author J Johnson
+ * @version $Revision: 1.3 $ $Date: 2003/07/28 15:07:11 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  * @see edu.umn.genomics.graph.LineFormula
  */
 public class LineDataModel implements DataModel {
-  Vector lines = new Vector();
-  /** 
-   * Create a LineDataModel without any data.
-   */
-  public LineDataModel() {
-  }
 
-  /** 
-   * Create a LineDataModel from a LineFormula.
-   * @param line a LineFormula.
-   */
-  public LineDataModel(LineFormula line) {
-    lines.addElement(line);
-  }
+    Vector lines = new Vector();
 
-  /**
-   * Inserts the line at the specified position in the line list.
-   */
-  public void add(int index, LineFormula line) {
-    lines.add(index, line);
-  }
-  /**
-   * Add a line to the end of the line list.
-   */
-  public boolean add(LineFormula line) {
-    return lines.add(line);
-  }
-
-  /**
-   * Add a line to the end of the line list.
-   */
-  public boolean remove(LineFormula line) {
-    return lines.remove(line);
-  }
-
-  /**
-   * Add a line to the end of the line list.
-   */
-  public void clear() {
-    lines.clear();
-  }
-
-  /**
-   * Return any y values at the given x index.
-   * @param xi the x index into the array.
-   * @return the y values at the given x index. 
-   */
-  public double[] getYValues(int xi) {
-    double yv[] = new double[lines.size()];
-    for (int i = 0; i < lines.size(); i++) {
-      LineFormula line = (LineFormula)lines.elementAt(i);
-      yv[i] = line.getY(xi);
+    /**
+     * Create a LineDataModel without any data.
+     */
+    public LineDataModel() {
     }
-    return yv;
-  }
 
-  /**
-   * @param x the x pixel offset 
-   * @param y the y pixel offset 
-   * @param axes the axes that transform the datapoints to the pixel area
-   * @param points the array of points: xpoints, ypoints
-   * return the array of points: xpoints, ypoints
-   */
-  public int[][] getPoints(int x, int y, Axis axes[], int points[][]) {
-    int pnts[][] = points;
-    int w = axes[0].getSize();
-    int h = axes[1].getSize();
-    int np = lines.size() * 2;
-    if (pnts == null || pnts.length < 2) {
-      pnts = new int[2][];
+    /**
+     * Create a LineDataModel from a LineFormula.
+     *
+     * @param line a LineFormula.
+     */
+    public LineDataModel(LineFormula line) {
+        lines.addElement(line);
     }
-    if (pnts[0] == null || pnts[0].length != np) {
-      pnts[0] = new int[np];
-    }
-    if (pnts[1] == null || pnts[1].length != np) {
-      pnts[1] = new int[np];
-    }
-    int yb = y + h;
-    for (int i = 0, j = 0; i < lines.size(); i++,j+=2) {
-      try {
-        LineFormula line = (LineFormula)lines.elementAt(i);
-        pnts[0][j] = x;
-        pnts[1][j] = yb - (int)Math.round(line.getY(x));
-        pnts[1][j] = yb - axes[1].getIntPosition(line.getY(axes[0].getValue(x)));
-        pnts[0][j+1] = x+w;
-        pnts[1][j+1] = yb - axes[1].getIntPosition(line.getY(axes[0].getValue(x+w)));
 
-      } catch (ClassCastException ccex) {
-      }
+    /**
+     * Inserts the line at the specified position in the line list.
+     */
+    public void add(int index, LineFormula line) {
+        lines.add(index, line);
     }
-    return pnts;
-  }
+
+    /**
+     * Add a line to the end of the line list.
+     */
+    public boolean add(LineFormula line) {
+        return lines.add(line);
+    }
+
+    /**
+     * Add a line to the end of the line list.
+     */
+    public boolean remove(LineFormula line) {
+        return lines.remove(line);
+    }
+
+    /**
+     * Add a line to the end of the line list.
+     */
+    public void clear() {
+        lines.clear();
+    }
+
+    /**
+     * Return any y values at the given x index.
+     *
+     * @param xi the x index into the array.
+     * @return the y values at the given x index.
+     */
+    public double[] getYValues(int xi) {
+        double yv[] = new double[lines.size()];
+        for (int i = 0; i < lines.size(); i++) {
+            LineFormula line = (LineFormula) lines.elementAt(i);
+            yv[i] = line.getY(xi);
+        }
+        return yv;
+    }
+
+    /**
+     * @param x the x pixel offset
+     * @param y the y pixel offset
+     * @param axes the axes that transform the datapoints to the pixel area
+     * @param points the array of points: xpoints, ypoints return the array of
+     * points: xpoints, ypoints
+     */
+    public int[][] getPoints(int x, int y, Axis axes[], int points[][]) {
+        int pnts[][] = points;
+        int w = axes[0].getSize();
+        int h = axes[1].getSize();
+        int np = lines.size() * 2;
+        if (pnts == null || pnts.length < 2) {
+            pnts = new int[2][];
+        }
+        if (pnts[0] == null || pnts[0].length != np) {
+            pnts[0] = new int[np];
+        }
+        if (pnts[1] == null || pnts[1].length != np) {
+            pnts[1] = new int[np];
+        }
+        int yb = y + h;
+        for (int i = 0, j = 0; i < lines.size(); i++, j += 2) {
+            try {
+                LineFormula line = (LineFormula) lines.elementAt(i);
+                pnts[0][j] = x;
+                pnts[1][j] = yb - (int) Math.round(line.getY(x));
+                pnts[1][j] = yb - axes[1].getIntPosition(line.getY(axes[0].getValue(x)));
+                pnts[0][j + 1] = x + w;
+                pnts[1][j + 1] = yb - axes[1].getIntPosition(line.getY(axes[0].getValue(x + w)));
+
+            } catch (ClassCastException ccex) {
+            }
+        }
+        return pnts;
+    }
 }

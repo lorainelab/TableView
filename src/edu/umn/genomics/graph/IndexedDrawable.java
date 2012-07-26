@@ -21,27 +21,26 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.graph;
 
 /**
  * Associates a Drawable graphic for each index value.
- * 
- * @author       J Johnson
- * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:53 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ *
+ * @author J Johnson
+ * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:53 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public interface IndexedDrawable {
-  /**
-   * Returns the length of the list.
-  int getSize();
-   */
 
-  /**
-   * Returns the Drawable at the specified index.
-   * @param index the index into the Drawable list.
-   * @return the Drawable for the specified index.
-   */
-  public Drawable get(int index);
+    /**
+     * Returns the length of the list. int getSize();
+     */
+    /**
+     * Returns the Drawable at the specified index.
+     *
+     * @param index the index into the Drawable list.
+     * @return the Drawable for the specified index.
+     */
+    public Drawable get(int index);
 }
