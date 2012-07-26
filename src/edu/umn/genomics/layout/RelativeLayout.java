@@ -21,17 +21,15 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.layout;
+
 import java.awt.*;
 import java.util.Hashtable;
 
-/** 
- * The <code>RelativeLayout</code> class is a layout manager that 
- * lays out a container's components relative to the container's
- * size. 
- * <p><code><pre>
+/**
+ * The
+ * <code>RelativeLayout</code> class is a layout manager that lays out a
+ * container's components relative to the container's size. <p><code><pre>
  * import java.awt.*;
  * import java.applet.Applet;
  * public class ButtonGrid extends JApplet {
@@ -45,38 +43,41 @@ import java.util.Hashtable;
  * }
  * </pre></code>
  *
- * @author       J Johnson
- * @version $Revision: 1.4 $ $Date: 2002/07/30 19:44:58 $  $Name: TableView1_3_2 $
- * @since        1.0
+ * @author J Johnson
+ * @version $Revision: 1.4 $ $Date: 2002/07/30 19:44:58 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public class RelativeLayout implements LayoutManager2 {
+
     Hashtable compTable; //constraints (Extents)
-    
+
     /**
      * Creates a layout, components need to setConstraints.
+     *
      * @see #setConstraints
      */
     public RelativeLayout() {
-      compTable = new Hashtable();
+        compTable = new Hashtable();
     }
-    
+
     /**
      *
      */
     public void setConstraints(Component comp, Extents extents) {
         compTable.put(comp, extents);
     }
-    
+
     /**
-     * Adds the specified component with the specified name to
-     * the layout.  This does nothing in RelativeLayout, since constraints
-     * are required.
+     * Adds the specified component with the specified name to the layout. This
+     * does nothing in RelativeLayout, since constraints are required.
      */
     public void addLayoutComponent(String name, Component comp) {
     }
 
     /**
      * Removes the specified component from the layout.
+     *
      * @param comp the component to be removed
      */
     public void removeLayoutComponent(Component comp) {
@@ -84,71 +85,74 @@ public class RelativeLayout implements LayoutManager2 {
     }
 
     /**
-     * Calculates the preferred size dimensions for the specified 
-     * panel given the components in the specified parent container.
+     * Calculates the preferred size dimensions for the specified panel given
+     * the components in the specified parent container.
+     *
      * @param parent the component to be laid out
-     *  
+     *
      * @see #minimumLayoutSize
      */
     public Dimension preferredLayoutSize(Container parent) {
         return getLayoutSize(parent, true);
     }
 
-    /** 
-     * Calculates the minimum size dimensions for the specified 
-     * panel given the components in the specified parent container.
+    /**
+     * Calculates the minimum size dimensions for the specified panel given the
+     * components in the specified parent container.
+     *
      * @param parent the component to be laid out
      * @see #preferredLayoutSize
      */
     public Dimension minimumLayoutSize(Container parent) {
         return getLayoutSize(parent, false);
     }
-    
-    /** 
-     * Algorithm for calculating layout size (minimum or preferred). 
+
+    /**
+     * Algorithm for calculating layout size (minimum or preferred).
+     *
      * @param parent the container in which to do the layout.
      * @param isPreferred true for calculating preferred size, false for
-     *                    calculating minimum size.
+     * calculating minimum size.
      * @return the dimensions to lay out the subcomponents of the specified
-     *         container.
+     * container.
      */
     protected Dimension getLayoutSize(Container parent, boolean isPreferred) {
         int w = 0;
         int h = 0;
-        Component[] ca =  parent.getComponents();
+        Component[] ca = parent.getComponents();
         for (int i = 0; i < ca.length; i++) {
-          Dimension cd;
-          Extents e = (Extents)compTable.get(ca[i]);
-          if (e == null) {
-            continue;
-          }
-          if (isPreferred) {
-            cd = ca[i].getPreferredSize();
-          } else {
-            cd = ca[i].getMinimumSize();
-          }
-          if (cd != null) {
-            if (e.getWidth() != 0.) {
-              int cw = (int)(cd.width / e.getWidth());
-              if (w < cw) {
-                w = cw;
-              }
+            Dimension cd;
+            Extents e = (Extents) compTable.get(ca[i]);
+            if (e == null) {
+                continue;
             }
-            if (e.getHeight() != 0.) {
-              int ch = (int)(cd.height / e.getHeight());
-              if (h < ch) {
-                h = ch;
-              }
+            if (isPreferred) {
+                cd = ca[i].getPreferredSize();
+            } else {
+                cd = ca[i].getMinimumSize();
             }
-          } 
+            if (cd != null) {
+                if (e.getWidth() != 0.) {
+                    int cw = (int) (cd.width / e.getWidth());
+                    if (w < cw) {
+                        w = cw;
+                    }
+                }
+                if (e.getHeight() != 0.) {
+                    int ch = (int) (cd.height / e.getHeight());
+                    if (h < ch) {
+                        h = ch;
+                    }
+                }
+            }
         }
-        return new Dimension(w,h);
+        return new Dimension(w, h);
     }
-    
 
-    /** 
+    /**
      * Lays out the container in the specified container.
-     * @param parent the component which needs to be laid out 
+     *
+     * @param parent the component which needs to be laid out
      */
     public void layoutContainer(Container parent) {
         synchronized (parent.getTreeLock()) {
@@ -158,45 +162,46 @@ public class RelativeLayout implements LayoutManager2 {
             if (ncomponents == 0) {
                 return;
             }
-            
+
             // Total parent dimensions
             Dimension size = parent.getSize();
             int totalW = size.width - (insets.left + insets.right);
             int totalH = size.height - (insets.top + insets.bottom);
 
-            for ( int i = 0; i < ncomponents; i++ ) {
+            for (int i = 0; i < ncomponents; i++) {
                 Component c = parent.getComponent(i);
-                Extents e = (Extents)compTable.get(c);
-                if ( e != null ) {
-                    int x = insets.left + (int)(totalW * e.getX());
-                    int y = insets.top  + (int)(totalH * e.getY());
-                    int w = (int)(totalW * e.getWidth());
-                    int h = (int)(totalH * e.getHeight());
+                Extents e = (Extents) compTable.get(c);
+                if (e != null) {
+                    int x = insets.left + (int) (totalW * e.getX());
+                    int y = insets.top + (int) (totalH * e.getY());
+                    int w = (int) (totalW * e.getWidth());
+                    int h = (int) (totalH * e.getHeight());
                     c.setBounds(x, y, w, h);
                 }
             }
         }
     }
-    
+
     // LayoutManager2 /////////////////////////////////////////////////////////
-    
     /**
      * Adds the specified component to the layout, using the specified
      * constraint object.
+     *
      * @param comp the component to be added
-     * @param constraints  where/how the component is added to the layout.
+     * @param constraints where/how the component is added to the layout.
      */
     public void addLayoutComponent(Component comp, Object constraints) {
         if (constraints instanceof Extents) {
-            setConstraints(comp, (Extents)constraints);
+            setConstraints(comp, (Extents) constraints);
         } else if (constraints != null) {
             throw new IllegalArgumentException(
-                "cannot add to layout: constraint must be Extents");
+                    "cannot add to layout: constraint must be Extents");
         }
     }
 
-    /** 
+    /**
      * Returns the maximum size of this component.
+     *
      * @see java.awt.Component#getMinimumSize()
      * @see java.awt.Component#getPreferredSize()
      * @see LayoutManager
@@ -206,30 +211,30 @@ public class RelativeLayout implements LayoutManager2 {
     }
 
     /**
-     * Returns the alignment along the x axis.  This specifies how
-     * the component would like to be aligned relative to other 
-     * components.  The value should be a number between 0 and 1
-     * where 0 represents alignment along the origin, 1 is aligned
-     * the furthest away from the origin, 0.5 is centered, etc.
+     * Returns the alignment along the x axis. This specifies how the component
+     * would like to be aligned relative to other components. The value should
+     * be a number between 0 and 1 where 0 represents alignment along the
+     * origin, 1 is aligned the furthest away from the origin, 0.5 is centered,
+     * etc.
      */
     public float getLayoutAlignmentX(Container target) {
         return 0.5f;
     }
 
     /**
-     * Returns the alignment along the y axis.  This specifies how
-     * the component would like to be aligned relative to other 
-     * components.  The value should be a number between 0 and 1
-     * where 0 represents alignment along the origin, 1 is aligned
-     * the furthest away from the origin, 0.5 is centered, etc.
+     * Returns the alignment along the y axis. This specifies how the component
+     * would like to be aligned relative to other components. The value should
+     * be a number between 0 and 1 where 0 represents alignment along the
+     * origin, 1 is aligned the furthest away from the origin, 0.5 is centered,
+     * etc.
      */
     public float getLayoutAlignmentY(Container target) {
         return 0.5f;
     }
 
     /**
-     * Invalidates the layout, indicating that if the layout manager
-     * has cached information it should be discarded.
+     * Invalidates the layout, indicating that if the layout manager has cached
+     * information it should be discarded.
      */
     public void invalidateLayout(Container target) {
         // Do nothing
