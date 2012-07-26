@@ -350,7 +350,7 @@ public class ScatterPlot extends JPanel
       lsm.addListSelectionListener(this);
       if (gp != null) {
         gp.setIndexedColor(new IndexSelectColor(Color.red, null, lsm));
-        gp.setIndexedDrawable(new IndexSelectDrawable(new DrawableX(), null, lsm));
+        gp.setIndexedDrawable(new IndexSelectDrawable(new DrawableSquare(), null, lsm));
       }
     }
   }

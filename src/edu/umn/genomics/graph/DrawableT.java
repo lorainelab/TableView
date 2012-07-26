@@ -44,7 +44,7 @@ public class DrawableT implements Drawable {
      */
 
     public void draw(Graphics g, int x, int y) {
-        g.drawLine(x - 1, y, x + 1, y);
-        g.drawLine(x, y - 1, x, y + 1);
+        g.drawLine(x - 2, y, x + 2, y);
+        g.drawLine(x, y - 2, x, y + 2);
     }
 }
