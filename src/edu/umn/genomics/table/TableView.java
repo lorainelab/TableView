@@ -553,25 +553,19 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         mi.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent ae) {
-                try {
-                    URI u = new URI("https://github.com/lorainelab/TableView/wiki/Tableview-Users-Guide");
-                    if ("file".equalsIgnoreCase(u.getScheme())) {
-                        Desktop.getDesktop().open(new File(u));
-                        return;
-                    }
-                    Desktop.getDesktop().browse(u);
-                } catch (IOException ex) {
-                } catch (URISyntaxException ex) {
-                }
+                String link = "https://github.com/lorainelab/TableView/wiki";
+                browse(link);
             }
         });
-        mi.getAccessibleContext().setAccessibleDescription("tutorial");
-        mi = (JMenuItem) helpMenu.add(new JMenuItem("TableView Wiki"));
+        mi.getAccessibleContext().setAccessibleDescription("Documentation");
+        mi = (JMenuItem) helpMenu.add(new JMenuItem("Tutorial"));
         mi.setMnemonic('w');
-        mi.getAccessibleContext().setAccessibleDescription("wiki");
+        mi.getAccessibleContext().setAccessibleDescription("Tutorial");
         mi.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent ae) {
+                String link = "https://github.com/lorainelab/TableView/wiki/Use-TableView-with-CressExpress";
+                browse(link);
             }
         });
         mi = (JMenuItem) helpMenu.add(new JMenuItem("Show Console"));
@@ -720,7 +714,18 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         ctx.setViewToolBar(frame, text);
         frame.setVisible(true);
     }
-
+    private void browse(String link){
+        try {
+            URI u = new URI(link);
+            if ("file".equalsIgnoreCase(u.getScheme())) {
+                Desktop.getDesktop().open(new File(u));
+                return;
+            }
+            Desktop.getDesktop().browse(u);
+        } catch (IOException ex) {
+        } catch (URISyntaxException ex) {
+        }
+    }
     /**
      * Open a view on the current TableModel.
      *
