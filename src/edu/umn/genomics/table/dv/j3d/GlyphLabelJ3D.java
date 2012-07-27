@@ -21,21 +21,20 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table.dv.j3d;  //DataViewer
 import java.io.Serializable;
-import javax.media.j3d.*;
-import javax.vecmath.*;
+import javax.media.j3d.Billboard;
+import javax.media.j3d.BranchGroup;
 
 /**
- * @author       J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/05/15 18:23:50 $  $Name: TableView1_3_2 $
- * @since        1.0
+ * @author J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/05/15 18:23:50 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public class GlyphLabelJ3D extends BranchGroup implements Serializable {
-  GlyphLabelJ3D(String label) {
-    Billboard bb = new Billboard();
-  }
-}
 
+    GlyphLabelJ3D(String label) {
+        Billboard bb = new Billboard();
+    }
+}
