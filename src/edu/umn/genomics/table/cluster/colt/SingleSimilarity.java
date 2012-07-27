@@ -21,62 +21,61 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table.cluster.colt;
 
-import java.util.*;
-import javax.swing.*;
-import javax.swing.tree.*;
-import edu.umn.genomics.table.*;
-import edu.umn.genomics.table.cluster.*;
-import cern.colt.matrix.*;
-import cern.colt.matrix.impl.*;
-import cern.colt.matrix.doublealgo.*;
+import cern.colt.matrix.DoubleMatrix2D;
+import edu.umn.genomics.table.cluster.Cluster;
+import edu.umn.genomics.table.cluster.CompositeCluster;
+import edu.umn.genomics.table.cluster.RowCluster;
+import java.util.Enumeration;
 
 /**
- * SingleSimilarity computes the least distance between any pairing of data 
+ * SingleSimilarity computes the least distance between any pairing of data
  * points from one cluster to another cluster.
- * @author       J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/05/15 18:23:41 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ *
+ * @author J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/05/15 18:23:41 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public class SingleSimilarity extends AbstractSimilarity {
-  /** 
-   * Get the distance between the two Clusters by traversing to the RowClusters.
-   * Return the least of the leaf distances.
-   * @param c1 The first cluster of the pair.
-   * @param c2 The second cluster of the pair.
-   * @param dm The distance matrix for RowClusters.
-   * return the distance between the clusters.
-   */
-  public double distance(CompositeCluster c1, Cluster c2, DoubleMatrix2D dm) {
-    double dist = 0.;
-    int cnt = 0;
-    for (Enumeration e1 = c1.depthFirstEnumeration(); e1.hasMoreElements();) {
-      double d;
-      Cluster n1 = (Cluster)e1.nextElement();
-      if (n1 != null && n1.isLeaf()) {
+
+    /**
+     * Get the distance between the two Clusters by traversing to the
+     * RowClusters. Return the least of the leaf distances.
+     *
+     * @param c1 The first cluster of the pair.
+     * @param c2 The second cluster of the pair.
+     * @param dm The distance matrix for RowClusters. return the distance
+     * between the clusters.
+     */
+    public double distance(CompositeCluster c1, Cluster c2, DoubleMatrix2D dm) {
+        double dist = 0.;
+        int cnt = 0;
+        for (Enumeration e1 = c1.depthFirstEnumeration(); e1.hasMoreElements();) {
+            double d;
+            Cluster n1 = (Cluster) e1.nextElement();
+            if (n1 != null && n1.isLeaf()) {
 //System.err.println(" n1  = " + n1);
-        if (c2 instanceof CompositeCluster) {
-          for (Enumeration e2 = c2.depthFirstEnumeration(); e2.hasMoreElements();) {
-            Cluster n2 = (Cluster)e2.nextElement();
-            if (n2 != null && n2.isLeaf()) {
-  //System.err.println(" n1  = " + n1 + "\t n2 = " + n2); 
-              d = distance((RowCluster)n1, (RowCluster)n2, dm);
-              if (cnt++ == 0 || d < dist) {
-                dist = d;
-              }
+                if (c2 instanceof CompositeCluster) {
+                    for (Enumeration e2 = c2.depthFirstEnumeration(); e2.hasMoreElements();) {
+                        Cluster n2 = (Cluster) e2.nextElement();
+                        if (n2 != null && n2.isLeaf()) {
+                            //System.err.println(" n1  = " + n1 + "\t n2 = " + n2); 
+                            d = distance((RowCluster) n1, (RowCluster) n2, dm);
+                            if (cnt++ == 0 || d < dist) {
+                                dist = d;
+                            }
+                        }
+                    }
+                } else if (c2 != null) {
+                    d = distance((RowCluster) n1, (RowCluster) c2, dm);
+                    if (cnt++ == 0 || d < dist) {
+                        dist = d;
+                    }
+                }
             }
-          }
-        } else if (c2 != null) {
-          d = distance((RowCluster)n1, (RowCluster)c2, dm);
-          if (cnt++ == 0 || d < dist) {
-            dist = d;
-          }
         }
-      }
-    } 
-    return dist;
-  }
+        return dist;
+    }
 }
