@@ -35,8 +35,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.InvalidPreferencesFormatException;
 import java.util.prefs.Preferences;
 import javax.swing.*;
@@ -575,7 +573,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
 
             public void actionPerformed(ActionEvent ae) {
                 if (frame == null) {
-                   getFrame(); 
+                    getFrame();
                 }
                 frame.doLayout();
                 frame.repaint();
@@ -589,16 +587,16 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
     /**
      * Return a toolbar with selection set operator choices
      */
-    public void getFrame(){
+    public void getFrame() {
         frame = new JFrame("Tableview");
         Container cpane = frame.getContentPane();
         cpane.setLayout(new BorderLayout());
-        JScrollPane outPane = writeOutPane();        
+        JScrollPane outPane = writeOutPane();
         cpane.add(outPane, BorderLayout.CENTER);
         frame.pack();
     }
-    
-    public JScrollPane writeOutPane(){
+
+    public JScrollPane writeOutPane() {
         JTextArea outArea = new JTextArea(20, 50);
         outArea.setEditable(false);
         JScrollPane outPane = new JScrollPane(outArea,
@@ -623,8 +621,8 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         }
         return outPane;
     }
-    
-    public void toFront(){
+
+    public void toFront() {
         if ((frame.getExtendedState() & Frame.ICONIFIED) == Frame.ICONIFIED) {
             // de-iconify it while leaving the maximized/minimized state flags alone
             frame.setExtendedState(frame.getExtendedState() & ~Frame.ICONIFIED);
@@ -634,6 +632,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         }
         frame.toFront();
     }
+
     private JToolBar getSetToolBar() {
         JToolBar tb = new JToolBar();
         JButton sClear = new JButton("Clear");
@@ -726,7 +725,8 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         ctx.setViewToolBar(frame, text);
         frame.setVisible(true);
     }
-    private void browse(String link){
+
+    private void browse(String link) {
         try {
             URI u = new URI(link);
             if ("file".equalsIgnoreCase(u.getScheme())) {
@@ -738,6 +738,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         } catch (URISyntaxException ex) {
         }
     }
+
     /**
      * Open a view on the current TableModel.
      *

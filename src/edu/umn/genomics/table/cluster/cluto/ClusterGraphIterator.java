@@ -21,77 +21,74 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table.cluster.cluto;
 
-import java.awt.geom.*;
-import edu.umn.genomics.table.*;
-import edu.umn.genomics.graph.*;
-import jcluto.*;
+import edu.umn.genomics.graph.Axis;
+import java.awt.geom.PathIterator;
+import jcluto.ClutoMatrix;
 
 /**
  * ClusterGraphIterator displays a hierarchical clustering of rows from a table.
- * The clustering is displayed as a Dendogram which is drawn as line segments 
- * on a graph widget.  The axes of the graph are zoomable.
- * The row selection of the table is displayed on the dendogram.  
- * The user can trace out a rectangle on the dendogram to edit the 
- * row selection set for the table. 
- * @author       J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/07/28 19:30:19 $  $Name: TableView1_3_2 $ 
- * @since        1.0
- * @see  javax.swing.table.TableModel
- * @see  javax.swing.ListSelectionModel
+ * The clustering is displayed as a Dendogram which is drawn as line segments on
+ * a graph widget. The axes of the graph are zoomable. The row selection of the
+ * table is displayed on the dendogram. The user can trace out a rectangle on
+ * the dendogram to edit the row selection set for the table.
+ *
+ * @author J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/07/28 19:30:19 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
+ * @see javax.swing.table.TableModel
+ * @see javax.swing.ListSelectionModel
  */
 public class ClusterGraphIterator implements PathIterator {
 
-  int ri = 0;
-  int ci = 0;
-  int ncol = 0;
-  ClutoMatrix matrix; 
-  int[] rows = null;
-  Axis xAxis;
-  Axis yAxis;
+    int ri = 0;
+    int ci = 0;
+    int ncol = 0;
+    ClutoMatrix matrix;
+    int[] rows = null;
+    Axis xAxis;
+    Axis yAxis;
 
-  public ClusterGraphIterator(ClutoMatrix matrix, int[] rows, Axis xAxis, Axis yAxis) {
-    ncol = matrix.getColumnCount();
-    this.rows = rows; 
-    this.matrix = matrix;
-    this.xAxis = xAxis;
-    this.yAxis = yAxis;
-  } 
-  
-  public int getWindingRule() {
-    return PathIterator.WIND_EVEN_ODD;
-  }
-
-  public boolean isDone() {
-    if (ri >= rows.length) {
-      return true;
+    public ClusterGraphIterator(ClutoMatrix matrix, int[] rows, Axis xAxis, Axis yAxis) {
+        ncol = matrix.getColumnCount();
+        this.rows = rows;
+        this.matrix = matrix;
+        this.xAxis = xAxis;
+        this.yAxis = yAxis;
     }
-    return false;
-  }
 
-  public void next() {
-    ci++;
-    if (ci >= ncol) {
-      ri++;
-      ci = 0;
+    public int getWindingRule() {
+        return PathIterator.WIND_EVEN_ODD;
     }
-  }
 
-  public int currentSegment(float[] coords) {
-    float val = matrix.getValue(rows[ri],ci); 
-    coords[0] = (float)xAxis.getPosition((double)ci);
-    coords[1] = (float)(yAxis.getSize() - yAxis.getPosition((double)val));
-    return ci == 0 ? PathIterator.SEG_MOVETO : PathIterator.SEG_LINETO;
-  }
+    public boolean isDone() {
+        if (ri >= rows.length) {
+            return true;
+        }
+        return false;
+    }
 
-  public int currentSegment(double[] coords) {
-    float val = matrix.getValue(rows[ri],ci); 
-    coords[0] = xAxis.getPosition((double)ci);
-    coords[1] = (yAxis.getSize() - yAxis.getPosition((double)val));
-    return ci == 0 ? PathIterator.SEG_MOVETO : PathIterator.SEG_LINETO;
-  }
+    public void next() {
+        ci++;
+        if (ci >= ncol) {
+            ri++;
+            ci = 0;
+        }
+    }
 
+    public int currentSegment(float[] coords) {
+        float val = matrix.getValue(rows[ri], ci);
+        coords[0] = (float) xAxis.getPosition((double) ci);
+        coords[1] = (float) (yAxis.getSize() - yAxis.getPosition((double) val));
+        return ci == 0 ? PathIterator.SEG_MOVETO : PathIterator.SEG_LINETO;
+    }
+
+    public int currentSegment(double[] coords) {
+        float val = matrix.getValue(rows[ri], ci);
+        coords[0] = xAxis.getPosition((double) ci);
+        coords[1] = (yAxis.getSize() - yAxis.getPosition((double) val));
+        return ci == 0 ? PathIterator.SEG_MOVETO : PathIterator.SEG_LINETO;
+    }
 }

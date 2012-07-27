@@ -21,122 +21,133 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table.cluster.cluto;
+
+import edu.umn.genomics.table.CellMap;
+import edu.umn.genomics.table.CellMapEvent;
+import edu.umn.genomics.table.CellMapListener;
+import edu.umn.genomics.table.ColumnMap;
 import java.io.Serializable;
 import java.util.Vector;
-import edu.umn.genomics.table.*;
 import jcluto.ClutoTableMatrix;
 
 /**
- * ClutoTableMatrix encapsulates a portion of a TableModel as a ClutoMatrix, and 
+ * ClutoTableMatrix encapsulates a portion of a TableModel as a ClutoMatrix, and
  * also presents the ClutoMatrix as a TableModel.
- * 
- * @author       J Johnson
- * @author       Shlan Tian
- * @version $Revision: 1.1 $ $Date: 2003/07/28 19:30:19 $  $Name: TableView1_3_2 $
+ *
+ * @author J Johnson
+ * @author Shlan Tian
+ * @version $Revision: 1.1 $ $Date: 2003/07/28 19:30:19 $ $Name: TableView1_3_2
+ * $
  * @see javax.swing.table.AbstractTableModel
  * @see jcluto.ClutoMatrix
  */
 public class ClutoColumnMapMatrix extends ClutoTableMatrix implements Serializable {
-  ColumnMap[] cmap = null;
-  /**
-   * Update points whenever a Column finishing getting mapped.
-   */
-  CellMapListener cml = new CellMapListener() {
-    public void cellMapChanged(CellMapEvent e) {
-      if (e.getMapState() == CellMap.INVALID) {
-      } else if (!e.mappingInProgress()) {
+
+    ColumnMap[] cmap = null;
+    /**
+     * Update points whenever a Column finishing getting mapped.
+     */
+    CellMapListener cml = new CellMapListener() {
+
+        public void cellMapChanged(CellMapEvent e) {
+            if (e.getMapState() == CellMap.INVALID) {
+            } else if (!e.mappingInProgress()) {
+                makeMatrix(cmap);
+            }
+        }
+    };
+
+    /**
+     * Create a ClutoMatrix from the table columns represented by the
+     * ColumnMaps. The ColumnMap will provide a number representation for each
+     * value in the TableModel.
+     *
+     * @param cmap an array of ColumnMap from a TableModel that should comprise
+     * the ClutoMarix.
+     */
+    public ClutoColumnMapMatrix(ColumnMap[] cmap) {
+        this.cmap = cmap;
+        for (int c = 0; c < cmap.length; c++) {
+            cmap[c].addCellMapListener(cml);
+        }
         makeMatrix(cmap);
-      }
     }
-  };
-  
-  /**
-   * Create a ClutoMatrix from the table columns represented by the ColumnMaps.  
-   * The ColumnMap will provide a number representation for each value in the TableModel.
-   * @param cmap an array of ColumnMap from a TableModel that should comprise the ClutoMarix.
-   */
-  public ClutoColumnMapMatrix(ColumnMap[] cmap) {  
-    this.cmap = cmap;
-    for(int c = 0; c < cmap.length; c++) {
-      cmap[c].addCellMapListener(cml);
-    }
-    makeMatrix(cmap);
-  }
 
-  public boolean isMapped() {
-    for(int c = 0; c < cmap.length; c++) {
-      if (cmap[c].getState() != CellMap.MAPPED) {
-        return false;
-      }
+    public boolean isMapped() {
+        for (int c = 0; c < cmap.length; c++) {
+            if (cmap[c].getState() != CellMap.MAPPED) {
+                return false;
+            }
+        }
+        return true;
     }
-    return true;
-  }
 
-  /**
-   * Create a ClutoMatrix from the table columns represented by the ColumnMaps.  
-   * The ColumnMap will provide a number representation for each value in the TableModel.
-   * @param cmap an array of ColumnMaps from which to build the ClutoMatrix
-   */
-  private synchronized void makeMatrix(ColumnMap[] cmap) {
-    if (cmap == null || cmap.length < 1) 
-      return;
-    // only proceed if all of the columns are mapped
-    for(int c = 0; c < cmap.length; c++) {
-      if (cmap[c].getState() != CellMap.MAPPED) {
-        return;
-      }
-    }
-    int[] rowptr = null; 
-    int[] rowind = null; 
-    float[] rowval = null; 
-    int ncol = cmap.length;
-    int nrow = cmap[0].getCount();
-    colNames = new Vector(ncol);
-    colNames.setSize(ncol);
-    int nullCnt = 0;
-    // Check if there are any NULL values
-    for(int c = 0; c < cmap.length; c++) {
-      nullCnt += cmap[c].getNullCount();
-      colNames.set(c,cmap[c].getName());
-    }
-    
-    // If null values, create sparse matrix
-    if (nullCnt > 0 ) {
-      // Create rowval array
-      rowval = new float[nrow * ncol - nullCnt];
-      rowptr = new int[nrow+1];
-      rowind = new int[nrow * ncol - nullCnt];
-      int rii = 0;
-      int rvi = 0;
-      for (int r = 0; r < nrow; r++) {
-        rowptr[r] = rii;  
-        for (int c = 0; c < ncol; c++) {
-          float val = (float)cmap[c].getMapValue(r);
-          if (!Float.isNaN(val)) {
-            rowind[rii++] = c;
-            rowval[rvi++] = val;
-          }
+    /**
+     * Create a ClutoMatrix from the table columns represented by the
+     * ColumnMaps. The ColumnMap will provide a number representation for each
+     * value in the TableModel.
+     *
+     * @param cmap an array of ColumnMaps from which to build the ClutoMatrix
+     */
+    private synchronized void makeMatrix(ColumnMap[] cmap) {
+        if (cmap == null || cmap.length < 1) {
+            return;
         }
-      }
-      rowptr[nrow] = rii;
-    // else dense matrix
-    } else {
-      // Create rowval array
-      rowval = new float[nrow * ncol];
-      int rvi = 0;
-      for (int r = 0; r < nrow; r++) {
-        for (int c = 0; c < ncol; c++) {
-          rowval[rvi++] = (float)cmap[c].getMapValue(r);
+        // only proceed if all of the columns are mapped
+        for (int c = 0; c < cmap.length; c++) {
+            if (cmap[c].getState() != CellMap.MAPPED) {
+                return;
+            }
         }
-      }
+        int[] rowptr = null;
+        int[] rowind = null;
+        float[] rowval = null;
+        int ncol = cmap.length;
+        int nrow = cmap[0].getCount();
+        colNames = new Vector(ncol);
+        colNames.setSize(ncol);
+        int nullCnt = 0;
+        // Check if there are any NULL values
+        for (int c = 0; c < cmap.length; c++) {
+            nullCnt += cmap[c].getNullCount();
+            colNames.set(c, cmap[c].getName());
+        }
+
+        // If null values, create sparse matrix
+        if (nullCnt > 0) {
+            // Create rowval array
+            rowval = new float[nrow * ncol - nullCnt];
+            rowptr = new int[nrow + 1];
+            rowind = new int[nrow * ncol - nullCnt];
+            int rii = 0;
+            int rvi = 0;
+            for (int r = 0; r < nrow; r++) {
+                rowptr[r] = rii;
+                for (int c = 0; c < ncol; c++) {
+                    float val = (float) cmap[c].getMapValue(r);
+                    if (!Float.isNaN(val)) {
+                        rowind[rii++] = c;
+                        rowval[rvi++] = val;
+                    }
+                }
+            }
+            rowptr[nrow] = rii;
+            // else dense matrix
+        } else {
+            // Create rowval array
+            rowval = new float[nrow * ncol];
+            int rvi = 0;
+            for (int r = 0; r < nrow; r++) {
+                for (int c = 0; c < ncol; c++) {
+                    rowval[rvi++] = (float) cmap[c].getMapValue(r);
+                }
+            }
+        }
+        rowPtr = rowptr;
+        rowInd = rowind;
+        rowVal = rowval;
+        rowCnt = nrow;
+        colCnt = ncol;
     }
-    rowPtr = rowptr;
-    rowInd = rowind;
-    rowVal = rowval;
-    rowCnt = nrow;
-    colCnt = ncol;
-  }
 }
