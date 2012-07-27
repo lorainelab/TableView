@@ -21,109 +21,127 @@
  * GNU General Public License for more details.
  *
  */
-
 package edu.umn.genomics.table;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Arrays;
 
 /**
  * Stores values for a multidimensional array in a one dimensional array.
- * @author       J Johnson
- * @version      %I%, %G%
- * @since        1.0
+ *
+ * @author J Johnson
+ * @version %I%, %G%
+ * @since 1.0
  */
 public class MultiDimIntArray extends MultiDimArray implements Serializable {
-  int[] vals;
-  /** 
-   * Create a MultiDimIntArray for the given dimensions.
-   * @param dims The dimensions for a multidimensional array.
-   * @exception NullPointerException If dims are null.
-   * @exception IllegalArgumentException If any of dims are < 1.
-   */
-  public MultiDimIntArray(int[] dims) throws NullPointerException, IllegalArgumentException {
-    super(dims);
-    vals = new int[getSize()];
-  }
 
-  /**
-   * Reset all array values to 0.
-   */
-  public void reset() {
-    Arrays.fill(vals,0);
-  }
-  /** 
-   * Get the value at loc in the array.
-   * @param loc The indices of the value in the array.
-   * @return The value of the array at the given indices.
-   */
-  public int get(int[] loc) {
-    return vals[getIndex(loc)];
-  }
-  /** 
-   * Set the value at loc in the array.
-   * @param loc The indices of the value in the array.
-   * @param val The value for the given location in the array.
-   */
-  public void set(int[] loc, int val) {
-    vals[getIndex(loc)] = val;
-  }
-  /** 
-   * Increment the value at loc in the array.
-   * @param loc The indices of the value in the array.
-   * @return The new value of the array at the given indices.
-   */
-  public int incr(int[] loc) {
-    int i = getIndex(loc);
-    vals[i] += 1;
-    return vals[i];
-  }
-  /** 
-   * Get the value at loc in the array.
-   * @param loc The index of the value in the array.
-   * @return The value of the array at the given index.
-   */
-  public int get(int loc) {
-    return vals[loc];
-  }
-  /** 
-   * Set the value at loc in the array.
-   * @param loc The index of the value in the array.
-   * @param val The value for the given location in the array.
-   */
-  public void set(int loc, int val) {
-    vals[loc] = val;
-  }
-  /** 
-   * Increment the value at loc in the array.
-   * @param loc The index of the value in the array.
-   * @return The new value of the array at the given index.
-   */
-  public int incr(int loc) {
-    vals[loc] += 1;
-    return vals[loc];
-  }
-  
-  /** 
-   * Get the maximum value of the array.
-   * @return The maximum value of the array.
-   */
-  public int getMax() {
-    int max = 0;
-    if (vals != null) {
-      for (int i = 0; i < vals.length; i++) {
-        if (max < vals[i])
-          max = vals[i];
-      }
+    int[] vals;
+
+    /**
+     * Create a MultiDimIntArray for the given dimensions.
+     *
+     * @param dims The dimensions for a multidimensional array.
+     * @exception NullPointerException If dims are null.
+     * @exception IllegalArgumentException If any of dims are < 1.
+     */
+    public MultiDimIntArray(int[] dims) throws NullPointerException, IllegalArgumentException {
+        super(dims);
+        vals = new int[getSize()];
     }
-    return max;
-  }
-  /** 
-   * Get the values of the array.
-   * @return The values of the array.
-   */
-  public int[] getValues() {
-    return vals;
-  }
-}
 
+    /**
+     * Reset all array values to 0.
+     */
+    public void reset() {
+        Arrays.fill(vals, 0);
+    }
+
+    /**
+     * Get the value at loc in the array.
+     *
+     * @param loc The indices of the value in the array.
+     * @return The value of the array at the given indices.
+     */
+    public int get(int[] loc) {
+        return vals[getIndex(loc)];
+    }
+
+    /**
+     * Set the value at loc in the array.
+     *
+     * @param loc The indices of the value in the array.
+     * @param val The value for the given location in the array.
+     */
+    public void set(int[] loc, int val) {
+        vals[getIndex(loc)] = val;
+    }
+
+    /**
+     * Increment the value at loc in the array.
+     *
+     * @param loc The indices of the value in the array.
+     * @return The new value of the array at the given indices.
+     */
+    public int incr(int[] loc) {
+        int i = getIndex(loc);
+        vals[i] += 1;
+        return vals[i];
+    }
+
+    /**
+     * Get the value at loc in the array.
+     *
+     * @param loc The index of the value in the array.
+     * @return The value of the array at the given index.
+     */
+    public int get(int loc) {
+        return vals[loc];
+    }
+
+    /**
+     * Set the value at loc in the array.
+     *
+     * @param loc The index of the value in the array.
+     * @param val The value for the given location in the array.
+     */
+    public void set(int loc, int val) {
+        vals[loc] = val;
+    }
+
+    /**
+     * Increment the value at loc in the array.
+     *
+     * @param loc The index of the value in the array.
+     * @return The new value of the array at the given index.
+     */
+    public int incr(int loc) {
+        vals[loc] += 1;
+        return vals[loc];
+    }
+
+    /**
+     * Get the maximum value of the array.
+     *
+     * @return The maximum value of the array.
+     */
+    public int getMax() {
+        int max = 0;
+        if (vals != null) {
+            for (int i = 0; i < vals.length; i++) {
+                if (max < vals[i]) {
+                    max = vals[i];
+                }
+            }
+        }
+        return max;
+    }
+
+    /**
+     * Get the values of the array.
+     *
+     * @return The values of the array.
+     */
+    public int[] getValues() {
+        return vals;
+    }
+}

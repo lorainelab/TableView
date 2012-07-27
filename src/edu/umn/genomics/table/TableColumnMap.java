@@ -21,25 +21,26 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table;
 
-import javax.swing.table.*;
+import javax.swing.table.TableModel;
 
 /**
- * ColumnMap maps the values of a column in a TableModel to a numeric range. 
- * 
- * @author       J Johnson
- * @version $Revision: 1.10 $ $Date: 2002/07/30 19:45:10 $  $Name: TableView1_3_2 $ 
- * @since        1.0
- * @see  javax.swing.table.TableModel 
+ * ColumnMap maps the values of a column in a TableModel to a numeric range.
+ *
+ * @author J Johnson
+ * @version $Revision: 1.10 $ $Date: 2002/07/30 19:45:10 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
+ * @see javax.swing.table.TableModel
  */
 public interface TableColumnMap {
-  /** 
-   * Return a ColumnMap for the column in the TableModel at columnIndex.
-   * @param columnIndex the index of the TableModel column.
-   * @return a ColumnMap for the TableModel column at columnIndex.
-   */
-  public ColumnMap getColumnMap(int columnIndex);
+
+    /**
+     * Return a ColumnMap for the column in the TableModel at columnIndex.
+     *
+     * @param columnIndex the index of the TableModel column.
+     * @return a ColumnMap for the TableModel column at columnIndex.
+     */
+    public ColumnMap getColumnMap(int columnIndex);
 }

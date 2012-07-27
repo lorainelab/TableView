@@ -21,71 +21,68 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table;
 
-import java.io.*;
-import java.util.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.*;
-import org.mozilla.javascript.optimizer.*;
-import org.mozilla.javascript.tools.shell.*;
-import org.mozilla.javascript.tools.ToolErrorReporter;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
- * ScriptInterpreter is the interface for script interpreters allowing 
- * the connection to input, output, and error streams and 
- * variables mapped to java Objects.
- * @author       J Johnson
- * @version $Revision: 1.2 $ $Date: 2004/08/02 20:23:46 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ * ScriptInterpreter is the interface for script interpreters allowing the
+ * connection to input, output, and error streams and variables mapped to java
+ * Objects.
+ *
+ * @author J Johnson
+ * @version $Revision: 1.2 $ $Date: 2004/08/02 20:23:46 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public interface ScriptInterpreter extends Runnable {
-  static String[] pkgs = {"edu.umn.genomics.table",
-                          "edu.umn.genomics.table.loaders",
-                          "edu.umn.genomics.table.cluster",
-                          "edu.umn.genomics.table.cluster.cluto",
-                          "edu.umn.genomics.table.dv",
-                          "edu.umn.genomics.table.dv.j3d",
-                          "edu.umn.genomics.graph",
-                          "edu.umn.genomics.graph.swing",
-                          "edu.umn.genomics.graph.util",
-                          "edu.umn.genomics.bi.dbutil",
-                          "edu.umn.genomics.file",
-                          "edu.umn.genomics.component",
-                          "edu.umn.genomics.layout",
-                          "java.lang",
-                          "java.util",
-                          "java.util.regex",
-                          "java.text",
-                          "java.io",
-                          "java.nio",
-                          "java.net",
-                          "java.lang.reflect",
-                          "java.beans",
-                          "java.sql",
-                          "javax.sql",
-                          "java.math",
-                          "javax.swing",
-                          "javax.swing.event",
-                          "javax.swing.table",
-                          "javax.swing.tree",
-                          "javax.swing.text",
-                          "java.awt",
-                          "java.awt.event",
-                         };
-  public static List packageList = Arrays.asList(pkgs);
-  /**
-   * Set the streams for input to and output from the script interpreter,
-   * and initialize global variables.
-   * @param in The input stream for the script interpreter.
-   * @param out The output stream from the script interpreter.
-   * @param err The error stream for the script interpreter.
-   * @param vars A map of global variable names to the Objects they represent.
-   */
-  public void initialize(InputStream in, PrintStream out, PrintStream err, Map vars);
+
+    static String[] pkgs = {"edu.umn.genomics.table",
+        "edu.umn.genomics.table.loaders",
+        "edu.umn.genomics.table.cluster",
+        "edu.umn.genomics.table.cluster.cluto",
+        "edu.umn.genomics.table.dv",
+        "edu.umn.genomics.table.dv.j3d",
+        "edu.umn.genomics.graph",
+        "edu.umn.genomics.graph.swing",
+        "edu.umn.genomics.graph.util",
+        "edu.umn.genomics.bi.dbutil",
+        "edu.umn.genomics.file",
+        "edu.umn.genomics.component",
+        "edu.umn.genomics.layout",
+        "java.lang",
+        "java.util",
+        "java.util.regex",
+        "java.text",
+        "java.io",
+        "java.nio",
+        "java.net",
+        "java.lang.reflect",
+        "java.beans",
+        "java.sql",
+        "javax.sql",
+        "java.math",
+        "javax.swing",
+        "javax.swing.event",
+        "javax.swing.table",
+        "javax.swing.tree",
+        "javax.swing.text",
+        "java.awt",
+        "java.awt.event",};
+    public static List packageList = Arrays.asList(pkgs);
+
+    /**
+     * Set the streams for input to and output from the script interpreter, and
+     * initialize global variables.
+     *
+     * @param in The input stream for the script interpreter.
+     * @param out The output stream from the script interpreter.
+     * @param err The error stream for the script interpreter.
+     * @param vars A map of global variable names to the Objects they represent.
+     */
+    public void initialize(InputStream in, PrintStream out, PrintStream err, Map vars);
 }

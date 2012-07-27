@@ -21,29 +21,29 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table;
 
 /**
- * VirtualColumn represents a column a TableModel.  It may be used 
- * to index into a Column in an underlying table, or as a formula 
- * column that generates its values via a script.
- * 
- * @author       J Johnson
- * @version $Revision: 1.4 $ $Date: 2003/07/28 15:07:18 $  $Name: TableView1_3_2 $ 
- * @since        1.0
- * @see  javax.swing.table.TableModel 
- * @see  edu.umn.genomics.table.VirtualTableModel
+ * VirtualColumn represents a column a TableModel. It may be used to index into
+ * a Column in an underlying table, or as a formula column that generates its
+ * values via a script.
+ *
+ * @author J Johnson
+ * @version $Revision: 1.4 $ $Date: 2003/07/28 15:07:18 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
+ * @see javax.swing.table.TableModel
+ * @see edu.umn.genomics.table.VirtualTableModel
  */
 public interface VirtualColumn extends VirtualCell {
 
     /**
-     * Returns the most specific superclass for all the cell values
-     * in the column.  This is used by the <code>JTable</code> to set up a
-     * default renderer and editor for the column.
+     * Returns the most specific superclass for all the cell values in the
+     * column. This is used by the
+     * <code>JTable</code> to set up a default renderer and editor for the
+     * column.
      *
      * @return the common ancestor class of the object values in the model.
      */
-  public Class getColumnClass();
+    public Class getColumnClass();
 }

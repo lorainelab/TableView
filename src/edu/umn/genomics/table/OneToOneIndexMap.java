@@ -21,140 +21,158 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table;
 
 /**
- * Provides a one to one mapping between two sets of indices,  
- * with an array of indices that maps each element in the source list
- * to an element in the destination list.  
- * This provides a way to access a list or table in a certain order 
- * without actually sorting the elements of the list or the rows of the table.
+ * Provides a one to one mapping between two sets of indices, with an array of
+ * indices that maps each element in the source list to an element in the
+ * destination list. This provides a way to access a list or table in a certain
+ * order without actually sorting the elements of the list or the rows of the
+ * table.
  *
- * @author       J Johnson
- * @version $Revision: 1.5 $ $Date: 2004/02/27 17:17:24 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ * @author J Johnson
+ * @version $Revision: 1.5 $ $Date: 2004/02/27 17:17:24 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public class OneToOneIndexMap implements IndexMap, Cloneable {
-  int srcToDst[] = null;
-  int dstToSrc[] = null;
 
-  /**
-   * Create a one to one mapping between two sets of indices.
-   * @see #setIndex
-   */
-  public OneToOneIndexMap() {
-  }
+    int srcToDst[] = null;
+    int dstToSrc[] = null;
 
-  /**
-   * Create a one to one mapping between two sets of indices.
-   * @param index the array of indices that each element in the source list  
-   * will map to in the destination list.
-   */
-  public OneToOneIndexMap(int index[]) {
-    setIndex(index);
-  }
-
-  public Object clone() {
-    OneToOneIndexMap im = null;
-    try {
-      im = (OneToOneIndexMap)super.clone();
-    } catch (CloneNotSupportedException ex) {
-      im = new OneToOneIndexMap();
+    /**
+     * Create a one to one mapping between two sets of indices.
+     *
+     * @see #setIndex
+     */
+    public OneToOneIndexMap() {
     }
-    im.srcToDst = srcToDst != null ? (int[])srcToDst.clone() : null;
-    im.dstToSrc = dstToSrc != null ? (int[])dstToSrc.clone() : null;
-    return im;
-  }
 
-  /**
-   *  Return true if this is a one to one mapping.
-   * @return true if this is a one to one mapping, else false.
-   */
-  public boolean isOneToOne() {
-    return true;
-  }
-  /**
-   * Get the size of the source index.
-   * @return the size of the source index.
-   */
-  public int getSrcSize() {
-    return srcToDst != null ? srcToDst.length : 0;
-  }
-  /**
-   * Get the size of the destination index.
-   * @return the size of the destination index.
-   */
-  public int getDstSize() {
-    return srcToDst != null ? srcToDst.length : 0;
-  }
-  /**
-   * Return the source index for the given destination index.
-   * @param dstIndex the index into the destination list.
-   * @return the source index mapped from the destination index.
-   */
-  public int getSrc(int dstIndex) { // throw range error?
-    if (dstIndex < 0 || srcToDst == null || dstIndex >= srcToDst.length)
-      return -1;
-    return srcToDst[dstIndex];
-  }
-  /**
-   * Return the destination index for the given source index.
-   * @param srcIndex the index into the source list.
-   * @return the destination index mapped from the source index.
-   */
-  public int getDst(int srcIndex) { // throw range error?
-    if (srcIndex < 0 || srcToDst == null || srcIndex >= srcToDst.length)
-      return -1;
-    if (dstToSrc == null) {
-      dstToSrc = new int[srcToDst.length];
-      for (int i = 0; i < srcToDst.length; i++) {
-        dstToSrc[srcToDst[i]] = i;
-      }
-    }    
-    return dstToSrc[srcIndex];
-  }
-  /**
-   * Return the source indices for the given destination index.
-   * @param dstIndex the index into the destination list.
-   * @return the source indices mapped from the destination index.
-   */
-  public int[] getSrcs(int dstIndex) { // throw range error?
-    int retVal[] = new int[1];
-    retVal[0] =  getSrc(dstIndex);
-    return retVal;
-  }
-  /**
-   * Return the destination indices for the given source index.
-   * @param srcIndex the index into the source list.
-   * @return the destination indices mapped from the source index.
-   */
-  public int[] getDsts(int srcIndex) { // throw range error?
-    int retVal[] = new int[1];
-    retVal[0] =  getDst(srcIndex);
-    return retVal;
-  }
+    /**
+     * Create a one to one mapping between two sets of indices.
+     *
+     * @param index the array of indices that each element in the source list
+     * will map to in the destination list.
+     */
+    public OneToOneIndexMap(int index[]) {
+        setIndex(index);
+    }
 
-  /**
-   * Set the array of indices that each element in the source list  
-   * will map to in the destination list.
-   * @param index the array of indices that each element in the source list  
-   * will map to in the destination list.
-   */
-  public void setIndex(int index[]) {
-    srcToDst = index;
-    dstToSrc = null;
-  }
+    public Object clone() {
+        OneToOneIndexMap im = null;
+        try {
+            im = (OneToOneIndexMap) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            im = new OneToOneIndexMap();
+        }
+        im.srcToDst = srcToDst != null ? (int[]) srcToDst.clone() : null;
+        im.dstToSrc = dstToSrc != null ? (int[]) dstToSrc.clone() : null;
+        return im;
+    }
 
-  /**
-   * Get the array of indices that each element in the source list  
-   * will map to in the destination list.
-   * @return the array of indices that each element in the source list  
-   * will map to in the destination list.
-   */
-  public int[] getIndex() {
-    return srcToDst;
-  }
+    /**
+     * Return true if this is a one to one mapping.
+     *
+     * @return true if this is a one to one mapping, else false.
+     */
+    public boolean isOneToOne() {
+        return true;
+    }
 
+    /**
+     * Get the size of the source index.
+     *
+     * @return the size of the source index.
+     */
+    public int getSrcSize() {
+        return srcToDst != null ? srcToDst.length : 0;
+    }
+
+    /**
+     * Get the size of the destination index.
+     *
+     * @return the size of the destination index.
+     */
+    public int getDstSize() {
+        return srcToDst != null ? srcToDst.length : 0;
+    }
+
+    /**
+     * Return the source index for the given destination index.
+     *
+     * @param dstIndex the index into the destination list.
+     * @return the source index mapped from the destination index.
+     */
+    public int getSrc(int dstIndex) { // throw range error?
+        if (dstIndex < 0 || srcToDst == null || dstIndex >= srcToDst.length) {
+            return -1;
+        }
+        return srcToDst[dstIndex];
+    }
+
+    /**
+     * Return the destination index for the given source index.
+     *
+     * @param srcIndex the index into the source list.
+     * @return the destination index mapped from the source index.
+     */
+    public int getDst(int srcIndex) { // throw range error?
+        if (srcIndex < 0 || srcToDst == null || srcIndex >= srcToDst.length) {
+            return -1;
+        }
+        if (dstToSrc == null) {
+            dstToSrc = new int[srcToDst.length];
+            for (int i = 0; i < srcToDst.length; i++) {
+                dstToSrc[srcToDst[i]] = i;
+            }
+        }
+        return dstToSrc[srcIndex];
+    }
+
+    /**
+     * Return the source indices for the given destination index.
+     *
+     * @param dstIndex the index into the destination list.
+     * @return the source indices mapped from the destination index.
+     */
+    public int[] getSrcs(int dstIndex) { // throw range error?
+        int retVal[] = new int[1];
+        retVal[0] = getSrc(dstIndex);
+        return retVal;
+    }
+
+    /**
+     * Return the destination indices for the given source index.
+     *
+     * @param srcIndex the index into the source list.
+     * @return the destination indices mapped from the source index.
+     */
+    public int[] getDsts(int srcIndex) { // throw range error?
+        int retVal[] = new int[1];
+        retVal[0] = getDst(srcIndex);
+        return retVal;
+    }
+
+    /**
+     * Set the array of indices that each element in the source list will map to
+     * in the destination list.
+     *
+     * @param index the array of indices that each element in the source list
+     * will map to in the destination list.
+     */
+    public void setIndex(int index[]) {
+        srcToDst = index;
+        dstToSrc = null;
+    }
+
+    /**
+     * Get the array of indices that each element in the source list will map to
+     * in the destination list.
+     *
+     * @return the array of indices that each element in the source list will
+     * map to in the destination list.
+     */
+    public int[] getIndex() {
+        return srcToDst;
+    }
 }
