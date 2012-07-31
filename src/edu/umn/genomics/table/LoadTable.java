@@ -50,6 +50,7 @@ import javax.swing.table.TableModel;
  */
 public class LoadTable extends AbstractTableSource {
 
+    TableView tv = new TableView();
     JTabbedPane tpane;
     JButton loadBtn = new JButton("load");
     JButton mergeBtn = new JButton("merge");
@@ -239,7 +240,10 @@ public class LoadTable extends AbstractTableSource {
             }
         }
     }
-
+    
+    public TableView getTableView(){
+        return tv;
+    }
     /**
      * Return the names of all registered Table Loaders.
      *
