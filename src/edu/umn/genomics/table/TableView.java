@@ -348,7 +348,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         return ctx;
     }
 
-    private LoadTable getLoadTable() {
+    public LoadTable getLoadTable() {
         if (loadTable == null) {
             loadTable = new LoadTable();
         }
