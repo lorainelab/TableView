@@ -84,6 +84,7 @@ public class ClutoLoader extends AbstractTableSource implements OpenTableSource 
                         try {
                             openTableSource();
                         } catch (Exception ex) {
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -100,6 +101,7 @@ public class ClutoLoader extends AbstractTableSource implements OpenTableSource 
                                 path.setText(file.getAbsolutePath());
                                 openTableSource();
                             } catch (Exception ex) {
+                                ExceptionHandler.popupException(""+ex);
                             }
                         } else {
                             System.err.println("Open command cancelled by user.");
@@ -130,6 +132,7 @@ public class ClutoLoader extends AbstractTableSource implements OpenTableSource 
                         try {
                             addRowLabels();
                         } catch (Exception ex) {
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -146,6 +149,7 @@ public class ClutoLoader extends AbstractTableSource implements OpenTableSource 
                                 rowLabelPath.setText(file.getAbsolutePath());
                                 addRowLabels();
                             } catch (Exception ex) {
+                                ExceptionHandler.popupException(""+ex);
                             }
                         } else {
                             System.err.println("Open command cancelled by user.");
@@ -176,6 +180,7 @@ public class ClutoLoader extends AbstractTableSource implements OpenTableSource 
                         try {
                             addColLabels();
                         } catch (Exception ex) {
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -192,6 +197,7 @@ public class ClutoLoader extends AbstractTableSource implements OpenTableSource 
                                 colLabelPath.setText(file.getAbsolutePath());
                                 addColLabels();
                             } catch (Exception ex) {
+                                ExceptionHandler.popupException(""+ex);
                             }
                         } else {
                             System.err.println("Open command cancelled by user.");
@@ -254,10 +260,7 @@ public class ClutoLoader extends AbstractTableSource implements OpenTableSource 
                         JOptionPane.ERROR_MESSAGE);
             }
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog((Window) getTopLevelAncestor(),
-                    ex,
-                    "Unable to open row labels: " + rowLabelPath.getText(),
-                    JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -277,10 +280,7 @@ public class ClutoLoader extends AbstractTableSource implements OpenTableSource 
                         JOptionPane.ERROR_MESSAGE);
             }
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog((Window) getTopLevelAncestor(),
-                    ex,
-                    "Unable to open column labels: " + colLabelPath.getText(),
-                    JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -337,12 +337,7 @@ public class ClutoLoader extends AbstractTableSource implements OpenTableSource 
         try {
             openTableSource(path.getText());
         } catch (Exception ex) {
-            System.err.println(" openTableSource " + ex);
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog((Window) getTopLevelAncestor(),
-                    ex,
-                    "Unable to open matrix file",
-                    JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 

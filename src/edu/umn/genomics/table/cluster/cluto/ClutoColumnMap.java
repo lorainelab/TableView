@@ -25,6 +25,7 @@ package edu.umn.genomics.table.cluster.cluto;
 
 import edu.umn.genomics.table.AbstractColumnMap;
 import edu.umn.genomics.table.CellMap;
+import edu.umn.genomics.table.ExceptionHandler;
 import edu.umn.genomics.table.SetOperator;
 import java.io.Serializable;
 import javax.swing.ListSelectionModel;
@@ -222,6 +223,7 @@ public class ClutoColumnMap extends AbstractColumnMap
         try {
             return (double) ((ClutoTableMatrix) tm).getValue(row, colIndex);
         } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         return Double.NaN;
     }

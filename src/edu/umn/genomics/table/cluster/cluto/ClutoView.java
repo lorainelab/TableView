@@ -141,6 +141,7 @@ public class ClutoView extends AbstractTableModelView
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException iex) {
+                        ExceptionHandler.popupException(""+iex);
                     }
                 }
             }
@@ -161,7 +162,7 @@ public class ClutoView extends AbstractTableModelView
                     setComponent(getSolutionViews(clutoSolution, tParam, listIndex));
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                ExceptionHandler.popupException(""+ex);
                 setComponent(new JLabel(ex.toString()));
                 // display error message
             }
@@ -320,8 +321,7 @@ public class ClutoView extends AbstractTableModelView
             }
             ValidateClutoParams.isValid(cMat, getTransParams(), getClutoParams());
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(getTopLevelAncestor(), ex.toString(),
-                    "Invalid Clustering Parameters", JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ex);
             return;
         }
         // create new SolutionPanel solPanel
@@ -345,8 +345,7 @@ public class ClutoView extends AbstractTableModelView
             }
             ValidateClutoParams.isValid(cMat, getTransParams(), getClutoParams());
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(getTopLevelAncestor(), ex.toString(),
-                    "Invalid Clustering Parameters", JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ex);
             return;
         }
         // create new SolutionPanel solPanel
@@ -686,6 +685,7 @@ public class ClutoView extends AbstractTableModelView
         try {
             fm = this.getGraphics().getFontMetrics();
         } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         ClutoMatrixView cmv = new ClutoMatrixView(clutoSolution, cMat, ctx, tm, fm, true, .33f);
         addSolutionListener(clutoSolution, cmv);
@@ -698,6 +698,7 @@ public class ClutoView extends AbstractTableModelView
         try {
             fm = this.getGraphics().getFontMetrics();
         } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         ClutoMatrixView cmv = new ClutoMatrixView(clutoSolution, cMat, ctx, tm, fm);
         addSolutionListener(clutoSolution, cmv);
@@ -710,6 +711,7 @@ public class ClutoView extends AbstractTableModelView
         try {
             fm = this.getGraphics().getFontMetrics();
         } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         ClutoMatrixView cmv = new ClutoMatrixView(clutoSolution, cMat, ctx, tm, fm, false, 1.f);
         addSolutionListener(clutoSolution, cmv);
@@ -727,7 +729,7 @@ public class ClutoView extends AbstractTableModelView
         try {
             init();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -1067,7 +1069,7 @@ public class ClutoView extends AbstractTableModelView
             jf.pack();
             jf.setVisible(true);
         } catch (Exception ex) {
-            System.err.println("" + ex);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 }
