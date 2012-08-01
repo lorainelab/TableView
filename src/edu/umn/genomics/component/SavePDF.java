@@ -105,7 +105,12 @@ public class SavePDF {
         int returnVal = chooser.showSaveDialog(c);
         boolean status = false;
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            final File file = chooser.getSelectedFile();
+            File file = chooser.getSelectedFile();
+            String name = file.getAbsolutePath();
+            if(!(name.substring(name.length()-4 , name.length()).equalsIgnoreCase(".pdf"))){
+                name = name.concat(".pdf");
+                file = new File(name);
+            }
             int iw = w;
             int ih = h;
             try {
