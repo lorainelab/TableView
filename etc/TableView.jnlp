@@ -12,7 +12,7 @@
       href="TableView.jnlp">
     <information>
         <title>TableView @jnlp.version@</title>
-        <vendor>Center for Computational Genomics and Bioinformatics, University of Minnesota</vendor>
+        <vendor>BioViz Projects</vendor>
         <homepage href="TableViewUserGuide.html"/>
         <description>TableView </description>
         <description kind="short">view data tables</description>

@@ -21,46 +21,47 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table.cluster;
 
-import java.util.*;
-import javax.swing.*;
-import javax.swing.tree.*;
-import javax.swing.table.*;
+import javax.swing.table.TableModel;
 
 /**
  * A RowCluster is a leaf node that points a row in the data table.
- * @author       J Johnson
- * @version $Revision: 1.2 $ $Date: 2002/07/30 19:45:15 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ *
+ * @author J Johnson
+ * @version $Revision: 1.2 $ $Date: 2002/07/30 19:45:15 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
 public class RowCluster extends Cluster {
-  TableModel tm = null;
-  int rowIndex = 0;
-  int cols[] = null;
-  public RowCluster(TableModel tm, int rowIndex, int columnIndices[]) {
-    this.tm = tm;
-    this.rowIndex = rowIndex;
-    this.cols = columnIndices;
-    setAllowsChildren(false);
-  }
-  public int getIndex() {
-    return rowIndex;
-  }
-  public double[] getValues() {
-    double vals[] = new double[cols.length];
-    for (int i = 0; i < cols.length; i++) {
-      Object o = tm.getValueAt(rowIndex,cols[i]);
-      if (o instanceof Number) {
-        vals[i] = ((Number)o).doubleValue();
-      }
-    }
-    return vals;
-  }
-  public String toString() {
-    return "" + rowIndex;
-  }
-}
 
+    TableModel tm = null;
+    int rowIndex = 0;
+    int cols[] = null;
+
+    public RowCluster(TableModel tm, int rowIndex, int columnIndices[]) {
+        this.tm = tm;
+        this.rowIndex = rowIndex;
+        this.cols = columnIndices;
+        setAllowsChildren(false);
+    }
+
+    public int getIndex() {
+        return rowIndex;
+    }
+
+    public double[] getValues() {
+        double vals[] = new double[cols.length];
+        for (int i = 0; i < cols.length; i++) {
+            Object o = tm.getValueAt(rowIndex, cols[i]);
+            if (o instanceof Number) {
+                vals[i] = ((Number) o).doubleValue();
+            }
+        }
+        return vals;
+    }
+
+    public String toString() {
+        return "" + rowIndex;
+    }
+}

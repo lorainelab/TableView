@@ -21,26 +21,25 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table;
 
-import java.io.Serializable;
 import java.util.EventListener;
 
 /**
  * Listener for StatusEvents.
- * 
- * @author       J Johnson
- * @version $Revision: 1.1 $ $Date: 2002/09/18 17:57:55 $  $Name: TableView1_3_2 $ 
- * @since        1.0
- * @see  edu.umn.genomics.table.CellMap
- * @see  edu.umn.genomics.table.CellMapEvent
+ *
+ * @author J Johnson
+ * @version $Revision: 1.1 $ $Date: 2002/09/18 17:57:55 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
+ * @see edu.umn.genomics.table.CellMap
+ * @see edu.umn.genomics.table.CellMapEvent
  */
 public interface StatusListener extends EventListener {
-  /*
-   * Called to notify the Listener of a status event.
-   * @param e the status event.
-   */
-  public void statusChanged(StatusEvent e);
+    /*
+     * Called to notify the Listener of a status event. @param e the status
+     * event.
+     */
+
+    public void statusChanged(StatusEvent e);
 }

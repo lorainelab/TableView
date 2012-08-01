@@ -21,16 +21,15 @@
  * GNU General Public License for more details.
  * 
  */
-
-
 package edu.umn.genomics.table;
 
 /**
- * @author       J Johnson
- * @version $Revision: 1.1 $ $Date: 2004/08/02 20:23:44 $  $Name: TableView1_3_2 $ 
- * @since        1.0
+ * @author J Johnson
+ * @version $Revision: 1.1 $ $Date: 2004/08/02 20:23:44 $ $Name: TableView1_3_2
+ * $
+ * @since 1.0
  */
-
 public interface PartitionLabeler {
-  public String getPartitionName(int index);
+
+    public String getPartitionName(int index);
 }

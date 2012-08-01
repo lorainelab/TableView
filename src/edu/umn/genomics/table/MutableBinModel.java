@@ -21,18 +21,14 @@
  * GNU General Public License for more details.
  *
  */
-
 package edu.umn.genomics.table;
-
-import java.io.Serializable;
-import java.util.*;
-
 
 /**
  * BinModel.
- * @author       J Johnson
- * @version      %I%, %G%
- * @since        1.0
+ *
+ * @author J Johnson
+ * @version %I%, %G%
+ * @since 1.0
  */
-public interface MutableBinModel extends RangeBinModel,PartitionBinModel {
+public interface MutableBinModel extends RangeBinModel, PartitionBinModel {
 }

@@ -21,75 +21,83 @@
  * GNU General Public License for more details.
  *
  */
-
 package edu.umn.genomics.table;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * Divides a range of values into bins.
- * @author       J Johnson
- * @version      %I%, %G%
- * @since        1.0
+ *
+ * @author J Johnson
+ * @version %I%, %G%
+ * @since 1.0
  */
 public interface RangeBinModel extends BinModel {
-  /**
-   * Set the number of bins and evenly divide up the range into the bins.
-   * @param binCount the number of bins.
-   */ 
-  public void setBins(int binCount);
-  /**
-   * Divide the range into bins starting from the startingValue with other 
-   * dividers being multiples of the increment from the startingValue.
-   * @param startingValue the reference value for a bin.
-   * @param increment the increment to the start of the next bin.
-   */ 
-  public void setBins(double startingValue, double increment);
-  /**
-   * Divide the range into bins starting from the startingValue with other 
-   * dividers being multiples of the increment from the startingValue
-   * Limit the bins to the given binCount.
-   * Set the number of bins and evenly divide up the range into the bins.
-   * @param startingValue the reference value for a bin.
-   * @param increment the increment to the start of the next bin.
-   * @param binCount the number of bins.
-   */ 
-  public void setBins(double startingValue, double increment, int binCount);
-  /**
-   * Set the bin divider locations.
-   * @param dividers the dividers between bins, with bins 
-   *        containing values: dividers[0] <= value < dividers[n+1]  and 
-   *        the last bin containing values: dividers[n-1] <= value < dividers[n]
-   */ 
-  public void setBins(double dividers[]);
 
-  /** 
-   * Return the minimum value included in this bin.
-   * @param binIndex the index of bin.
-   * @return the  minimum value included in this bin.
-   */
-  public double getBinMin(int binIndex);
+    /**
+     * Set the number of bins and evenly divide up the range into the bins.
+     *
+     * @param binCount the number of bins.
+     */
+    public void setBins(int binCount);
 
-  /** 
-   * Return the maximum value included in this bin.
-   * @param binIndex the index of bin.
-   * @return the  maximum value included in this bin.
-   */
-  public double getBinMax(int binIndex);
+    /**
+     * Divide the range into bins starting from the startingValue with other
+     * dividers being multiples of the increment from the startingValue.
+     *
+     * @param startingValue the reference value for a bin.
+     * @param increment the increment to the start of the next bin.
+     */
+    public void setBins(double startingValue, double increment);
 
-  /** 
-   * Return the array of values that divide the bins.
-   * This will be the integral values for a PartitionIndexMap.
-   * @return the dividers array separating the bins.  
-   */
-  public double[] getDividers();
+    /**
+     * Divide the range into bins starting from the startingValue with other
+     * dividers being multiples of the increment from the startingValue Limit
+     * the bins to the given binCount. Set the number of bins and evenly divide
+     * up the range into the bins.
+     *
+     * @param startingValue the reference value for a bin.
+     * @param increment the increment to the start of the next bin.
+     * @param binCount the number of bins.
+     */
+    public void setBins(double startingValue, double increment, int binCount);
 
-  /** 
-   * Return the index of the bin in which a value falls.
-   * @param value the value to place in a bin.
-   * @return the index of the bin into which the value would be placed.
-   */
-  public int getBin(double value);
+    /**
+     * Set the bin divider locations.
+     *
+     * @param dividers the dividers between bins, with bins containing values:
+     * dividers[0] <= value < dividers[n+1] and the last bin containing values:
+     * dividers[n-1] <= value < dividers[n]
+     */
+    public void setBins(double dividers[]);
 
+    /**
+     * Return the minimum value included in this bin.
+     *
+     * @param binIndex the index of bin.
+     * @return the minimum value included in this bin.
+     */
+    public double getBinMin(int binIndex);
+
+    /**
+     * Return the maximum value included in this bin.
+     *
+     * @param binIndex the index of bin.
+     * @return the maximum value included in this bin.
+     */
+    public double getBinMax(int binIndex);
+
+    /**
+     * Return the array of values that divide the bins. This will be the
+     * integral values for a PartitionIndexMap.
+     *
+     * @return the dividers array separating the bins.
+     */
+    public double[] getDividers();
+
+    /**
+     * Return the index of the bin in which a value falls.
+     *
+     * @param value the value to place in a bin.
+     * @return the index of the bin into which the value would be placed.
+     */
+    public int getBin(double value);
 }
