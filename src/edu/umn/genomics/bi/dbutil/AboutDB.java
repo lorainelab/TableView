@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.bi.dbutil;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import java.lang.reflect.Method;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -30,6 +31,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -69,6 +71,7 @@ public class AboutDB {
                     rows.add(cols);
                 }
             } catch (Throwable ex) {
+                ExceptionHandler.popupException(""+ex);
             }
         }
         for (int i = 0; i < m.length; i++) {
@@ -81,6 +84,7 @@ public class AboutDB {
                     rows.add(cols);
                 }
             } catch (Throwable ex) {
+                ExceptionHandler.popupException(""+ex);
             }
         }
         for (int i = 0; i < m.length; i++) {
@@ -93,6 +97,7 @@ public class AboutDB {
                     rows.add(cols);
                 }
             } catch (Throwable ex) {
+                ExceptionHandler.popupException(ex.getMessage());
             }
         }
         return new DefaultTableModel(rows, colNames);
@@ -122,6 +127,7 @@ public class AboutDB {
                     rows.add(cols);
                 }
             } catch (Throwable ex) {
+                ExceptionHandler.popupException(""+ex);
             }
         }
         return new DefaultTableModel(rows, colNames);
@@ -155,6 +161,7 @@ public class AboutDB {
                     rows.add(cols);
                 }
             } catch (Throwable ex) {
+                ExceptionHandler.popupException(""+ex);
             }
         }
         return new DefaultTableModel(rows, colNames);
@@ -188,6 +195,7 @@ public class AboutDB {
                     rows.add(cols);
                 }
             } catch (Throwable ex) {
+                ExceptionHandler.popupException(""+ex);
             }
         }
         return new DefaultTableModel(rows, colNames);
@@ -213,6 +221,7 @@ public class AboutDB {
                 rows.add(cols);
             }
         } catch (Throwable ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         return new DefaultTableModel(rows, colNames);
     }
@@ -252,6 +261,7 @@ public class AboutDB {
                     }
                 }
             } catch (Throwable ex) {
+                ExceptionHandler.popupException(""+ex);
             }
         }
         return new DefaultTableModel(rows, colNames);
@@ -285,6 +295,7 @@ public class AboutDB {
                 }
             } catch (Exception ex) {
                 sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t" + ex);
+                ExceptionHandler.popupException(""+ex);
             }
         }
         for (int i = 0; i < m.length; i++) {
@@ -296,6 +307,7 @@ public class AboutDB {
                 }
             } catch (Exception ex) {
                 sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t" + ex);
+                ExceptionHandler.popupException(""+ex);
             }
         }
         for (int i = 0; i < m.length; i++) {
@@ -307,6 +319,7 @@ public class AboutDB {
                 }
             } catch (Exception ex) {
                 sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t" + ex);
+                ExceptionHandler.popupException(""+ex);
             }
         }
         sb.append("Capabilities");
@@ -319,6 +332,7 @@ public class AboutDB {
                 }
             } catch (Exception ex) {
                 sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t" + ex);
+                ExceptionHandler.popupException(""+ex);
             }
         }
         sb.append("\n");
@@ -334,6 +348,7 @@ public class AboutDB {
                 }
             } catch (Exception ex) {
                 sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t" + ex);
+                ExceptionHandler.popupException(""+ex);
             }
         }
         sb.append("\n");
@@ -349,6 +364,7 @@ public class AboutDB {
                 }
             } catch (Exception ex) {
                 sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t" + ex);
+                ExceptionHandler.popupException(""+ex);
             }
         }
         sb.append("\n");
@@ -362,10 +378,12 @@ public class AboutDB {
                         sb.append(m[i].getName() + ":");
                         sb.append(printResultSet(rs)).append("\n");
                     } catch (Exception ex) {
+                        ExceptionHandler.popupException(""+ex);
                     }
                 }
             } catch (Exception ex) {
                 sb.append(" " + m[i].getName() + fill.substring(0, nl - m[i].getName().length()) + "\t" + ex);
+                ExceptionHandler.popupException(""+ex);
             }
         }
         return sb.toString();
@@ -384,12 +402,13 @@ public class AboutDB {
             for (SQLException sqlex = (SQLException) ex; sqlex != null; sqlex = sqlex.getNextException()) {
                 System.err.println(sqlex.toString());
             }
-            ex.printStackTrace();
+            ExceptionHandler.popupException(""+ex);
         } catch (Exception ex) {
             System.err.println("AboutDB.getTableModel " + ex);
-            ex.printStackTrace();
+            ExceptionHandler.popupException(""+ex);
         } catch (Throwable t) {
             System.err.println("AboutDB.getTableModel " + t);
+            ExceptionHandler.popupException(""+t);
         }
         return new DefaultTableModel();
     }
@@ -423,7 +442,7 @@ public class AboutDB {
                 }
             }
         } catch (Exception ex) {
-            System.err.println("\nException: " + ex + "\n");
+            ExceptionHandler.popupException(""+ex);
         }
         return sb.toString();
     }

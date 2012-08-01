@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.bi.dbutil;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
@@ -58,7 +59,7 @@ public class SQLTypeListRenderer extends DefaultListCellRenderer {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             }
         } catch (Exception ex) {
-            System.err.println(this + " " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
         return this;
     }

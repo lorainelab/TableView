@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.bi.dbutil;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
 
@@ -54,7 +55,7 @@ public class DBUserList extends DefaultListModel {
                     addElement(dbs[i]);
                 }
             } catch (Throwable t) {
-                System.err.println(t);
+                ExceptionHandler.popupException(""+t);
             }
         }
     }
@@ -81,6 +82,7 @@ public class DBUserList extends DefaultListModel {
                 DBPreferences.deleteDBAccount((DBConnectParams) getElementAt(index));
                 DBPreferences.saveDBAccount((DBConnectParams) obj);
             } catch (Throwable t) {
+                ExceptionHandler.popupException(""+t);
             }
             super.setElementAt(obj, index);
         }
@@ -107,6 +109,7 @@ public class DBUserList extends DefaultListModel {
             try {
                 DBPreferences.saveDBAccount((DBConnectParams) obj);
             } catch (Throwable t) {
+                ExceptionHandler.popupException(""+t);
             }
             super.insertElementAt(obj, index);
         }
@@ -123,6 +126,7 @@ public class DBUserList extends DefaultListModel {
             try {
                 DBPreferences.saveDBAccount((DBConnectParams) obj);
             } catch (Throwable t) {
+                ExceptionHandler.popupException(""+t);
             }
             super.addElement(obj);
         }
@@ -145,6 +149,7 @@ public class DBUserList extends DefaultListModel {
                 DBPreferences.deleteDBAccount((DBConnectParams) getElementAt(index));
                 DBPreferences.saveDBAccount((DBConnectParams) element);
             } catch (Throwable t) {
+                ExceptionHandler.popupException(""+t);
             }
             return super.set(index, element);
         }
@@ -166,6 +171,7 @@ public class DBUserList extends DefaultListModel {
             try {
                 DBPreferences.saveDBAccount((DBConnectParams) element);
             } catch (Throwable t) {
+                ExceptionHandler.popupException(""+t);
             }
             super.add(index, element);
         }
@@ -188,6 +194,7 @@ public class DBUserList extends DefaultListModel {
         try {
             DBPreferences.deleteDBAccount((DBConnectParams) getElementAt(index));
         } catch (Throwable t) {
+            ExceptionHandler.popupException(""+t);
         }
         super.removeElementAt(index);
     }
@@ -207,6 +214,7 @@ public class DBUserList extends DefaultListModel {
             try {
                 DBPreferences.deleteDBAccount((DBConnectParams) obj);
             } catch (Throwable t) {
+                ExceptionHandler.popupException(""+t);
             }
             return super.removeElement(obj);
         }
@@ -229,6 +237,7 @@ public class DBUserList extends DefaultListModel {
             try {
                 DBPreferences.deleteDBAccount((DBConnectParams) getElementAt(i));
             } catch (Throwable t) {
+                ExceptionHandler.popupException(""+t);
             }
         }
         super.removeAllElements();
@@ -247,6 +256,7 @@ public class DBUserList extends DefaultListModel {
         try {
             DBPreferences.deleteDBAccount((DBConnectParams) getElementAt(index));
         } catch (Throwable t) {
+            ExceptionHandler.popupException(""+t);
         }
         return super.remove(index);
     }
@@ -272,6 +282,7 @@ public class DBUserList extends DefaultListModel {
             try {
                 DBPreferences.deleteDBAccount((DBConnectParams) getElementAt(i));
             } catch (Throwable t) {
+                ExceptionHandler.popupException(""+t);
             }
         }
         super.removeRange(fromIndex, toIndex);
@@ -293,7 +304,7 @@ public class DBUserList extends DefaultListModel {
                     }
                 }
             } catch (Throwable t) {
-                System.err.println(t);
+                ExceptionHandler.popupException(""+t);
             }
         } else {
         }

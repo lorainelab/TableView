@@ -273,7 +273,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         jtr.setShowsRootHandles(true);
         jtr.setExpandsSelectedPaths(true);
         jtr.setVisibleRowCount(10);
-
+        
         JMenuBar mb = getJMenuBar();
 
         setLayout(new BorderLayout());

@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.bi.dbutil;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import java.lang.ref.SoftReference;
 import java.util.Vector;
 
@@ -51,6 +52,7 @@ public class VectorTree {
             Class.forName("java.lang.ref.SoftReference");
             canRef = true;
         } catch (ClassNotFoundException cnfe) {
+            ExceptionHandler.popupException(""+cnfe);
         }
     }
     int minRef;

@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.bi.dbutil;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -78,6 +79,7 @@ public class DBTypeInfo implements Comparable {
             sql_datetime_sub = rs.getInt(17);
             num_prec_radix = rs.getInt(18);
         } catch (SQLException sqlex) {
+            ExceptionHandler.popupException(""+sqlex);
         }
     }
 

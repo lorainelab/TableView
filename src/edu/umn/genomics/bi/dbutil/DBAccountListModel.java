@@ -24,6 +24,7 @@
 package edu.umn.genomics.bi.dbutil;
 
 import edu.umn.genomics.file.OpenInputSource;
+import edu.umn.genomics.table.ExceptionHandler;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -98,7 +99,7 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
             Class prefclass = this.getClass();
             prefs = Preferences.userNodeForPackage(prefclass);
         } catch (Exception ex) {
-            System.err.println("prefclass " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
         prefs.addNodeChangeListener(ncl);
         String[] accnts = getAccountNames();
@@ -284,7 +285,7 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
                 prop.setProperty("url", getURL(acctName));
                 prop.setProperty("driver", getDriver(acctName));
             } catch (BackingStoreException bsex) {
-                System.err.println(this.getClass() + " getProperties: " + bsex);
+                ExceptionHandler.popupException(""+bsex);
                 return null;
             }
         }
@@ -438,6 +439,7 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
             try {
                 Class.forName(getDriver(accountName));
             } catch (ClassNotFoundException ex) {
+                ExceptionHandler.popupException(""+ex);
             }
             return DriverManager.getConnection(getURL(accountName),
                     getUser(accountName),

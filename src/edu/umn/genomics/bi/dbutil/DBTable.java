@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.bi.dbutil;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import java.sql.*;
 import java.util.Collection;
 import java.util.List;
@@ -127,18 +128,21 @@ public class DBTable implements Comparable {
                 dbTable.table_type = rs.getString(4);
             }
         } catch (SQLException ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         try {
             if (cnt >= 5) {
                 dbTable.remarks = rs.getString(5);
             }
         } catch (SQLException ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         try {
             if (cnt >= 6) {
                 dbTable.type_cat = rs.getString(6);
             }
         } catch (SQLException ex) {
+            ExceptionHandler.popupException(""+ex);
         }
 
         try {
@@ -146,24 +150,28 @@ public class DBTable implements Comparable {
                 dbTable.type_schem = rs.getString(7);
             }
         } catch (SQLException ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         try {
             if (cnt >= 8) {
                 dbTable.type_name = rs.getString(8);
             }
         } catch (SQLException ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         try {
             if (cnt >= 9) {
                 dbTable.self_ref_col = rs.getString(9);
             }
         } catch (SQLException ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         try {
             if (cnt >= 10) {
                 dbTable.ref_gen = rs.getString(10);
             }
         } catch (SQLException ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         Vector colList = new Vector(DBColumn.getDBColumn(dbmd, dbTable));
         if (colList != null && colList.size() > 0) {
@@ -267,7 +275,7 @@ public class DBTable implements Comparable {
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
         } catch (Exception e) {
-            System.err.println(e);
+            ExceptionHandler.popupException(""+e);
         }
         if (rs != null) {
             try {
@@ -275,12 +283,12 @@ public class DBTable implements Comparable {
                     count = rs.getInt(1);
                 }
             } catch (Exception e) {
-                System.err.println(e);
+                ExceptionHandler.popupException(""+e);
             }
             try {
                 stmt.close();
             } catch (Exception e) {
-                System.err.println(e);
+                ExceptionHandler.popupException(""+e);
             }
         }
         System.err.println(sql + " rows = " + count);
