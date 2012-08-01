@@ -26,6 +26,9 @@ package edu.umn.genomics.table;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -356,6 +359,18 @@ public class LoadTable extends AbstractTableSource {
                             }
                         }
                     });
+            dialog.addWindowListener(new WindowAdapter() {
+
+                @Override
+                public void windowClosing(WindowEvent we) {
+                   try {
+                        mtm = null;
+                        setTableSource(null, "");
+                        dialog.hide();
+                    } catch (Exception ex) {
+                    } 
+                }
+            });
             dialog.getContentPane().setLayout(new BorderLayout());
             dialog.getContentPane().add(this);
             dialog.pack();
