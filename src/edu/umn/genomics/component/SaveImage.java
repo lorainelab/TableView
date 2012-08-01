@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.component;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -59,6 +60,7 @@ public class SaveImage {
             j3Davailable = true;
         } catch (ClassNotFoundException e) {
             j3Davailable = false;
+            ExceptionHandler.popupException(""+e);
         }
     }
 
@@ -160,6 +162,7 @@ public class SaveImage {
                 iw = Integer.parseInt(iwtf.getText());
                 ih = Integer.parseInt(ihtf.getText());
             } catch (Exception ex) {
+                ExceptionHandler.popupException(""+ex);
             }
             iw = iw > 0 ? iw : w;
             ih = ih > 0 ? ih : h;
@@ -179,8 +182,7 @@ public class SaveImage {
                             try {
                                 ImageIO.write((BufferedImage) arg, fbg.getSelection().getActionCommand(), ffile);
                             } catch (IOException ioex) {
-                                JOptionPane.showMessageDialog(comp, ioex.toString(), "Save Image",
-                                        JOptionPane.ERROR_MESSAGE);
+                                ExceptionHandler.popupException(""+ioex);
                             }
                         }
                     }
@@ -193,8 +195,7 @@ public class SaveImage {
                 try {
                     Class.forName("edu.umn.genomics.j3d.CaptureCanvas3D").getMethod("captureImage", paramClass).invoke(c, args);
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(comp, ex.toString(), "Save Image",
-                            JOptionPane.ERROR_MESSAGE);
+                    ExceptionHandler.popupException(""+ex);
                 }
             } else {
                 img = new BufferedImage(iw, ih, BufferedImage.TYPE_INT_RGB);
@@ -215,6 +216,7 @@ public class SaveImage {
         try {
             val = Class.forName("edu.umn.genomics.j3d.CaptureCanvas3D").isInstance(c);
         } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         return val;
     }
