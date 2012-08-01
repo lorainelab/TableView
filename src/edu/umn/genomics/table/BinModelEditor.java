@@ -376,17 +376,9 @@ public class BinModelEditor extends JPanel {
                                 }
                                 setRegexPartition(model, cmap, regex, labels);
                             } catch (PatternSyntaxException ex) {
-                                System.err.println(ex.toString());
-                                JOptionPane.showMessageDialog(getTopLevelAncestor(),
-                                        ex,
-                                        "Categorize by Pattern Regular Expression Error",
-                                        JOptionPane.ERROR_MESSAGE);
+                                ExceptionHandler.popupException(""+ex);
                             } catch (Exception ex) {
-                                ex.printStackTrace();
-                                JOptionPane.showMessageDialog(getTopLevelAncestor(),
-                                        ex,
-                                        "Categorize by Pattern Error",
-                                        JOptionPane.ERROR_MESSAGE);
+                                ExceptionHandler.popupException(""+ex);
                             }
                         }
                     });

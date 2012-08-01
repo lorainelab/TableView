@@ -164,7 +164,7 @@ public class DBBrowser extends AbstractTableSource {
                     return conn;
                 }
             } catch (Exception ex1) {
-                conn = null;
+                ExceptionHandler.popupException(""+ex1);
             }
             if (dbuser == null) {
                 dbuser = getDBParams();
@@ -195,10 +195,7 @@ public class DBBrowser extends AbstractTableSource {
             }
         } catch (Exception ex) {
             status.setText("DB connection failed " + ex);
-            JOptionPane.showMessageDialog(frame,
-                    ex,
-                    "Data base connection failed",
-                    JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ex);
         }
         return conn;
     }
@@ -223,6 +220,7 @@ public class DBBrowser extends AbstractTableSource {
             }
         } catch (Exception ex) {
             status.setText("DB connection failed " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -239,6 +237,7 @@ public class DBBrowser extends AbstractTableSource {
             }
         } catch (Exception ex) {
             status.setText("DB connection failed " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -765,10 +764,7 @@ public class DBBrowser extends AbstractTableSource {
                         try {
                             (new DatabaseAccountEditor(new DBAccountListModel())).show((Window) getTopLevelAncestor());
                         } catch (Exception ex) {
-                            JOptionPane.showMessageDialog(frame,
-                                    ex,
-                                    "Unable to display Database Account Preferences",
-                                    JOptionPane.ERROR_MESSAGE);
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -953,6 +949,7 @@ public class DBBrowser extends AbstractTableSource {
                             // since this can change the preferredsize of the JTable...
                             rowTable.validate();
                         } catch (Exception ex) {
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -1139,7 +1136,7 @@ public class DBBrowser extends AbstractTableSource {
                     try {
                         dbmodel.importPreferences(source);
                     } catch (Exception ex) {
-                        System.err.println("Unable to set preferences from " + source + "  " + ex);
+                        ExceptionHandler.popupException(""+ex);
                     }
                 } else if (args[i].equals("-dbname")) {
                     dbname = args[++i];
@@ -1218,6 +1215,7 @@ public class DBBrowser extends AbstractTableSource {
                         try {
                             ((Window) ((JComponent) e.getSource()).getTopLevelAncestor()).dispose();
                         } catch (Exception ex) {
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -1281,6 +1279,7 @@ public class DBBrowser extends AbstractTableSource {
             try {
                 setSelected(((Boolean) value).booleanValue());
             } catch (Exception ex) {
+                ExceptionHandler.popupException(""+ex);
             }
             return this;
         }

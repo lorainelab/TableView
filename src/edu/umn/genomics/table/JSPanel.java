@@ -76,7 +76,7 @@ public class JSPanel extends ScriptPanel {
             frame.pack();
             frame.setVisible(true);
         } catch (Exception ex) {
-            System.err.println(ex.toString());
+            ExceptionHandler.popupException(""+ex);
         }
     }
 }

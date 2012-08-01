@@ -365,7 +365,7 @@ public class CollectionTableModel extends AbstractTableModel
                     return Class.forName("java.lang.Void");
                 }
             } catch (ClassNotFoundException cnfe) {
-                System.err.println(cnfe);
+                ExceptionHandler.popupException(""+cnfe);
             }
         }
         return cc;
@@ -442,8 +442,7 @@ public class CollectionTableModel extends AbstractTableModel
                     return o;
                 }
             } catch (Exception e) {
-                System.err.println(this.getClass() + ".getValueAt("
-                        + rowIndex + "," + columnIndex + ") " + e);
+                ExceptionHandler.popupException(""+e);
             }
         }
         return null;

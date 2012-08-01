@@ -76,6 +76,7 @@ public class HistogramDisplay extends JPanel {
                     }
                     return sb.toString();
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
             return "";
@@ -238,6 +239,7 @@ public class HistogramDisplay extends JPanel {
             try {
                 calcPoints(x, y, axes);
             } catch (Exception ex) {
+                ExceptionHandler.popupException(""+ex);
                 repaint();
             }
         }

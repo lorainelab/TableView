@@ -131,6 +131,7 @@ public class Cells {
                     int c = ((Comparable) o1).compareTo(o2);
                     return c;
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
                 if (o1 instanceof BigDecimal) {
                     if (o2 instanceof BigInteger) {
@@ -187,6 +188,7 @@ public class Cells {
                     int c = ((Comparable) o1).compareTo(o2);
                     return c;
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
             if (o1 instanceof Number && o2 instanceof Number) {
@@ -203,6 +205,7 @@ public class Cells {
                     int c = ((Comparable) o1).compareTo(o2);
                     return c;
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
             return alphaNumericComparator.compare(o1, o2);
@@ -684,7 +687,7 @@ public class Cells {
         try {
             qsort(tm, lsm, idx, 0, idx.length - 1, columnIndex, defaultComparator);
         } catch (Exception ex) {
-            System.err.println("Cells.getSortIndex " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
         return idx;
     }
@@ -1357,7 +1360,7 @@ public class Cells {
                 return min(coll, numberComparator);
             }
         } catch (Exception ex) {
-            System.err.println("Cells.max() " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
         return min(coll, defaultComparator);
     }
@@ -1421,7 +1424,7 @@ public class Cells {
                 return max(coll, numberComparator);
             }
         } catch (Exception ex) {
-            System.err.println("Cells.max() " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
         return max(coll, defaultComparator);
     }

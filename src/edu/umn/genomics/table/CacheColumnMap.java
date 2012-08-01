@@ -432,7 +432,7 @@ public class CacheColumnMap extends BaseColumnMap {
                 array = tmp;
             }
         } catch (Throwable t) {
-            System.err.println(this + "\t" + size + "\t" + t);
+            ExceptionHandler.popupException(""+t);
         }
         return array;
     }

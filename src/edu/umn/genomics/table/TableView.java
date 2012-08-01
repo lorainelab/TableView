@@ -114,6 +114,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                 Object o = ((DefaultMutableTreeNode) e.getPath().getLastPathComponent()).getUserObject();
                 treeSelect(o);
             } catch (Exception ex) {
+                ExceptionHandler.popupException(""+ex);
             }
         }
     };
@@ -240,7 +241,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                 scriptFrame.pack();
                 scriptFrame.setVisible(true);
             } catch (Exception ex) {
-                System.err.println("ScriptPanel " + ex);
+                ExceptionHandler.popupException(""+ex);
             }
         }
         scriptFrame.setVisible(true);
@@ -255,7 +256,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                 bshScriptFrame.pack();
                 bshScriptFrame.setVisible(true);
             } catch (Exception ex) {
-                System.err.println("ScriptPanel " + ex);
+                ExceptionHandler.popupException(""+ex);
             }
         }
         bshScriptFrame.setVisible(true);
@@ -388,8 +389,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                         //file.createNewFile();
                         writeSelection(new FileOutputStream(file));
                     } catch (Exception ex) {
-                        System.err.println("Unable to Save: "
-                                + file.getAbsolutePath() + " " + ex);
+                        ExceptionHandler.popupException(""+ex);
                     }
                 } else {
                     System.err.println("Save command cancelled by user.");
@@ -435,6 +435,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                         ctx.removeAllTableModels();
                     }
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                     System.exit(0);
                 }
             }
@@ -608,9 +609,10 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
             System.setOut(new PrintStream(new JTextAreaOutputStream(outArea, System.out), false, encoding));
             System.setErr(new PrintStream(new JTextAreaOutputStream(outArea, System.err), false, encoding));
         } catch (UnsupportedEncodingException ex) {
-            System.out.println("Unsupported Yet.......!!!!");
+            ExceptionHandler.popupException(""+ex);
         } catch (SecurityException se) {
             // This exception should not occur with WebStart, but I'm handling it anyway.
+            ExceptionHandler.popupException(""+se);
             String str = "The application may not have permission to re-direct output "
                     + "to this view on your system.  "
                     + "\n"
@@ -735,7 +737,9 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
             }
             Desktop.getDesktop().browse(u);
         } catch (IOException ex) {
+            ExceptionHandler.popupException(""+ex);
         } catch (URISyntaxException ex) {
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -804,8 +808,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                         //file.createNewFile();
                         writeSelection(new FileOutputStream(file));
                     } catch (Exception ex) {
-                        System.err.println("Unable to Save: "
-                                + file.getAbsolutePath() + " " + ex);
+                        ExceptionHandler.popupException(""+ex);
                     }
                 } else {
                     System.err.println("Save command cancelled by user.");
@@ -953,8 +956,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                 jdbctm.setQuery(sb.toString());
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, ex, "Unable to execute query " + query,
-                    JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ex);
         }
         return vtm;
     }
@@ -982,8 +984,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
             FileTableModel ftm = new FileTableModel(file);
             vtm = setTableModel(ftm, alias != null ? alias : file);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, ex, "Unable to load " + file,
-                    JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ex);
         }
         return vtm;
     }
@@ -1060,11 +1061,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                     mtm.addTableModel(vtm);
                     name += (n++ > 0 ? ", " : "") + vtm.toString();
                 } catch (Exception ex) {
-                    System.err.println("mergeTables " + ex);
-                    JOptionPane.showMessageDialog(getTopLevelAncestor(),
-                            ex,
-                            "Unable to merge table " + (vtm != null ? vtm.toString() : ""),
-                            JOptionPane.ERROR_MESSAGE);
+                   ExceptionHandler.popupException(""+ex);
                 }
             } else {
             }
@@ -1311,7 +1308,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
             }
             jf.setBounds(bnds);
         } catch (Exception ex) {
-            System.err.println("Error parsing screen location for " + jf.getTitle() + " " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -1484,7 +1481,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         try {
             readCommands(source, OpenInputSource.getBufferedReader(source));
         } catch (IOException ex) {
-            System.err.println("Unable to open " + source + "  " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -1525,7 +1522,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
             try {
                 dbs = new DBAccountListModel();
             } catch (Exception ex) {
-                System.err.println("Unable to retrieve Database account preferences: " + ex);
+                ExceptionHandler.popupException(""+ex);
             }
             String dbname = null;
             String dburl = null;
@@ -1576,7 +1573,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                         try {
                             Class.forName(dbdvr);
                         } catch (Exception ex) {
-                            System.err.println(dbdvr + " " + ex);
+                            ExceptionHandler.popupException(""+ex);
                         }
                     } else if (name.equals("dbusr")) {
                         dbusr = value;
@@ -1591,7 +1588,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                                 usr = new DBUser(dbname, dbs.getUser(dbname), dbs.getPassword(dbname),
                                         dbs.getURL(dbname), dbs.getDriver(dbname));
                             } catch (Exception ex) {
-                                System.err.println("Unable to retrieve Database account preferences: " + ex);
+                                ExceptionHandler.popupException(""+ex);
                             }
                         } else if (dburl != null && dbusr != null && dbpwd != null) {
                             usr = new DBUser(dbname, dbusr, dbpwd, dburl, dbdvr);
@@ -1616,7 +1613,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                         try {
                             setPreferences(prefs);
                         } catch (Exception ex) {
-                            System.err.println("Unable to set preferences from " + prefs + "  " + ex);
+                            ExceptionHandler.popupException(""+ex);
                         }
                     } else if (name.equals("view")) {
                         displayView(value);
@@ -1641,7 +1638,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                         try {
                             loadSource(tableLoader, src, alias);
                         } catch (IOException ioex) {
-                            System.err.println("Unable to load table from " + src + " : " + ioex);
+                            ExceptionHandler.popupException(""+ioex);
                         }
 
                     } else if (name.equals("merge")) {
@@ -1670,18 +1667,14 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                                     throw new Exception("Table " + src + " is not in context");
                                 }
                             } catch (Exception ex) {
-                                System.err.println("Unable to merge table " + src + " : " + ex);
-                                JOptionPane.showMessageDialog(getTopLevelAncestor(),
-                                        ex,
-                                        "Unable to merge table " + src,
-                                        JOptionPane.ERROR_MESSAGE);
+                                ExceptionHandler.popupException(""+ex);
                             }
                         }
                         if (tmv.size() > 0) {
                             try {
                                 mergeTables(tmv, alias);
                             } catch (IOException ioex) {
-                                System.err.println("Unable to merge tables " + ioex);
+                                ExceptionHandler.popupException(""+ioex);
                             }
                         }
 
@@ -1696,7 +1689,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                 }
             }
         } catch (Exception ex) {
-            System.err.println(source + "\t" + ex);
+            ExceptionHandler.popupException(""+ex);
         }
     }
     /**
@@ -2023,7 +2016,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         try {
             dbs = new DBAccountListModel();
         } catch (Exception ex) {
-            System.err.println("Unable to retrieve Database account preferences: " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
         String dbname = null;
         String dburl = null;
@@ -2070,7 +2063,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                                 System.out.println("  -dbpasswrd " + sb);
                             }
                         } catch (Exception ex) {
-                            System.err.println("Unable to retrieve Database account preferences: " + ex);
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 } else if (args[i].equals("-preferences")) {
@@ -2078,7 +2071,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                     try {
                         tv.setPreferences(prefs);
                     } catch (Exception ex) {
-                        System.err.println("Unable to set preferences from " + prefs + "  " + ex);
+                        ExceptionHandler.popupException(""+ex);
                     }
                 } else if (args[i].equals("-geometry")) {
                     geometry = args[++i];
@@ -2096,7 +2089,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                     try {
                         Class.forName(dbdvr);
                     } catch (Exception ex) {
-                        System.err.println(dbdvr + " " + ex);
+                        ExceptionHandler.popupException(""+ex);
                     }
                 } else if (args[i].equals("-dbusr")) {
                     dbusr = args[++i];
@@ -2110,7 +2103,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                             usr = new DBUser(dbname, dbs.getUser(dbname), dbs.getPassword(dbname),
                                     dbs.getURL(dbname), dbs.getDriver(dbname));
                         } catch (Exception ex) {
-                            System.err.println("Unable to retrieve Database account preferences: " + ex);
+                            ExceptionHandler.popupException(""+ex);
                         }
                     } else if (dburl != null && dbusr != null && dbpwd != null) {
                         usr = new DBUser(dbname, dbusr, dbpwd, dburl, dbdvr);
@@ -2134,14 +2127,14 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                                 tmv.add(tm);
                             }
                         } catch (IOException ioex) {
-                            System.err.println("Unable to load table from " + src + " : " + ioex);
+                            ExceptionHandler.popupException(""+ioex);
                         }
                     }
                     if (tmv.size() > 0) {
                         try {
                             tv.mergeTables(tmv, mergeAlias);
                         } catch (IOException ioex) {
-                            System.err.println("Unable to merge tables " + ioex);
+                            ExceptionHandler.popupException(""+ioex);
                         }
                     }
                 } else if (args[i].equals("-file")) {
@@ -2150,7 +2143,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                     try {
                         tv.loadSource(tableLoader, src, alias);
                     } catch (IOException ioex) {
-                        System.err.println("Unable to load table from " + src + " : " + ioex);
+                        ExceptionHandler.popupException(""+ioex);
                     }
                 } else if (args[i].equals("-view")) {
                     i++;
@@ -2165,7 +2158,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                     try {
                         tv.runScript(new ScriptJS(), OpenInputSource.getInputStream(source));
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        ExceptionHandler.popupException(""+ex);
                     }
                 } else if (args[i].equals("-bsh")) {
                     String script = args[++i];
@@ -2175,7 +2168,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                     try {
                         tv.runScript(new ScriptBsh(), OpenInputSource.getInputStream(source));
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        ExceptionHandler.popupException(""+ex);
                     }
                 } else {
                     System.err.println("Unknown argument: " + args[i]);
@@ -2188,7 +2181,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                 try {
                     tv.loadSource(tableLoader, src, alias);
                 } catch (IOException ioex) {
-                    System.err.println("Unable to load table from " + src + " : " + ioex);
+                    ExceptionHandler.popupException(""+ioex);
                 }
             }
         }

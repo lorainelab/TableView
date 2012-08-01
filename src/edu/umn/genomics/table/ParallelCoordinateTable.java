@@ -240,7 +240,7 @@ public class ParallelCoordinateTable extends AbstractTableModelView
                     "Compare Rows" + (value != null ? " of " + value : ""),
                     newPcp);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            ExceptionHandler.popupException(""+ex);
         }
     }
 

@@ -192,7 +192,7 @@ public class JTableEditor extends AbstractTableSource {
             insRowIcon = new ImageIcon(cl.getResource("edu/umn/genomics/table/Icons/RowInsertBefore24.gif"));
             delRowIcon = new ImageIcon(cl.getResource("edu/umn/genomics/table/Icons/RowDelete24.gif"));
         } catch (Exception ex) {
-            System.err.println("" + ex);
+            ExceptionHandler.popupException(""+ex);
         }
 
         newTblBtn = newTblIcon != null ? new JButton(newTblIcon) : new JButton("New Table");

@@ -261,7 +261,7 @@ public class ParallelCoordinatePanel extends AbstractTableModelView
                 FontMetrics fm = getGraphics().getFontMetrics();
                 return new Dimension(24, fm.getHeight() + 4);
             } catch (Exception ex) {
-                System.err.println("ColLbl.getPreferredSize " + ex);
+                ExceptionHandler.popupException(""+ex);
             }
             return new Dimension(24, 24);
         }
@@ -411,7 +411,7 @@ public class ParallelCoordinatePanel extends AbstractTableModelView
                 FontMetrics fm = getGraphics().getFontMetrics();
                 return new Dimension(fm.getHeight(), 24);
             } catch (Exception ex) {
-                System.err.println("ColVal.getPreferredSize " + ex);
+                ExceptionHandler.popupException(""+ex);
             }
             return new Dimension(24, 24);
         }
@@ -456,6 +456,7 @@ public class ParallelCoordinatePanel extends AbstractTableModelView
                                 g.setColor(getColor(r));
                                 g.drawLine(cPos[0], dataPnts[r][0], cPos[0] + 4, dataPnts[r][0]);
                             } catch (Exception ex) {
+                                ExceptionHandler.popupException(""+ex);
                             }
                         }
                     }
@@ -471,6 +472,7 @@ public class ParallelCoordinatePanel extends AbstractTableModelView
                                     g.setColor(getColor(r));
                                     g.drawLine(cPos[0], dataPnts[r][0], cPos[0] + 4, dataPnts[r][0]);
                                 } catch (Exception ex) {
+                                    ExceptionHandler.popupException(""+ex);
                                 }
                             }
                         }
@@ -692,6 +694,7 @@ public class ParallelCoordinatePanel extends AbstractTableModelView
                     try {
                         Thread.sleep(500);
                     } catch (Exception ex) {
+                        ExceptionHandler.popupException(""+ex);
                     }
                 }
             }
@@ -1086,7 +1089,7 @@ public class ParallelCoordinatePanel extends AbstractTableModelView
                     }
                 }
             } catch (Throwable t) {
-                t.printStackTrace();
+                ExceptionHandler.popupException(""+t);
             }
         }
 
@@ -1344,6 +1347,7 @@ public class ParallelCoordinatePanel extends AbstractTableModelView
                     try {
                         setRowDisplaySelection((ListSelectionModel) ((DefaultListSelectionModel) getSelectionModel()).clone());
                     } catch (CloneNotSupportedException ex) {
+                        ExceptionHandler.popupException(""+ex);
                     }
                 } else {
                     DefaultListSelectionModel dlsm = new DefaultListSelectionModel();
@@ -1990,6 +1994,7 @@ public class ParallelCoordinatePanel extends AbstractTableModelView
             Axis axis = getAxis(tmColIdx);
             return axis.getMin() > axis.getMax();
         } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         return false;
     }
@@ -2047,8 +2052,7 @@ public class ParallelCoordinatePanel extends AbstractTableModelView
                 repaint();
             }
         } catch (Exception ex) {
-            System.err.println("updateMapData " + ex);
-            ex.printStackTrace();
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -2065,6 +2069,7 @@ public class ParallelCoordinatePanel extends AbstractTableModelView
             Axis axis = getAxis(tmColIdx);
             return axis.getValue(loc);
         } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         return Double.NaN;
     }
@@ -2104,7 +2109,7 @@ public class ParallelCoordinatePanel extends AbstractTableModelView
             System.err.println("mapColumnValues for column " + c + "\t" + tmColIdx + "\t" + ex);
             System.err.println("mapColumnValues table rows " + tm.getRowCount()
                     + "\t data rows " + dataPnts.length);
-            ex.printStackTrace();
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -2154,9 +2159,10 @@ public class ParallelCoordinatePanel extends AbstractTableModelView
                     ? (DefaultListSelectionModel) ((DefaultListSelectionModel) rsm).clone()
                     : null;
         } catch (CloneNotSupportedException nsex) {
+            ExceptionHandler.popupException(""+nsex);
             throw nsex;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            ExceptionHandler.popupException(""+ex);
         }
         return pcp;
     }
@@ -2421,7 +2427,7 @@ public class ParallelCoordinatePanel extends AbstractTableModelView
             try {
                 tm = new FileTableModel(args[0]);
             } catch (Exception ex) {
-                System.err.println(args[0] + " " + ex);
+                ExceptionHandler.popupException(""+ex);
                 System.exit(1);
             }
         } else {

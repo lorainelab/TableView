@@ -386,7 +386,7 @@ public class DBColumnMap extends CacheColumnMap {
                     }
                     val = sb.toString();
                 } catch (IOException ioex) {
-                    System.err.println("setValueAt(" + rowIndex + "," + colIndex + ") " + ioex);
+                    ExceptionHandler.popupException(""+ioex);
                 }
                 ((int[]) data)[rowIndex] = mapObject(val);
             }
@@ -409,7 +409,7 @@ public class DBColumnMap extends CacheColumnMap {
                         val = sb.toString();
                     }
                 } catch (IOException ioex) {
-                    System.err.println("setValueAt(" + rowIndex + "," + colIndex + ") " + ioex);
+                    ExceptionHandler.popupException(""+ioex);
                 }
                 ((int[]) data)[rowIndex] = mapObject(val);
             }

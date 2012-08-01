@@ -71,7 +71,7 @@ public class ScriptPanel extends JPanel {
                 displayOutput(line);
             }
         } catch (Exception ex) {
-            System.err.println(ex.toString());
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -131,6 +131,7 @@ public class ScriptPanel extends JPanel {
                         try {
                             sendInput();
                         } catch (Exception ex) {
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -165,7 +166,7 @@ public class ScriptPanel extends JPanel {
             frame.pack();
             frame.setVisible(true);
         } catch (Exception ex) {
-            System.err.println(ex.toString());
+            ExceptionHandler.popupException(""+ex);
         }
     }
 }

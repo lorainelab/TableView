@@ -95,7 +95,7 @@ public class BshFormula extends AbstractColumnFormula {
                 try {
                     interp.eval("import " + list.get(i) + ".*;");
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         }
@@ -105,7 +105,7 @@ public class BshFormula extends AbstractColumnFormula {
                 try {
                     interp.eval("import " + list.get(i) + ";");
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         }
@@ -121,10 +121,8 @@ public class BshFormula extends AbstractColumnFormula {
             result = interp.eval(script);
         } catch (Exception ex) {
             result = ex;
-            // System.err.println("BshFormula " + ex.getClass() + " " + ex);
-            ex.printStackTrace();
-        } finally {
-        }
+            ExceptionHandler.popupException(""+ex);
+        } 
         return result;
     }
     protected static String interpreterInfo = ""

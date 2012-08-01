@@ -4,6 +4,7 @@
  */
 package edu.umn.genomics.layout;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import java.awt.Component;
 import java.awt.Container;
 import javax.swing.Spring;
@@ -49,7 +50,7 @@ public class SpringUtilities {
         try {
             layout = (SpringLayout) parent.getLayout();
         } catch (ClassCastException exc) {
-            System.err.println("The first argument to makeGrid must use SpringLayout.");
+            ExceptionHandler.popupException(""+exc);
             return;
         }
 
@@ -155,7 +156,7 @@ public class SpringUtilities {
         try {
             layout = (SpringLayout) parent.getLayout();
         } catch (ClassCastException exc) {
-            System.err.println("The first argument to makeCompactGrid must use SpringLayout.");
+            ExceptionHandler.popupException(""+exc);
             return;
         }
 

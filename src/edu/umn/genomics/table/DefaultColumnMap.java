@@ -65,6 +65,7 @@ public class DefaultColumnMap extends BaseColumnMap
             Class.forName("java.lang.ref.SoftReference");
             //canRef = true;
         } catch (ClassNotFoundException cnfe) {
+            ExceptionHandler.popupException(""+cnfe);
         }
     }
     int rowCount = 0;
@@ -558,7 +559,7 @@ public class DefaultColumnMap extends BaseColumnMap
                         el.count = nrows;
                     }
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    ExceptionHandler.popupException(""+ex);
                     System.err.println("colHash " + colHash);
                     System.err.println("nullTag " + nullTag);
                 }

@@ -65,26 +65,26 @@ public class DBPage {
             dbname = dbmd.getDatabaseProductName();
         } catch (SQLException sqlexd) {
             for (SQLException ex = sqlexd; ex != null; ex = ex.getNextException()) {
-                System.err.println("getPageQuery: " + ex);
+                ExceptionHandler.popupException(""+ex);
             }
         }
         try {
             dbMajorVersion = dbmd.getDatabaseMajorVersion();
             dbMinorVersion = dbmd.getDatabaseMinorVersion();
         } catch (AbstractMethodError amerr) {
-            System.err.println("getPageQuery: " + amerr);
+            ExceptionHandler.popupException(""+amerr);
         } catch (SQLException sqlexd) {
             for (SQLException ex = sqlexd; ex != null; ex = ex.getNextException()) {
-                System.err.println("getPageQuery: " + ex);
+                ExceptionHandler.popupException(""+ex);
             }
         }
         try {
             dbProductVersion = dbmd.getDatabaseProductVersion();
         } catch (AbstractMethodError amerr) {
-            System.err.println("getPageQuery: " + amerr);
+            ExceptionHandler.popupException(""+amerr);
         } catch (SQLException sqlexd) {
             for (SQLException ex = sqlexd; ex != null; ex = ex.getNextException()) {
-                System.err.println("getPageQuery: " + ex);
+                ExceptionHandler.popupException(""+ex);
             }
         }
         if (dbname != null && dbname.equalsIgnoreCase("Oracle")) {
