@@ -286,6 +286,7 @@ public class JTableEditor extends AbstractTableSource {
                         for (int i = indices.length - 1; i >= 0; i--) {
                             dtm.removeRow(indices[i]);
                         }
+                        rowNums.clearSelection();
                     }
                 });
 
