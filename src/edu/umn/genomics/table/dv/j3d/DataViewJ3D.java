@@ -31,6 +31,7 @@ import com.sun.j3d.utils.universe.Viewer;
 import com.sun.j3d.utils.universe.ViewingPlatform;
 import edu.umn.genomics.graph.LinearAxis;
 import edu.umn.genomics.j3d.CaptureCanvas3D;
+import edu.umn.genomics.table.ExceptionHandler;
 import edu.umn.genomics.table.dv.DataMap;
 import edu.umn.genomics.table.dv.DataView;
 import java.awt.*;
@@ -153,7 +154,7 @@ public class DataViewJ3D extends DataView implements Serializable {
                 setAxes(l.x, l.y, l.z, u.x, u.y, u.z);
             }
         } catch (Exception e) {
-            System.err.println("bbox: " + e);
+            ExceptionHandler.popupException(""+e);
         }
 //System.err.println("isLive: " + dm.getBranchGroup().isLive());
         dm.addObserver(this);

@@ -24,6 +24,7 @@
 package edu.umn.genomics.table.dv.j3d;  //DataViewer
 
 import com.sun.j3d.utils.picking.PickTool;
+import edu.umn.genomics.table.ExceptionHandler;
 import edu.umn.genomics.table.SetOperator;
 import edu.umn.genomics.table.dv.DataMap;
 import java.awt.Color;
@@ -264,8 +265,7 @@ public class DataMapJ3D extends DataMap implements Serializable {
                     }
                 }
             } catch (ClassNotFoundException cnfe) {
-                JOptionPane.showMessageDialog(null, "Selection requires Java3D v1.2",
-                        "alert", JOptionPane.ERROR_MESSAGE);
+                ExceptionHandler.popupException(""+cnfe);
             }
 
         }
@@ -342,9 +342,7 @@ public class DataMapJ3D extends DataMap implements Serializable {
                         glyph.setColor(colorMap.getColor(dval));
                     }
                 } catch (Exception e) {
-                    System.err.println(e);
-                    System.err.println(tableModel.getValueAt(
-                            i, colormapIndex));
+                   ExceptionHandler.popupException(""+e);
                 }
             }
         }
@@ -497,6 +495,7 @@ public class DataMapJ3D extends DataMap implements Serializable {
                     PickTool.setCapabilities(s3d, PickTool.INTERSECT_FULL);
                 }
             } catch (ClassNotFoundException cnfe) {
+                ExceptionHandler.popupException(""+cnfe);
             }
             pGroup.addChild(s3d);
         }
