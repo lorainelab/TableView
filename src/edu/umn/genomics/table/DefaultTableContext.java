@@ -257,7 +257,6 @@ public class DefaultTableContext implements TableContext {
               System.loadLibrary(libName);
             }
           } catch (UnsatisfiedLinkError err) {
-            ExceptionHandler.popupException(""+err);
             continue;
           } catch (SecurityException ex) {
             ExceptionHandler.popupException(""+ex);
