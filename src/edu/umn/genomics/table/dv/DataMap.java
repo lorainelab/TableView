@@ -25,6 +25,7 @@ package edu.umn.genomics.table.dv;  //DataViewer
 
 import edu.umn.genomics.graph.util.ColorMap;
 import edu.umn.genomics.table.CleanUp;
+import edu.umn.genomics.table.ExceptionHandler;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -159,7 +160,7 @@ public class DataMap extends Observable
                         numberColumn.setCellEditor(doubleEditor);
                     }
                 } catch (Exception e) {
-                    System.err.println("column " + i + " Unknown Class" + e);
+                    ExceptionHandler.popupException(""+e);
                 }
             }
             jframe = new JFrame(name);
@@ -301,7 +302,7 @@ public class DataMap extends Observable
                     System.err.println(tableModel.getColumnClass(i).getName());
                 }
             } catch (Exception e) {
-                System.err.println("column " + i + " Unknown Class" + e);
+                ExceptionHandler.popupException(""+e);
             }
         }
 
@@ -337,9 +338,7 @@ public class DataMap extends Observable
                         trans[i] = Double.parseDouble((String) colObj);
                     }
                 } catch (Exception e) {
-                    System.err.println(e);
-                    System.err.println(tableModel.getValueAt(
-                            rowIndex, translationIndices[i]));
+                    ExceptionHandler.popupException(""+e);
                 }
             }
         }
@@ -378,9 +377,7 @@ public class DataMap extends Observable
                             points[p + i] = (new Float((String) colObj)).floatValue();
                         }
                     } catch (Exception e) {
-                        System.err.println(e);
-                        System.err.println(tableModel.getValueAt(
-                                r, translationIndices[i]));
+                        ExceptionHandler.popupException(""+e);
                     }
                 }
             }
@@ -417,9 +414,7 @@ public class DataMap extends Observable
                         color = colorMap.getColor(dval);
                     }
                 } catch (Exception e) {
-                    System.err.println(e);
-                    System.err.println(tableModel.getValueAt(
-                            rowIndex, colormapIndex));
+                    ExceptionHandler.popupException(""+e);
                 }
             }
         }
