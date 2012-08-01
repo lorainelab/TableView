@@ -26,6 +26,7 @@ package edu.umn.genomics.table.loaders;
 import edu.umn.genomics.file.ExtensionFileFilter;
 import edu.umn.genomics.file.OpenInputSource;
 import edu.umn.genomics.table.AbstractTableSource;
+import edu.umn.genomics.table.ExceptionHandler;
 import edu.umn.genomics.table.FileTableModel;
 import edu.umn.genomics.table.OpenTableSource;
 import java.awt.BorderLayout;
@@ -98,6 +99,7 @@ public class GenePixFile extends AbstractTableSource implements OpenTableSource 
                         try {
                             openTableSource();
                         } catch (Exception ex) {
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -114,6 +116,7 @@ public class GenePixFile extends AbstractTableSource implements OpenTableSource 
                                 path.setText(file.getAbsolutePath());
                                 openTableSource();
                             } catch (Exception ex) {
+                                ExceptionHandler.popupException(""+ex);
                             }
                         } else {
                             System.err.println("Open command cancelled by user.");
@@ -164,12 +167,7 @@ public class GenePixFile extends AbstractTableSource implements OpenTableSource 
         try {
             openTableSource(path.getText());
         } catch (Exception ex) {
-            System.err.println(" openTableSource " + ex);
-            // ex.printStackTrace();
-            JOptionPane.showMessageDialog((Window) getTopLevelAncestor(),
-                    ex,
-                    "Unable to open table",
-                    JOptionPane.ERROR_MESSAGE);
+           ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -199,11 +197,13 @@ public class GenePixFile extends AbstractTableSource implements OpenTableSource 
         try {
             headerRecords = Integer.parseInt(st.nextToken());
         } catch (Exception nex) {
+            ExceptionHandler.popupException(""+nex);
             throw new IOException("Not in GenePix Axon Text Format: missing option header record count in second line");
         }
         try {
             dataFields = Integer.parseInt(st.nextToken());
         } catch (Exception nex) {
+            ExceptionHandler.popupException(""+nex);
             throw new IOException("Not in GenePix Axon Text Format: missing data column count in second line");
         }
         sb.append(line).append(lineSep);
