@@ -148,14 +148,24 @@ public class SaveImage {
 
         ap.add(fp);
         ap.add(sp);
-
-        chooser.setAccessory(ap);
+        
+        chooser.setAccessory(ap);      
         ImageFilter filter = new ImageFilter(fmt);
         chooser.setFileFilter(filter);
         int returnVal = chooser.showSaveDialog(c);
         boolean status = false;
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            final File file = chooser.getSelectedFile();
+            File file1 = chooser.getSelectedFile();
+            String name = file1.getAbsolutePath();
+            String selected = bg.getSelection().getActionCommand();
+            if(name.lastIndexOf(".") > 0){
+                if(!(name.substring(name.lastIndexOf("."), name.length()).equalsIgnoreCase("."+selected))){
+                    name = name + "."+selected; 
+                }
+            }
+            else
+                name = name + "."+selected;
+            final File file = new File(name);
             int iw = w;
             int ih = h;
             try {
