@@ -131,7 +131,6 @@ public class Cells {
                     int c = ((Comparable) o1).compareTo(o2);
                     return c;
                 } catch (Exception ex) {
-                    ExceptionHandler.popupException(""+ex);
                 }
                 if (o1 instanceof BigDecimal) {
                     if (o2 instanceof BigInteger) {
