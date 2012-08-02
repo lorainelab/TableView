@@ -11,7 +11,7 @@
       codebase="@jnlp.codebase@"
       href="TableView.jnlp">
     <information>
-        <title>TableView @jnlp.version@</title>
+        <title>TableView @jnlp.version@ (@build.time@)</title>
         <vendor>BioViz Projects</vendor>
         <homepage href="TableViewUserGuide.html"/>
         <description>TableView </description>

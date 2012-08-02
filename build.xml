@@ -40,6 +40,14 @@
         </echo>
         -->
 
+        <tstamp>
+            <format property="build.year"   pattern="yyyy" />
+            <format property="build.month"  pattern="MM" />
+            <format property="build.date"   pattern="dd" />
+            <format property="build.hour"   pattern="hh" />
+            <format property="build.minute" pattern="mm" />
+        </tstamp>
+        
         <!-- Check the current system classpath for JUnit -->
         <available classpath="${classpath}"
                classname="junit.framework.TestCase"
@@ -132,6 +140,23 @@
         <property name="sign.signedjar" value="${name}.jar" />
         <property name="project.war" value="${name}.war" />
         <available file="${sign.keystore}" property="sign.keystore.present"/>
+        
+        <taskdef resource="net/sf/antcontrib/antlib.xml">
+            <classpath>
+                <pathelement location="${lib.dir}/ant-contrib-1.0b3/ant-contrib.jar"/>
+            </classpath>
+        </taskdef>
+               
+        <math result="b1">  
+            <op op="add">
+                <num value="${build.year}"/>
+                <num value="${build.month}"/>
+                <num value="${build.date}"/>
+                <num value="${build.hour}"/>
+                <num value="${build.minute}"/>
+            </op>
+        </math>
+        <math result="build.time" operand1="${b1}"  operation="+" operand2="0"   datatype="int" />
         <echo>
             <!--
              sign.keystore.present = ${sign.keystore.present}
@@ -151,6 +176,8 @@
 	<filter token="jnlp.version"  value="${jnlp.version}" />
 	<filter token="jnlp.codebase" value="${jnlp.codebase}" />
 	<filter token="jnlp.icon.name" value="${jnlp.icon.name}" />
+        <filter token="build.time"   value="${build.time}" />
+        
         <!-- The MAIN-CLASS for the application jar. -->
         <property name="main.class" value="org.tigr.midas.display.Midas" />
     </target>
