@@ -187,8 +187,7 @@ public abstract class AbstractColumnFormula implements Serializable, TableModelF
             }
         } catch (Exception ex) {
             result = ex;
-            // System.err.println("AbstractColumnFormula " + ex.getClass() + " " + ex);
-            ex.printStackTrace();
+            ExceptionHandler.popupException(""+ex);
         } finally {
         }
         return result;

@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.table.dv;  //DataViewer
 
+import edu.umn.genomics.table.ExceptionHandler;
 import java.awt.Toolkit;
 import java.io.Serializable;
 import java.text.NumberFormat;
@@ -60,6 +61,7 @@ public class NumberField extends JTextField implements Serializable {
         } catch (ParseException e) {
             // This should never happen because insertString allows
             // only properly formatted data to get in the field.
+            ExceptionHandler.popupException(""+e);
             toolkit.beep();
         }
         return retVal;

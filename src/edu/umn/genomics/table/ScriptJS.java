@@ -64,7 +64,7 @@ public class ScriptJS implements ScriptInterpreter {
                 try {
                     ScriptableObject.defineClass(sharedScope, this.getClass());
                 } catch (Exception ex) {
-                    System.err.println(ex);
+                    ExceptionHandler.popupException(""+ex);
                 }
             } finally {
                 cx.exit();

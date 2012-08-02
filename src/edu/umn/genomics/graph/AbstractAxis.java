@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.graph;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import javax.swing.event.EventListenerList;
 /*
  * Still need to consider: min == max min > max
@@ -107,6 +108,7 @@ public class AbstractAxis implements Axis, Cloneable {
             axis.values = null;
             axis.ticks = null;
         } catch (CloneNotSupportedException nsex) {
+            ExceptionHandler.popupException(""+nsex);
         }
         return axis;
     }

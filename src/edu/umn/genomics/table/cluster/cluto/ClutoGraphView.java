@@ -209,12 +209,14 @@ public class ClutoGraphView extends JPanel implements CleanUp, Serializable {
                         jsp.invalidate();
                         jsp.validate();
                     } catch (Exception ex) {
+                        ExceptionHandler.popupException(""+ex);
                     }
                 }
             };
             DoSpinner.addChangeListener(dispSize, changeListener);
             jsp.setCorner(JScrollPane.UPPER_LEFT_CORNER, dispSize);
         } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex);
         }
 
         ComponentAdapter ca = new ComponentAdapter() {

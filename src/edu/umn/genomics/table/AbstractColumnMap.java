@@ -1476,7 +1476,7 @@ public abstract class AbstractColumnMap implements Serializable, ColumnMap, Clea
                     cal.setTime((Date) obj);
                     val = cal.get(calFld);
                 } catch (Exception ex) {
-                    System.err.println("getDatePartition(" + obj + ") " + ex);
+                    ExceptionHandler.popupException(""+ex);
                 }
                 if (calFld == Calendar.DAY_OF_WEEK && pmap[ri] == 0) {
                     System.err.println(ri + " getDatePartition(" + obj + ") " + cal.getTime() + "\t" + cal.get(calFld));

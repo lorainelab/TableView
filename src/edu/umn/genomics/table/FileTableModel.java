@@ -166,15 +166,14 @@ public class FileTableModel extends AbstractTableModel implements TableColumnMap
                             lastCnt = rowIndex;
                         }
                     } catch (Exception ex) {
-                        System.err.println(ex);
-                        ex.printStackTrace();
+                        ExceptionHandler.popupException(""+ex);
                     }
                 }
                 if (!linesIndexed) {
                     try {
                         Thread.sleep(100);
                     } catch (Exception ex) {
-                        System.err.println(ex);
+                        ExceptionHandler.popupException(""+ex);
                     }
                 } else {
                     break;
@@ -252,6 +251,7 @@ public class FileTableModel extends AbstractTableModel implements TableColumnMap
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ex) {
+                ExceptionHandler.popupException(""+ex);
             }
         }
         int lineSample = 100;  // try to stay below pagination rate
@@ -328,7 +328,7 @@ public class FileTableModel extends AbstractTableModel implements TableColumnMap
             rdrThread = new Reader();
             rdrThread.start();
         } catch (Exception ex) {
-            System.err.print(ex);
+            ExceptionHandler.popupException(""+ex);
         }
         fireTableStructureChanged();
     }
@@ -359,7 +359,7 @@ public class FileTableModel extends AbstractTableModel implements TableColumnMap
                 }
             }
         } catch (IOException ioex) {
-            System.err.println(this.getClass().getName() + ": " + ioex);
+            ExceptionHandler.popupException(""+ioex);
         }
         linesIndexed = true;
         return linesRead;
@@ -393,7 +393,7 @@ public class FileTableModel extends AbstractTableModel implements TableColumnMap
                 }
             }
         } catch (IOException ioex) {
-            System.err.println(this.getClass().getName() + ": " + ioex);
+            ExceptionHandler.popupException(""+ioex);
         }
         linesIndexed = true;
         return linesRead;
@@ -415,6 +415,7 @@ public class FileTableModel extends AbstractTableModel implements TableColumnMap
             idxThread.start();
             //getLineOffsets(file);
         } catch (SecurityException secex) {
+            ExceptionHandler.popupException(""+secex);
         } catch (FileNotFoundException fnfex) {
             try {
                 File tmpFile = File.createTempFile("FileTableModel", "tmp");
@@ -425,7 +426,7 @@ public class FileTableModel extends AbstractTableModel implements TableColumnMap
                 idxThread.start();
                 //copy(rdr,file);
             } catch (IOException ex) {
-                System.err.println(this + " : " + ex);
+                ExceptionHandler.popupException(""+ex);
                 throw ex;
             }
         }
@@ -507,6 +508,7 @@ public class FileTableModel extends AbstractTableModel implements TableColumnMap
                     val = n;
                 }
             } catch (Exception exn) {
+                ExceptionHandler.popupException(""+exn);
             }
         }
         return val;

@@ -87,7 +87,7 @@ public class JSFormula extends AbstractColumnFormula {
                  * itl.importPackage(cx, sharedScope, njp, null);
                  */
             } catch (Exception ex1) {
-                ex1.printStackTrace();
+                ExceptionHandler.popupException(""+ex1);
             } finally {
                 cx.exit();
             }
@@ -139,19 +139,19 @@ public class JSFormula extends AbstractColumnFormula {
             }
         } catch (WrappedException we) {
             result = we;
-            // System.err.println("JSFormula " + we);
+            ExceptionHandler.popupException(""+we);
         } catch (EvaluatorException eve) {
             result = eve;
-            // System.err.println("JSFormula " + eve);
+            ExceptionHandler.popupException(""+eve);
         } catch (JavaScriptException jse) {
             result = jse;
-            // System.err.println("JSFormula " + jse);
+            ExceptionHandler.popupException(""+jse);
         } catch (EcmaError ee) {
             result = ee;
-            // System.err.println("JSFormula " + ee);
+            ExceptionHandler.popupException(""+ee);
         } catch (Exception ex) {
             result = ex;
-            // System.err.println("JSFormula " + ex.getClass() + " " + ex);
+            ExceptionHandler.popupException(""+ex);
             ex.printStackTrace();
         } finally {
             Context.exit();

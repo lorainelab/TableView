@@ -238,6 +238,7 @@ public class HistogramDisplay extends JPanel {
             try {
                 calcPoints(x, y, axes);
             } catch (Exception ex) {
+                ExceptionHandler.popupException(""+ex);
                 repaint();
             }
         }

@@ -136,10 +136,12 @@ public class ClusterView extends AbstractTableModelView
                 return o != null ? o.toString() : "";
             }
         } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex); 
         }
         try {
             label = Integer.toString((int) value);
         } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         return label;
     }
@@ -208,7 +210,7 @@ public class ClusterView extends AbstractTableModelView
         try {
             init();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -278,6 +280,7 @@ public class ClusterView extends AbstractTableModelView
                     try {
                         clusterThread.interrupt();
                     } catch (Exception ex) {
+                        ExceptionHandler.popupException(""+ex);
                     } finally {
                     }
                 }
@@ -395,7 +398,7 @@ public class ClusterView extends AbstractTableModelView
                                 this.cancel();
                             }
                         } catch (Exception ex) {
-                            System.err.println("clusterThread timer " + ex);
+                            ExceptionHandler.popupException(""+ex);
                         }
                         progressBar.setValue(progressBar.getMaximum() - av.getRemainingCount());
                     }
@@ -771,7 +774,7 @@ public class ClusterView extends AbstractTableModelView
             jf.pack();
             jf.setVisible(true);
         } catch (Exception ex) {
-            System.err.println("" + ex);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 }

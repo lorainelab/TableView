@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.file;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import java.io.*;
 import java.net.URL;
 
@@ -51,8 +52,10 @@ public class OpenInputSource {
                 InputStream is = url.openStream();
                 return is;
             } catch (Exception se) {
+                ExceptionHandler.popupException(""+se);                
             }
         } catch (Exception ue) {
+            ExceptionHandler.popupException(""+ue);
         }
         // local file?
         try {
@@ -80,7 +83,7 @@ public class OpenInputSource {
                         return is;
                     }
                 } catch (Exception rte) {
-                    System.err.println(rte);
+                    ExceptionHandler.popupException(""+rte);
                 }
             }
             throw e;

@@ -71,7 +71,7 @@ public class DefaultTableContext implements TableContext {
       properties.load(cl.getResourceAsStream(path));
       setDefaultViews(properties);
     } catch(Exception ex) {
-      System.err.println(ex);
+      ExceptionHandler.popupException(""+ex);
     }
   }
 
@@ -257,13 +257,12 @@ public class DefaultTableContext implements TableContext {
               System.loadLibrary(libName);
             }
           } catch (UnsatisfiedLinkError err) {
-            System.err.println("libdepends: " + libName + "\t" +err);
             continue;
           } catch (SecurityException ex) {
-            System.err.println("libdepends: " + libName + "\t" +ex);
+            ExceptionHandler.popupException(""+ex);
             continue;
           } catch (Throwable t) {
-            System.err.println("libdepends: " + libName + "\t" +t);
+            ExceptionHandler.popupException(""+t);
             continue;
           }
         }
@@ -287,9 +286,9 @@ public class DefaultTableContext implements TableContext {
               defaultViewIcons16.put(theClass, new ImageIcon(cl.getResource(icon)));
             }
           } catch (Exception ex) {
-            System.err.println("setDefaultViews " + viewName + " " + className + "\n " + ex);
+            ExceptionHandler.popupException(""+ex);
           } catch (NoClassDefFoundError err) {
-            System.err.println("setDefaultViews " + viewName + " " + className + "\n " + err);
+            ExceptionHandler.popupException(""+err);
           }
         }
       }

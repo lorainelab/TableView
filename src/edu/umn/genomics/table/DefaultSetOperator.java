@@ -145,6 +145,7 @@ public class DefaultSetOperator implements Serializable, SetOperator {
         try {
             this.masks.setElementAt(masks, setOperator);
         } catch (ArrayIndexOutOfBoundsException ae) {
+            ExceptionHandler.popupException(""+ae);
         }
     }
 

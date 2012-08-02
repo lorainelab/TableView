@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.table.dv;  //DataViewer
 
+import edu.umn.genomics.table.ExceptionHandler;
 import edu.umn.genomics.table.SetOperator;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -291,7 +292,7 @@ public class DataView extends JPanel implements Serializable, Observer {
                         }
                     }
                 } catch (Exception ex) {
-                    System.err.println(ex);
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         });
@@ -311,7 +312,7 @@ public class DataView extends JPanel implements Serializable, Observer {
                         }
                     }
                 } catch (Exception ex) {
-                    System.err.println(ex);
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         });

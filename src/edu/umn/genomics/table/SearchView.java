@@ -228,11 +228,7 @@ public class SearchView extends AbstractTableModelView
                     return;
             }
         } catch (Exception ex) {
-            String s = pattern == null ? "" : (" for " + pattern);
-            JOptionPane.showMessageDialog(getTopLevelAncestor(),
-                    ex,
-                    "Search Failed" + s,
-                    JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 

@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.bi.dbutil;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
@@ -53,7 +54,7 @@ public class SQLTypeTableCellRenderer extends DefaultTableCellRenderer {
                 super.setValue(value);
             }
         } catch (Exception ex) {
-            System.err.println(this + " :  " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 }

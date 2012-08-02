@@ -276,9 +276,7 @@ public class BaseColumnMap extends AbstractColumnMap
                         return (double) i;
                     }
                 } catch (Exception ex) {
-                    System.err.println("err at (" + row + "," + colIndex + ")  of " + tm.getRowCount() + " map " + obj + " to "
-                            + colH.get(obj) + "  mappingstate: " + getState());
-                    ex.printStackTrace();
+                    ExceptionHandler.popupException(""+ex);
                     return NULL_VALUE;
                 }
             } else {                // a range of numeric values
@@ -291,13 +289,12 @@ public class BaseColumnMap extends AbstractColumnMap
                 try {
                     return ((Number) tm.getValueAt(row, colIndex)).doubleValue();
                 } catch (Throwable ex) {
-                    System.err.println("getMapValue ex= " + ex);
+                    ExceptionHandler.popupException(""+ex);
                 }
                 return NULL_VALUE;
             }
         } catch (Throwable t) {
-            System.err.println("getMapValue t= " + t);
-            t.printStackTrace();
+            ExceptionHandler.popupException(""+t);
         }
         return NULL_VALUE;
     }

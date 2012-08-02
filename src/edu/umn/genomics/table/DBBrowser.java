@@ -152,7 +152,7 @@ public class DBBrowser extends AbstractTableSource {
                 return "VARCHAR(32)";
             }
         } catch (Exception ex) {
-            System.err.println("getSqlTypeFor " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
         return null;
     }
@@ -164,7 +164,7 @@ public class DBBrowser extends AbstractTableSource {
                     return conn;
                 }
             } catch (Exception ex1) {
-                conn = null;
+                ExceptionHandler.popupException(""+ex1);
             }
             if (dbuser == null) {
                 dbuser = getDBParams();
@@ -195,10 +195,7 @@ public class DBBrowser extends AbstractTableSource {
             }
         } catch (Exception ex) {
             status.setText("DB connection failed " + ex);
-            JOptionPane.showMessageDialog(frame,
-                    ex,
-                    "Data base connection failed",
-                    JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ex);
         }
         return conn;
     }
@@ -223,6 +220,7 @@ public class DBBrowser extends AbstractTableSource {
             }
         } catch (Exception ex) {
             status.setText("DB connection failed " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -239,6 +237,7 @@ public class DBBrowser extends AbstractTableSource {
             }
         } catch (Exception ex) {
             status.setText("DB connection failed " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -259,7 +258,6 @@ public class DBBrowser extends AbstractTableSource {
             for (int j = 0; j < schema.length; j++) {
                 setTables(null, (String) schema[j]);
             }
-        } else {
         }
     }
 
@@ -282,10 +280,10 @@ public class DBBrowser extends AbstractTableSource {
             status.setText("DB connection failed " + ex);
             if (ex instanceof SQLException) {
                 for (SQLException sqlex = (SQLException) ex; sqlex != null; sqlex = sqlex.getNextException()) {
-                    System.err.println(sqlex.toString());
+                    ExceptionHandler.popupException(""+sqlex);
                 }
             }
-            ex.printStackTrace();
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -322,6 +320,7 @@ public class DBBrowser extends AbstractTableSource {
             }
         } catch (Exception ex) {
             status.setText("DB connection failed " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
 //System.err.println("<<< setColumns");
     }
@@ -378,6 +377,7 @@ public class DBBrowser extends AbstractTableSource {
                         pKeyModel.add(dbmd.getPrimaryKeys(tbl.getCatalogName(), tbl.getSchemaName(), tbl.getTableName()));
                     }
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         } else {
@@ -393,6 +393,7 @@ public class DBBrowser extends AbstractTableSource {
                     }
                     n++;
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
             for (int i = 0; i < sl.length; i++) {
@@ -404,6 +405,7 @@ public class DBBrowser extends AbstractTableSource {
                     }
                     n++;
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         }
@@ -423,6 +425,7 @@ public class DBBrowser extends AbstractTableSource {
                         fKeyModel.add(dbmd.getImportedKeys(tbl.getCatalogName(), tbl.getSchemaName(), tbl.getTableName()));
                     }
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         } else {
@@ -438,6 +441,7 @@ public class DBBrowser extends AbstractTableSource {
                     }
                     n++;
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
             for (int i = 0; i < sl.length; i++) {
@@ -449,6 +453,7 @@ public class DBBrowser extends AbstractTableSource {
                     }
                     n++;
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         }
@@ -468,6 +473,7 @@ public class DBBrowser extends AbstractTableSource {
                         xKeyModel.add(dbmd.getExportedKeys(tbl.getCatalogName(), tbl.getSchemaName(), tbl.getTableName()));
                     }
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         } else {
@@ -483,6 +489,7 @@ public class DBBrowser extends AbstractTableSource {
                     }
                     n++;
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
             for (int i = 0; i < sl.length; i++) {
@@ -494,6 +501,7 @@ public class DBBrowser extends AbstractTableSource {
                     }
                     n++;
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         }
@@ -537,8 +545,8 @@ public class DBBrowser extends AbstractTableSource {
             }
         } catch (Exception ex) {
             status.setText("DB connection failed " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
-        System.err.println("<<< setIndexInfo");
     }
 
     private void setDefaultModel(DefaultTableModel model, Vector cols, Vector rows) {
@@ -618,11 +626,6 @@ public class DBBrowser extends AbstractTableSource {
         // if (rowModel != null && sql.equals(rowModel.getQuery())) {
         //   return;
         // }
-        try {
-            // Save query history to user preferences
-            // dbmodel.addQuery(dbuser.getName(),"\n"+sql.trim()+"\n");
-        } catch (Exception ex) {
-        }
         rowLabel.setText("Rows  ?");
         try {
             if (rowModel != null) {
@@ -642,8 +645,7 @@ public class DBBrowser extends AbstractTableSource {
                 rowTable.setTableModel(new VirtualTableModelProxy(rowModel));
             }
         } catch (Exception ex) {
-            System.err.println("DBBrowser.submitQuery() " + ex);
-            ex.printStackTrace();
+            ExceptionHandler.popupException(""+ex);
         }
         if (getRowLimit() < 0) {
             rowModel.setQuery(sql);
@@ -738,12 +740,7 @@ public class DBBrowser extends AbstractTableSource {
                 schemaList.setSelectedIndex(i);
             }
         } catch (Exception ex) {
-            status.setText("DB connection failed " + ex);
-            JOptionPane.showMessageDialog(frame,
-                    ex,
-                    "Data base connection failed",
-                    JOptionPane.ERROR_MESSAGE);
-            System.err.println("DB connection failed " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -755,10 +752,7 @@ public class DBBrowser extends AbstractTableSource {
                 dbmodel.setSelectedItem(dbmodel.getElementAt(0));
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(frame,
-                    ex,
-                    "Unable to display Database Account Preferences",
-                    JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ex);
         }
 
         JButton dbServices = new JButton("Edit Connections");
@@ -770,10 +764,7 @@ public class DBBrowser extends AbstractTableSource {
                         try {
                             (new DatabaseAccountEditor(new DBAccountListModel())).show((Window) getTopLevelAncestor());
                         } catch (Exception ex) {
-                            JOptionPane.showMessageDialog(frame,
-                                    ex,
-                                    "Unable to display Database Account Preferences",
-                                    JOptionPane.ERROR_MESSAGE);
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -958,6 +949,7 @@ public class DBBrowser extends AbstractTableSource {
                             // since this can change the preferredsize of the JTable...
                             rowTable.validate();
                         } catch (Exception ex) {
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -1144,7 +1136,7 @@ public class DBBrowser extends AbstractTableSource {
                     try {
                         dbmodel.importPreferences(source);
                     } catch (Exception ex) {
-                        System.err.println("Unable to set preferences from " + source + "  " + ex);
+                        ExceptionHandler.popupException(""+ex);
                     }
                 } else if (args[i].equals("-dbname")) {
                     dbname = args[++i];
@@ -1223,6 +1215,7 @@ public class DBBrowser extends AbstractTableSource {
                         try {
                             ((Window) ((JComponent) e.getSource()).getTopLevelAncestor()).dispose();
                         } catch (Exception ex) {
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -1286,6 +1279,7 @@ public class DBBrowser extends AbstractTableSource {
             try {
                 setSelected(((Boolean) value).booleanValue());
             } catch (Exception ex) {
+                ExceptionHandler.popupException(""+ex);
             }
             return this;
         }

@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.graph;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import java.util.Vector;
 
 /**
@@ -129,6 +130,7 @@ public class LineDataModel implements DataModel {
                 pnts[1][j + 1] = yb - axes[1].getIntPosition(line.getY(axes[0].getValue(x + w)));
 
             } catch (ClassCastException ccex) {
+                ExceptionHandler.popupException(""+ccex);
             }
         }
         return pnts;

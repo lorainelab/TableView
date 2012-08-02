@@ -149,7 +149,7 @@ public abstract class AbstractHistogramViewND extends AbstractTableModelView
                 addDelItem(name, bm);
             }
         } catch (Exception ex) {
-            System.err.println(this.getClass() + ".addColumn(" + idx + ") " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -335,6 +335,7 @@ public abstract class AbstractHistogramViewND extends AbstractTableModelView
                     validate();
                     repaint();
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         }
@@ -381,8 +382,7 @@ public abstract class AbstractHistogramViewND extends AbstractTableModelView
                         hgm.addBinModel(new ColumnMapBinModel(xMap));
                     }
                 } catch (Exception ex) {
-                    System.err.println(this.getClass() + ".setColumns() " + ex);
-                    ex.printStackTrace();
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
             // Update delMenu

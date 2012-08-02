@@ -24,6 +24,7 @@
 package edu.umn.genomics.bi.dbutil;
 
 import edu.umn.genomics.file.OpenInputSource;
+import edu.umn.genomics.table.ExceptionHandler;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,7 +72,7 @@ public class DBPreferences {
                 dbpa[i] = new DBUser(name, user, passwd, url, driver);
             }
         } catch (Exception ex) {
-            System.err.println(" DBPreferences " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
         return dbpa;
     }
@@ -90,7 +91,7 @@ public class DBPreferences {
                 return new DBUser(name, user, passwd, url, driver);
             }
         } catch (Exception ex) {
-            System.err.println(" DBPreferences " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
         return null;
     }
@@ -146,7 +147,7 @@ public class DBPreferences {
                 prefs.node(name).removeNode();
             }
         } catch (Exception ex) {
-            System.err.println(" DBPreferences " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 

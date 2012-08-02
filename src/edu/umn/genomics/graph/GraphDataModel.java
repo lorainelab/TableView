@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.graph;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
@@ -243,7 +244,7 @@ public class GraphDataModel extends AbstractDataModel {
                         + "or a primitive number type.");
             }
         } catch (Exception ex) {
-            System.err.println("GraphDataModel.setData " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
         return ds;
     }

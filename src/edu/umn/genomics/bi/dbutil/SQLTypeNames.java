@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.bi.dbutil;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import java.lang.reflect.Field;
 import java.util.Hashtable;
 
@@ -51,7 +52,7 @@ public class SQLTypeNames extends Hashtable {
                 super.put(fld[i].get(null), fld[i].getName());
             }
         } catch (Exception ex) {
-            System.err.println("sqlTypeName " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 

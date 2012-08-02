@@ -195,7 +195,7 @@ public class LoadTable extends AbstractTableSource {
                             Class.forName(depClass);
                         }
                     } catch (ClassNotFoundException cnfex) {
-                        System.err.println("depends: " + depClass + "\t" + cnfex);
+                        ExceptionHandler.popupException(""+cnfex);
                         continue;
                     }
                 }
@@ -207,13 +207,12 @@ public class LoadTable extends AbstractTableSource {
                             System.loadLibrary(libName);
                         }
                     } catch (UnsatisfiedLinkError err) {
-                        System.err.println("libdepends: " + libName + "\t" + err);
                         continue;
                     } catch (SecurityException ex) {
-                        System.err.println("libdepends: " + libName + "\t" + ex);
+                        ExceptionHandler.popupException(""+ex);
                         continue;
                     } catch (Throwable t) {
-                        System.err.println("libdepends: " + libName + "\t" + t);
+                        ExceptionHandler.popupException(""+t);
                         continue;
                     }
                 }
@@ -236,7 +235,7 @@ public class LoadTable extends AbstractTableSource {
                             addTableLoader(loaderName, icon, tableSource, toolTip);
                         }
                     } catch (Exception ex) {
-                        System.err.println("loader: " + loaderName + "\t" + ex);
+                        ExceptionHandler.popupException(""+ex);
                     }
                 }
             }
@@ -312,6 +311,7 @@ public class LoadTable extends AbstractTableSource {
                                 mergeNameLabel.setText("");
                                 dialog.hide();
                             } catch (Exception ex) {
+                                ExceptionHandler.popupException(""+ex);
                             }
                         }
                     });
@@ -340,10 +340,7 @@ public class LoadTable extends AbstractTableSource {
                                 mergeNameLabel.setText(mtmName);
                                 nameField.setText(mtmName);
                             } catch (Exception ex) {
-                                JOptionPane.showMessageDialog(getTopLevelAncestor(),
-                                        ex,
-                                        "Unable to merge table " + mergeNameField.getText(),
-                                        JOptionPane.ERROR_MESSAGE);
+                                ExceptionHandler.popupException(""+ex);
                             }
                         }
                     });
@@ -356,6 +353,7 @@ public class LoadTable extends AbstractTableSource {
                                 setTableSource(null, "");
                                 dialog.hide();
                             } catch (Exception ex) {
+                                ExceptionHandler.popupException(""+ex);
                             }
                         }
                     });
@@ -368,6 +366,7 @@ public class LoadTable extends AbstractTableSource {
                         setTableSource(null, "");
                         dialog.hide();
                     } catch (Exception ex) {
+                        ExceptionHandler.popupException(""+ex);
                     } 
                 }
             });
@@ -386,6 +385,7 @@ public class LoadTable extends AbstractTableSource {
                 }
                 dialog.setLocation((int) ((dim.width - dw) / 2), (int) ((dim.height - dh) / 2));
             } catch (Exception ex) {
+                ExceptionHandler.popupException(""+ex);
             }
             dialog.setResizable(true);
         }

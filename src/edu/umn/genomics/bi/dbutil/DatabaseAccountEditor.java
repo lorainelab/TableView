@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.bi.dbutil;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -72,7 +73,7 @@ public class DatabaseAccountEditor extends JPanel {
                     try {
                         setFields(acctName);
                     } catch (Exception ex) {
-                        System.err.println("Error getting preferences for " + acctName + " " + ex);
+                        ExceptionHandler.popupException(""+ex);
                     }
                 }
             }
@@ -228,11 +229,7 @@ public class DatabaseAccountEditor extends JPanel {
                                     ((JComponent) e.getSource()).getTopLevelAncestor(),
                                     "Able to connect");
                         } catch (Exception ex) {
-                            JOptionPane.showMessageDialog(
-                                    ((JComponent) e.getSource()).getTopLevelAncestor(),
-                                    ex,
-                                    "Data base connection failed",
-                                    JOptionPane.ERROR_MESSAGE);
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -391,11 +388,7 @@ public class DatabaseAccountEditor extends JPanel {
                     setFields(inputValue);
                     break;
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(
-                            this.getTopLevelAncestor(),
-                            ex,
-                            "Creating new account failed",
-                            JOptionPane.ERROR_MESSAGE);
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         }
@@ -435,11 +428,7 @@ public class DatabaseAccountEditor extends JPanel {
                 }
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(
-                    this.getTopLevelAncestor(),
-                    ex,
-                    "Removing the account failed",
-                    JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -458,11 +447,7 @@ public class DatabaseAccountEditor extends JPanel {
                     break;
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(
-                    this.getTopLevelAncestor(),
-                    ex,
-                    "Importing accounts failed",
-                    JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -483,11 +468,7 @@ public class DatabaseAccountEditor extends JPanel {
             } else {
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(
-                    this.getTopLevelAncestor(),
-                    ex,
-                    "Data base user export failed",
-                    JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -510,11 +491,7 @@ public class DatabaseAccountEditor extends JPanel {
             dblm.setSelectedItem(name);
             setFields(name);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(
-                    this.getTopLevelAncestor(),
-                    ex,
-                    "Applying account changes failed",
-                    JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ex);
         }
     }
 
@@ -527,6 +504,7 @@ public class DatabaseAccountEditor extends JPanel {
         try {
             Class.forName(drvr);
         } catch (ClassNotFoundException cnfex) {
+            ExceptionHandler.popupException(""+cnfex);
         }
         Connection tc = DriverManager.getConnection(url, usr, pwd);
         tc.close();
@@ -561,11 +539,7 @@ public class DatabaseAccountEditor extends JPanel {
             try {
                 setFields(acctName);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(
-                        this.getTopLevelAncestor(),
-                        ex,
-                        "Unable to retrieve account preferences",
-                        JOptionPane.ERROR_MESSAGE);
+                ExceptionHandler.popupException(""+ex);
             }
         }
     }
@@ -593,11 +567,7 @@ public class DatabaseAccountEditor extends JPanel {
                                 } else {
                                 }
                             } catch (Exception ex) {
-                                JOptionPane.showMessageDialog(
-                                        ((JComponent) e.getSource()).getTopLevelAncestor(),
-                                        ex,
-                                        "Data base user import failed",
-                                        JOptionPane.ERROR_MESSAGE);
+                                ExceptionHandler.popupException(""+ex);
                             }
                         }
                     });
@@ -619,7 +589,7 @@ public class DatabaseAccountEditor extends JPanel {
                 try {
                     dblm.importPreferences(args[i]);
                 } catch (Exception ex) {
-                    System.err.println("Error importing Database Account preferences: " + ex);
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         }
@@ -662,7 +632,7 @@ public class DatabaseAccountEditor extends JPanel {
             dbacct.exitOnClose = true;
             dbacct.importAccounts(args);
         } catch (Exception ex) {
-            System.err.println("DatabaseAccountEditor " + ex);
+            ExceptionHandler.popupException(""+ex);
         }
         frame.getContentPane().add(dbacct);
         frame.pack();

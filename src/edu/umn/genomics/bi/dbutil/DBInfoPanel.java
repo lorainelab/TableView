@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.bi.dbutil;
 
+import edu.umn.genomics.table.ExceptionHandler;
 import java.awt.BorderLayout;
 import java.sql.DatabaseMetaData;
 import javax.swing.JPanel;
@@ -123,6 +124,7 @@ public class DBInfoPanel extends JPanel {
                     new JScrollPane(jt),
                     "Database Supported SQL Type Information");
         } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex);
         }
     }
 }

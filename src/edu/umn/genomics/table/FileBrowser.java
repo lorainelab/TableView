@@ -74,6 +74,7 @@ public class FileBrowser extends AbstractTableSource implements OpenTableSource 
                         try {
                             openTableSource();
                         } catch (Exception ex) {
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -90,6 +91,7 @@ public class FileBrowser extends AbstractTableSource implements OpenTableSource 
                                 path.setText(file.getAbsolutePath());
                                 openTableSource();
                             } catch (Exception ex) {
+                                ExceptionHandler.popupException(""+ex);
                             }
                         } else {
                             System.err.println("Open command cancelled by user.");
@@ -164,12 +166,7 @@ public class FileBrowser extends AbstractTableSource implements OpenTableSource 
         try {
             openTableSource(path.getText());
         } catch (Exception ex) {
-            System.err.println(" openTableSource " + ex);
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog((Window) getTopLevelAncestor(),
-                    ex,
-                    "Unable to open table",
-                    JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException("Invalid URL: "+ex);
         }
     }
 

@@ -23,6 +23,7 @@
  */
 package edu.umn.genomics.table.dv.j3d;  //DataViewer
 import com.sun.j3d.utils.geometry.*;
+import edu.umn.genomics.table.ExceptionHandler;
 import edu.umn.genomics.table.dv.Glyph;
 import java.awt.Color;
 import java.io.Serializable;
@@ -207,7 +208,7 @@ public class GlyphJ3D extends BranchGroup implements Serializable, Glyph {
             m.setDiffuseColor(c);
             //m.setEmissiveColor(c); 
         } catch (Exception e) {
-            System.err.println("GlyphJ3D.setColor() " + e);
+            ExceptionHandler.popupException(""+e);
         }
     }
 
@@ -261,7 +262,7 @@ public class GlyphJ3D extends BranchGroup implements Serializable, Glyph {
         try {
             transformGroup.setTransform(transform);
         } catch (Exception e) {
-            System.err.println("setScale " + e);
+            ExceptionHandler.popupException(""+e);
         }
     }
 
@@ -278,7 +279,7 @@ public class GlyphJ3D extends BranchGroup implements Serializable, Glyph {
         try {
             transformGroup.setTransform(transform);
         } catch (Exception e) {
-            System.err.println("setScale " + e);
+            ExceptionHandler.popupException(""+e);
         }
     }
 }

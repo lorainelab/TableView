@@ -24,6 +24,7 @@
 package edu.umn.genomics.bi.dbutil;
 
 import edu.umn.genomics.file.ExtensionFileFilter;
+import edu.umn.genomics.table.ExceptionHandler;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
@@ -123,11 +124,7 @@ public class DBUserPanel implements DBConnectParams {
                                 } else {
                                 }
                             } catch (Exception ex) {
-                                JOptionPane.showMessageDialog(
-                                        ((JComponent) e.getSource()).getTopLevelAncestor(),
-                                        ex,
-                                        "Data base user import failed",
-                                        JOptionPane.ERROR_MESSAGE);
+                                ExceptionHandler.popupException(""+ex);
                             }
                         }
                     });
@@ -151,6 +148,7 @@ public class DBUserPanel implements DBConnectParams {
                         dbuser = (DBConnectParams) dbModel.getElementAt(0);
                     }
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         }
@@ -224,6 +222,7 @@ public class DBUserPanel implements DBConnectParams {
                             DBUserList.getSharedInstance().addElement(new DBUser(
                                     name, usr, pw, url, driver));
                         } catch (Exception ex) {
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -238,6 +237,7 @@ public class DBUserPanel implements DBConnectParams {
                         try {
                             DBUserList.getSharedInstance().removeElement(dbUsers.getSelectedItem());
                         } catch (Exception ex) {
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -260,11 +260,7 @@ public class DBUserPanel implements DBConnectParams {
                                     ((JComponent) e.getSource()).getTopLevelAncestor(),
                                     "Able to connect to " + url);
                         } catch (Exception ex) {
-                            JOptionPane.showMessageDialog(
-                                    ((JComponent) e.getSource()).getTopLevelAncestor(),
-                                    ex,
-                                    "Data base connection failed",
-                                    JOptionPane.ERROR_MESSAGE);
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -293,6 +289,7 @@ public class DBUserPanel implements DBConnectParams {
                                         break;
                                 }
                             } catch (Exception ex) {
+                                ExceptionHandler.popupException(""+ex);
                             }
                         }
                     });
@@ -317,11 +314,7 @@ public class DBUserPanel implements DBConnectParams {
                                 } else {
                                 }
                             } catch (Exception ex) {
-                                JOptionPane.showMessageDialog(
-                                        ((JComponent) e.getSource()).getTopLevelAncestor(),
-                                        ex,
-                                        "Data base user export failed",
-                                        JOptionPane.ERROR_MESSAGE);
+                                ExceptionHandler.popupException(""+ex);
                             }
                         }
                     });
@@ -345,16 +338,13 @@ public class DBUserPanel implements DBConnectParams {
                                 } else {
                                 }
                             } catch (Exception ex) {
-                                JOptionPane.showMessageDialog(
-                                        ((JComponent) e.getSource()).getTopLevelAncestor(),
-                                        ex,
-                                        "Data base user export failed",
-                                        JOptionPane.ERROR_MESSAGE);
+                                ExceptionHandler.popupException(""+ex);
                             }
                         }
                     });
             btnPanel.add(expAllBtn);
         } catch (ClassNotFoundException cnfex) {
+            ExceptionHandler.popupException(""+cnfex);
         }
         connectionPanel.add(editPanel);
         connectionPanel.add(btnPanel, BorderLayout.SOUTH);
@@ -400,11 +390,7 @@ public class DBUserPanel implements DBConnectParams {
                     dbuser = new DBUser(name, usr, pw, url, driver);
                     DBUserList.getSharedInstance().addElement(dbuser);
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(parentComponent,
-                            e,
-                            "Data base connection failed",
-                            JOptionPane.ERROR_MESSAGE);
-                    System.err.println("DB connection failed " + e);
+                    ExceptionHandler.popupException(""+e);
                 }
                 break;
             default:

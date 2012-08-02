@@ -29,6 +29,7 @@ import com.lowagie.text.pdf.DefaultFontMapper;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
+import edu.umn.genomics.table.ExceptionHandler;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -104,13 +105,19 @@ public class SavePDF {
         int returnVal = chooser.showSaveDialog(c);
         boolean status = false;
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            final File file = chooser.getSelectedFile();
+            File file = chooser.getSelectedFile();
+            String name = file.getAbsolutePath();
+            if(!(name.substring(name.length()-4 , name.length()).equalsIgnoreCase(".pdf"))){
+                name = name.concat(".pdf");
+                file = new File(name);
+            }
             int iw = w;
             int ih = h;
             try {
                 iw = Integer.parseInt(iwtf.getText());
                 ih = Integer.parseInt(ihtf.getText());
             } catch (Exception ex) {
+                ExceptionHandler.popupException(""+ex);
             }
             iw = iw > 0 ? iw : w;
             ih = ih > 0 ? ih : h;
@@ -160,14 +167,11 @@ public class SavePDF {
                 cb.addTemplate(tp, sf, 0f, 0f, sf, 0f, 0f);
 
             } catch (DocumentException de) {
-                System.err.println(de.getMessage());
-                de.printStackTrace();
+                ExceptionHandler.popupException(""+de);
             } catch (IOException ioe) {
-                System.err.println(ioe.getMessage());
-                ioe.printStackTrace();
+                ExceptionHandler.popupException(""+ioe);
             } catch (Exception ex) {
-                System.err.println(ex.getMessage());
-                ex.printStackTrace();
+                ExceptionHandler.popupException(""+ex);
             }
 
             // step 5: we close the document

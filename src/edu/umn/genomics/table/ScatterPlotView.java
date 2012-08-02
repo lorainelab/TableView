@@ -202,6 +202,7 @@ public class ScatterPlotView extends AbstractTableModelView
                     validate();
                     repaint();
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         }
@@ -225,8 +226,7 @@ public class ScatterPlotView extends AbstractTableModelView
                     }
                 }
             } catch (Exception ex) {
-                System.err.println("ScatterPlotView.setColumns() " + ex);
-                ex.printStackTrace();
+                ExceptionHandler.popupException(""+ex);
             }
             repaint();
         }

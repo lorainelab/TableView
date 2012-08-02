@@ -151,10 +151,12 @@ public class ClutoTree extends JPanel
                 return o != null ? o.toString() : "";
             }
         } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         try {
             label = Integer.toString((int) value);
         } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         return label;
     }

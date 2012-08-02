@@ -258,7 +258,7 @@ public class JTableView extends AbstractTableModelView implements Serializable {
                     // jsp.validate();
                     repaint();
                 } catch (Exception ex) {
-                    System.err.println("lsv ex : " + ex);
+                    ExceptionHandler.popupException(""+ex);
                 }
             }
         }
@@ -292,7 +292,7 @@ public class JTableView extends AbstractTableModelView implements Serializable {
                 try {
                     sortOnColumn(column);
                 } catch (Exception iex) {
-                    System.err.println("Interrupted\t" + Thread.currentThread() + " " + iex);
+                   ExceptionHandler.popupException(""+iex);
                 }
             } while (sortAgain);
             setCursor(cursor);
@@ -704,6 +704,7 @@ public class JTableView extends AbstractTableModelView implements Serializable {
                 }
             }
         } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex);
         }
         tlsm = new DefaultListSelectionModel();
         if (lsm != null) {

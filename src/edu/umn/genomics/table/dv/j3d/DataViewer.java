@@ -24,6 +24,7 @@
 package edu.umn.genomics.table.dv.j3d;  //DataViewer
 
 import edu.umn.genomics.component.SaveImage;
+import edu.umn.genomics.table.ExceptionHandler;
 import edu.umn.genomics.table.FileTableModel;
 import edu.umn.genomics.table.dv.DataMap;
 import edu.umn.genomics.table.dv.DataView;
@@ -83,7 +84,7 @@ public class DataViewer extends JPanel implements Serializable {
                 JPopupMenu.setDefaultLightWeightPopupEnabled(false);
             } catch (ClassNotFoundException e) {
                 dv = new DataView2D();
-                System.err.println("using DataView2D");
+                ExceptionHandler.popupException(""+e);
             }
         }
 
@@ -180,8 +181,7 @@ public class DataViewer extends JPanel implements Serializable {
         try {
             importData(filename);
         } catch (IOException ioex) {
-            JOptionPane.showMessageDialog(parent, file + " " + ioex,
-                    "Cannot load file", JOptionPane.ERROR_MESSAGE);
+            ExceptionHandler.popupException(""+ioex);
             return;
         }
     }
@@ -260,9 +260,7 @@ public class DataViewer extends JPanel implements Serializable {
                     try {
                         SaveImage.saveImage(dv.getCanvas());
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(
-                                JOptionPane.getFrameForComponent((Component) e.getSource()),
-                                ex, "Cannot save image", JOptionPane.ERROR_MESSAGE);
+                        ExceptionHandler.popupException(""+ex);
                     }
                 }
             });
@@ -393,6 +391,7 @@ public class DataViewer extends JPanel implements Serializable {
                                 }
                             }
                         } catch (Exception ex) {
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -412,6 +411,7 @@ public class DataViewer extends JPanel implements Serializable {
                                 }
                             }
                         } catch (Exception ex) {
+                            ExceptionHandler.popupException(""+ex);
                         }
                     }
                 });
@@ -466,7 +466,7 @@ public class DataViewer extends JPanel implements Serializable {
             try {
                 dv.importData(args[i]);
             } catch (IOException ioex) {
-                System.err.println(args[i] + " :  " + ioex);
+                ExceptionHandler.popupException(""+ioex);
             }
         }
     }

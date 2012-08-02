@@ -29,6 +29,7 @@ import cern.colt.matrix.doublealgo.Statistic;
 import cern.colt.matrix.impl.DenseDoubleMatrix2D;
 import edu.umn.genomics.table.CellMap;
 import edu.umn.genomics.table.ColumnMap;
+import edu.umn.genomics.table.ExceptionHandler;
 import edu.umn.genomics.table.TableContext;
 import edu.umn.genomics.table.cluster.Cluster;
 import edu.umn.genomics.table.cluster.CompositeCluster;
@@ -139,6 +140,7 @@ public abstract class AbstractSimilarity implements ClusterSimilarity {
                 try {
                     Thread.sleep(100);
                 } catch (Exception ex) {
+                    ExceptionHandler.popupException(""+ex);
                     break;
                 }
             }

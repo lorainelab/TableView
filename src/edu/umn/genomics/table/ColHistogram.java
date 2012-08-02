@@ -164,6 +164,7 @@ public class ColHistogram extends AbstractTableModelView
                     }
                 }
             } catch (ConcurrentModificationException ex) {
+                ExceptionHandler.popupException(""+ex);
             }
             if (mapQueue.size() > 0) {
                 Thread.yield();
