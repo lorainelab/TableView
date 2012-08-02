@@ -76,7 +76,6 @@ public class HistogramDisplay extends JPanel {
                     }
                     return sb.toString();
                 } catch (Exception ex) {
-                    ExceptionHandler.popupException(""+ex);
                 }
             }
             return "";
