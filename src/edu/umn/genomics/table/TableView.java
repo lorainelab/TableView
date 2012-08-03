@@ -546,27 +546,49 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         mb.add(viewMenu);
         JMenu helpMenu = new JMenu("Help");
         helpMenu.setMnemonic('h');
-        mi = (JMenuItem) helpMenu.add(new JMenuItem("Documentation"));
-        mi.setMnemonic('d');
-        mi.setActionCommand("Documentation");
+        mi = (JMenuItem) helpMenu.add(new JMenuItem("TableView User's Guide"));
+        mi.setMnemonic('g');
+        mi.setActionCommand("TableView User's Guide");
         mi.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent ae) {
-                String link = "https://github.com/lorainelab/TableView/wiki";
+                String link = "http://wiki.transvar.org/confluence/x/8IfTAQ";
                 browse(link);
             }
         });
-        mi.getAccessibleContext().setAccessibleDescription("Documentation");
-        mi = (JMenuItem) helpMenu.add(new JMenuItem("Tutorial"));
-        mi.setMnemonic('w');
-        mi.getAccessibleContext().setAccessibleDescription("Tutorial");
+        mi.getAccessibleContext().setAccessibleDescription("TableView User's Guide");
+        mi = (JMenuItem) helpMenu.add(new JMenuItem("Get Help"));
+        mi.setMnemonic('t');
+        mi.getAccessibleContext().setAccessibleDescription("Get Help");
         mi.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent ae) {
-                String link = "https://github.com/lorainelab/TableView/wiki/Use-TableView-with-CressExpress";
+                String link = "http://wiki.transvar.org/confluence/x/RIjTAQ";
                 browse(link);
             }
         });
+        JMenu tutorialMenu = new JMenu("Tutorials");
+        mi = (JMenuItem) tutorialMenu.add(new JMenuItem("Using TableView to view expression data from CressExpress"));
+        mi.setMnemonic('c');
+        mi.getAccessibleContext().setAccessibleDescription("Using TableView to view expression data from CressExpress");
+        mi.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent ae) {
+                String link = "http://wiki.transvar.org/confluence/x/9IfTAQ";
+                browse(link);
+            }
+        });
+        mi = (JMenuItem) tutorialMenu.add(new JMenuItem("Using TableView with Integrated Genome Browser"));
+        mi.setMnemonic('i');
+        mi.getAccessibleContext().setAccessibleDescription("Using TableView with Integrated Genome Browser");
+        mi.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent ae) {
+                String link = "http://wiki.transvar.org/confluence/x/R4jTAQ";
+                browse(link);
+            }
+        });
+        helpMenu.add(tutorialMenu);
         mi = (JMenuItem) helpMenu.add(new JMenuItem("Show Console"));
         mi.setMnemonic('s');
         mi.getAccessibleContext().setAccessibleDescription("Show Console");
