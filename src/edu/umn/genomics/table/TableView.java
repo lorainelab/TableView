@@ -72,7 +72,7 @@ import javax.swing.tree.*;
  */
 public class TableView extends JPanel implements Serializable //, Printable //PrintJob
 {
-
+    public static ResourceBundle BUNDLE = ResourceBundle.getBundle("tableview");
     static final String encoding;
 
     static {

@@ -25,6 +25,7 @@ package edu.umn.genomics.bi.dbutil;
 
 import edu.umn.genomics.file.OpenInputSource;
 import edu.umn.genomics.table.ExceptionHandler;
+import edu.umn.genomics.table.TableView;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -480,7 +481,7 @@ public class DBAccountListModel extends AbstractListModel implements ComboBoxMod
         for (int i = 0; i < accnts.length; i++) {
             list.add(getDriver(accnts[i]));
         }
-        String drivers = System.getProperty("jdbc.drivers");
+        String drivers = TableView.BUNDLE.getString("jdbc.drivers"); //System.getProperty("jdbc.drivers");
         if (drivers != null) {
             for (StringTokenizer st = new StringTokenizer(drivers, ":"); st.hasMoreTokens();) {
                 list.add(st.nextToken());
