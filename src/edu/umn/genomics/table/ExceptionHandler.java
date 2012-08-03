@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 /**
  *
  * @author auser
+ * This Class is used to handle all the Exceptions with a generalised Popup 
  */
 public class ExceptionHandler {
     static Icon tvIcon = new ImageIcon("resources/TableView96.png");

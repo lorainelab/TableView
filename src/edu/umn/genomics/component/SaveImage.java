@@ -156,6 +156,7 @@ public class SaveImage {
         boolean status = false;
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file1 = chooser.getSelectedFile();
+            //Added this below code to add correct Extension to the file as selected by the user
             String name = file1.getAbsolutePath();
             String selected = bg.getSelection().getActionCommand();
             if(name.lastIndexOf(".") > 0){

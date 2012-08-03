@@ -4,7 +4,7 @@ import java.awt.Graphics;
 
 /**
  * An item to be drawn.
- *
+ * 
  * @author J Johnson
  * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:49 $ $Name: TableView1_3_2
  * $
@@ -13,6 +13,7 @@ import java.awt.Graphics;
  * @see javax.swing.ListSelectionModel
  * @see Graph
  */
+    //Added this class to draw the selected points on the ScatterPoints Operation Map
 public class DrawableSquare implements Drawable {
     /*
      * Draw using the given graphics context at the given point. @param g the
