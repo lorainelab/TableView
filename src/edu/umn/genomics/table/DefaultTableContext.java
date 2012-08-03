@@ -387,6 +387,10 @@ public class DefaultTableContext implements TableContext {
     return icon;
   }
 
+  public Icon getViewIcon16(Class viewClass){
+      Icon icon = getViewIcon(viewClass, viewIcons16);
+      return icon;
+  }
   /**
    * Get an icon for a view class.
    * @param viewClass The viewing class.
@@ -404,6 +408,10 @@ public class DefaultTableContext implements TableContext {
    * @return the icon for this view.
    */
   public Icon getViewIcon(String viewName) {
+    return getViewIcon((Class)views.get(viewName));
+  }
+  
+  public Icon getViewIcon16(String viewName) {
     return getViewIcon((Class)views.get(viewName));
   }
 

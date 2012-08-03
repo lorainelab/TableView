@@ -538,7 +538,8 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         viewMenu.setMnemonic('v');
         String vn[] = ctx.getViewNames();
         for (int i = 0; i < vn.length; i++) {
-            mi = (JMenuItem) viewMenu.add(new JMenuItem(vn[i]));
+            Icon icon = ctx.getViewIcon16(vn[i]);
+            mi = (JMenuItem) viewMenu.add(new JMenuItem(vn[i], icon));
             mi.setActionCommand(vn[i]);
             //mi.setMnemonic('t');
             //mi.getAccessibleContext().setAccessibleDescription("Table");
