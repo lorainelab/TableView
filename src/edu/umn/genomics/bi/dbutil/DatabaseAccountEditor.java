@@ -355,6 +355,9 @@ public class DatabaseAccountEditor extends JPanel {
         if (dblm.getSize() > 0) {
             dblm.setSelectedItem(dblm.getElementAt(0));
             setFields();
+        }else{
+            // Just set models;
+            setModels();
         }
         // add listeners
         acctChooser.addItemListener(itemListener);
@@ -522,13 +525,20 @@ public class DatabaseAccountEditor extends JPanel {
         }
     }
 
-    private synchronized void setFields(String accountName) throws BackingStoreException {
-        nameField.setText(accountName);
+    private synchronized void setModels() throws BackingStoreException{
         driverChooser.setModel(new DefaultComboBoxModel(dblm.getKnownDrivers()));
-        driverChooser.setSelectedItem(dblm.getDriver(accountName));
         urlChooser.setModel(new DefaultComboBoxModel(dblm.getKnownURLs()));
-        urlChooser.setSelectedItem(dblm.getURL(accountName));
         userChooser.setModel(new DefaultComboBoxModel(dblm.getKnownUsers()));
+    }
+    
+    private synchronized void setFields(String accountName) throws BackingStoreException {
+        setModels();
+        nameField.setText(accountName);
+        //driverChooser.setModel(new DefaultComboBoxModel(dblm.getKnownDrivers()));
+        driverChooser.setSelectedItem(dblm.getDriver(accountName));
+        //urlChooser.setModel(new DefaultComboBoxModel(dblm.getKnownURLs()));
+        urlChooser.setSelectedItem(dblm.getURL(accountName));
+        //userChooser.setModel(new DefaultComboBoxModel(dblm.getKnownUsers()));
         userChooser.setSelectedItem(dblm.getUser(accountName));
         passwordChooser.setText(dblm.getPassword(accountName));
     }

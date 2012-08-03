@@ -28,7 +28,6 @@
     <resources>
         <j2se version="1.6+"/>
         <jar href="TableView.jar" main="true"/>
-        <property name="jdbc.drivers" value="com.mysql.jdbc.Driver:com.sybase.jdbc2.jdbc.SybDriver:org.postgresql.Driver:oracle.jdbc.driver.OracleDriver"/>
         <property name="apple.laf.useScreenMenuBar" value="true" />
     </resources>
     <application-desc main-class="edu.umn.genomics.table.TableView" />
