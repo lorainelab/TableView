@@ -106,7 +106,7 @@ public class TableViewServer {
                 ports_tried++;
             } catch (IOException ex) {
                 ourLogger.log(Level.INFO,
-                        "Found available port for bookmark server: {0}", serverPort);
+                        "Found available port for tableview url listening: {0}", serverPort);
                 available_port_found = true;
             }
         }
