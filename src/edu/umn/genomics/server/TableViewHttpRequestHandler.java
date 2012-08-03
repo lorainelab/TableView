@@ -1,5 +1,9 @@
 package edu.umn.genomics.server;
 
+import edu.umn.genomics.table.FileTableModel;
+import edu.umn.genomics.table.LoadTable;
+import edu.umn.genomics.table.TableView;
+import java.awt.BorderLayout;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,17 +16,18 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 
 public class TableViewHttpRequestHandler implements Runnable {
     private static final Logger ourLogger = Logger.getLogger(TableViewHttpRequestHandler.class.getPackage().getName());
     private static final String UTF8 = "UTF-8";
     
     private final Socket socket;
-    private final Object object;
+    private final TableView tv;
     
-    public TableViewHttpRequestHandler(Object object, Socket socket) {
-        this.object = object;
+    public TableViewHttpRequestHandler(TableView tv, Socket socket) {
         this.socket = socket;
+        this.tv = tv;
     }
 
     @Override
@@ -77,15 +82,18 @@ public class TableViewHttpRequestHandler implements Runnable {
 
     }
 
-    private void parseAndGoToBookmark(String command) throws NumberFormatException {
+    private void parseAndGoToBookmark(String command) throws NumberFormatException, IOException {
         ourLogger.log(Level.FINE, "Command = {0}", command);
         int index = command.indexOf('?');
         if (index >= 0 && index < command.length()) {
             String params = command.substring(index + 1);
             Map<String, String[]> paramMap = new HashMap<String, String[]>();
             parseParametersFromQuery(paramMap, params, true);
-            
-            System.out.println(paramMap.get("version"));
+            String[] url = paramMap.get("url");
+            FileTableModel ftm = new FileTableModel(url[0]);
+            if (ftm != null) {
+                tv.setTableModel(ftm, url[0]);
+            }
             //Use object over here
         }
     }

@@ -1,5 +1,6 @@
 package edu.umn.genomics.server;
 
+import edu.umn.genomics.table.TableView;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.ServerSocket;
@@ -25,7 +26,7 @@ public class TableViewServer {
     private static final Logger ourLogger = Logger.getLogger(TableViewServer.class.getPackage().getName());
 
  
-    private TableViewServer(Object object, ServerSocket server) {
+    private TableViewServer(TableView object, ServerSocket server) {
         try {
             while (true) {
                 Socket socket = server.accept();
@@ -41,7 +42,7 @@ public class TableViewServer {
     }
 
  
-    public static void startServerSocket(final Object object) {
+    public static void startServerSocket(final TableView object) {
         try {
             int serverPort = findAvailablePort(default_server_port);
 
