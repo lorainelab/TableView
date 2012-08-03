@@ -412,7 +412,7 @@ public class DefaultTableContext implements TableContext {
   }
   
   public Icon getViewIcon16(String viewName) {
-    return getViewIcon((Class)views.get(viewName));
+    return getViewIcon16((Class)views.get(viewName));
   }
 
   /**
