@@ -83,7 +83,6 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
     }
     public static final String _revisionId = "$Id: TableView.java,v 1.52 2004/09/16 13:50:01 jj Exp $";
     // are we running with Java2:
-    JFrame frame;
     boolean j2available = System.getProperty("java.specification.version").compareTo("1.2") >= 0;
     DefaultTableContext ctx = new DefaultTableContext();
     TreeModel tree = ctx.getTreeModel();
@@ -595,71 +594,75 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         mi = (JMenuItem) helpMenu.add(new JMenuItem("Show Console"));
         mi.setMnemonic('s');
         mi.getAccessibleContext().setAccessibleDescription("Show Console");
-        mi.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent ae) {
-                if (frame == null) {
-                    getFrame();
-                }
-                frame.doLayout();
-                frame.repaint();
-                toFront();
-            }
-        });
+        mi.addActionListener(new ConsoleView());
         mb.add(helpMenu);
         return mb;
     }
 
+    private class ConsoleView implements ActionListener {
+        private JFrame frame;
+
+        public void actionPerformed(ActionEvent e) {
+            if (frame == null) {
+                init();
+            }
+            frame.doLayout();
+            frame.repaint();
+            toFront();
+        }
+
+        private void init() {
+            frame = new JFrame("Tableview Console");
+            Container cpane = frame.getContentPane();
+            cpane.setLayout(new BorderLayout());
+            JTextArea outArea = new JTextArea(20, 50);
+            outArea.setEditable(false);
+            JScrollPane outPane = new JScrollPane(outArea,
+                    ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+                    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+            try {
+                // Send err to same text area as out
+                // (But we could send err to a separate text area.)
+                System.setOut(new PrintStream(new JTextAreaOutputStream(outArea, System.out), false, encoding));
+                System.setErr(new PrintStream(new JTextAreaOutputStream(outArea, System.err), false, encoding));
+            } catch (UnsupportedEncodingException ex) {
+                ExceptionHandler.popupException("" + ex);
+            } catch (SecurityException se) {
+                // This exception should not occur with WebStart, but I'm handling it anyway.
+                ExceptionHandler.popupException("" + se);
+                String str = "The application may not have permission to re-direct output "
+                        + "to this view on your system.  "
+                        + "\n"
+                        + "You should be able to view output in the Java console, WebStart console, "
+                        + "or wherever you normally would view program output.  "
+                        + "\n\n";
+                outArea.append(str);
+            }
+            cpane.add(outPane, BorderLayout.CENTER);
+            frame.pack();
+        }
+        
+        private void toFront() {
+            if ((frame.getExtendedState() & Frame.ICONIFIED) == Frame.ICONIFIED) {
+                // de-iconify it while leaving the maximized/minimized state flags alone
+                frame.setExtendedState(frame.getExtendedState() & ~Frame.ICONIFIED);
+            }
+            if (!frame.isShowing()) {
+                frame.setVisible(true);
+            }
+            frame.toFront();
+        }
+    }
+    
+
+    
+
+
+
+    
     /**
-     * Return a toolbar with selection set operator choices
-     */
-    public void getFrame() {
-        frame = new JFrame("Tableview");
-        Container cpane = frame.getContentPane();
-        cpane.setLayout(new BorderLayout());
-        JScrollPane outPane = writeOutPane();
-        cpane.add(outPane, BorderLayout.CENTER);
-        frame.pack();
-    }
-
-    public JScrollPane writeOutPane() {
-        JTextArea outArea = new JTextArea(20, 50);
-        outArea.setEditable(false);
-        JScrollPane outPane = new JScrollPane(outArea,
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-        try {
-            // Send err to same text area as out
-            // (But we could send err to a separate text area.)
-            System.setOut(new PrintStream(new JTextAreaOutputStream(outArea, System.out), false, encoding));
-            System.setErr(new PrintStream(new JTextAreaOutputStream(outArea, System.err), false, encoding));
-        } catch (UnsupportedEncodingException ex) {
-            ExceptionHandler.popupException(""+ex);
-        } catch (SecurityException se) {
-            // This exception should not occur with WebStart, but I'm handling it anyway.
-            ExceptionHandler.popupException(""+se);
-            String str = "The application may not have permission to re-direct output "
-                    + "to this view on your system.  "
-                    + "\n"
-                    + "You should be able to view output in the Java console, WebStart console, "
-                    + "or wherever you normally would view program output.  "
-                    + "\n\n";
-            outArea.append(str);
-        }
-        return outPane;
-    }
-
-    public void toFront() {
-        if ((frame.getExtendedState() & Frame.ICONIFIED) == Frame.ICONIFIED) {
-            // de-iconify it while leaving the maximized/minimized state flags alone
-            frame.setExtendedState(frame.getExtendedState() & ~Frame.ICONIFIED);
-        }
-        if (!frame.isShowing()) {
-            frame.setVisible(true);
-        }
-        frame.toFront();
-    }
-
+    * Return a toolbar with selection set operator choices
+    */
     private JToolBar getSetToolBar() {
         JToolBar tb = new JToolBar();
         JButton sClear = new JButton("Clear");
