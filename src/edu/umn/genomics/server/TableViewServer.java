@@ -15,7 +15,7 @@ public class TableViewServer {
 
     static final String http_response = "HTTP/1.1 204 No Content\n\n";
     private static final int NO_PORT = -1;
-    private static final int default_server_port = 7085;
+    private static final int default_server_port = 6085;
     private static final int ports_to_try = 1;
     private static final int CONNECT_TIMEOUT = 20000;   // If you can't connect in 20 seconds, fail.
     private static final int READ_TIMEOUT = 60000;	// If you can't read any data in 1 minute, fail.
