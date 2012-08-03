@@ -147,7 +147,7 @@
             </classpath>
         </taskdef>
                
-        <math result="b1">  
+        <math result="build.time">  
             <op op="add">
                 <op op="multiply"> <num value="${build.year}"/>  <num value="10"/>  </op>
                 <op op="multiply"> <num value="${build.month}"/> <num value="100"/> </op>
@@ -156,7 +156,7 @@
                 <num value="${build.minute}"/>
             </op>
         </math>
-        <math result="build.time" operand1="${b1}"  operation="+" operand2="0"   datatype="int" />
+        <math result="build.time" operand1="${build.time}" operation="+" operand2="0" datatype="int" />
         <echo>
             <!--
              sign.keystore.present = ${sign.keystore.present}
