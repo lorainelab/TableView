@@ -27,7 +27,6 @@ import edu.umn.genomics.bi.dbutil.DBAccountListModel;
 import edu.umn.genomics.bi.dbutil.DBConnectParams;
 import edu.umn.genomics.bi.dbutil.DBUser;
 import edu.umn.genomics.file.OpenInputSource;
-import edu.umn.genomics.server.TableViewHttpRequestHandler;
 import edu.umn.genomics.server.TableViewServer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -37,8 +36,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.InvalidPreferencesFormatException;
 import java.util.prefs.Preferences;
 import javax.swing.*;
@@ -74,7 +71,7 @@ import javax.swing.tree.*;
  * $
  * @since 1.0
  */
-public class TableView extends JPanel implements Serializable //, Printable //PrintJob
+public final class TableView extends JPanel implements Serializable //, Printable //PrintJob
 {
     public static ResourceBundle BUNDLE = ResourceBundle.getBundle("tableview");
     public static final String _revisionId = "$Id: TableView.java,v 1.52 2004/09/16 13:50:01 jj Exp $";
@@ -86,6 +83,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
 
     class JTRenderer extends DefaultTreeCellRenderer {
 
+        @Override
         public Component getTreeCellRendererComponent(
                 JTree tree,
                 Object value,
@@ -603,14 +601,21 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
     * Return a toolbar with selection set operator choices
     */
     public Icon getIcon(String property){
-        ClassLoader cl = TableView.class.getClassLoader();
-        Properties properties = new Properties();
-        try{
-        properties.load(cl.getResourceAsStream("tableview.properties"));
-        }catch(IOException ex){
-            ExceptionHandler.popupException(""+ex);
-        }
-        return new ImageIcon(cl.getResource(properties.getProperty(property)));
+        ImageIcon icon = null;
+	    try {
+	      java.net.URL url = TableView.class.getClassLoader().getResource(BUNDLE.getString(property));
+	      if (url != null) {
+	        icon = new ImageIcon(url);
+	      }
+	    } catch (Exception e) {
+	    	e.printStackTrace(System.out);
+	      // It isn't a big deal if we can't find the icon, just return null
+	    }
+	    if (icon == null || icon.getImageLoadStatus() == MediaTracker.ABORTED ||
+	        icon.getIconHeight() <= 0 || icon.getIconWidth() <= 0) {
+	      icon = null;
+	    }	    
+	    return icon; 
     }
     
     private JToolBar getSetToolBar() {
@@ -702,7 +707,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         JTextArea text = new JTextArea();
         JScrollPane jsp = new JScrollPane(text);
         JFrame frame = ctx.getViewFrame("Scratch Pad", jsp);
-        ctx.setViewToolBar(frame, text);
+        DefaultTableContext.setViewToolBar(frame, text);
         frame.setVisible(true);
     }
 
@@ -747,8 +752,8 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         ClassLoader cl = this.getClass().getClassLoader();
 
         // ImageIcon icon = null;
-        ImageIcon icon = null;
-        String buttonName = "";
+        ImageIcon icon;
+        String buttonName;
 
         icon = new ImageIcon(cl.getResource("edu/umn/genomics/table/Icons/Import24.gif"));
         buttonName = icon == null ? "Load" : null;
@@ -844,7 +849,6 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         tb.add(btn);
 
         tb.addSeparator();
-        icon = null;
         icon = new ImageIcon(cl.getResource("edu/umn/genomics/table/Icons/Remove24.gif"));
         buttonName = icon == null ? "Del" : null;
         btn = new JButton(buttonName, icon);
@@ -927,7 +931,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                 jdbctm.setQuery(query);
             } else {
                 BufferedReader rd = OpenInputSource.getBufferedReader(query);
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 for (String line = rd.readLine(); line != null; line = rd.readLine()) {
                     sb.append(line).append("\n");
                 }
@@ -1032,7 +1036,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         for (ListIterator i = tableModels.listIterator(); i.hasNext();) {
             Object obj = i.next();
             if (obj instanceof TableModel) {
-                VirtualTableModel vtm = null;
+                VirtualTableModel vtm;
                 try {
                     // Get the VirtualTableModel from the TableContext so that it records the dependence on tableModel.
                     vtm = ctx.getVirtualTableModel((TableModel) obj);
@@ -1396,7 +1400,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
             InvalidPreferencesFormatException,
             ClassNotFoundException,
             IOException {
-        Preferences.userNodeForPackage(edu.umn.genomics.table.TableView.class).importPreferences(is);
+                Preferences.importPreferences(is);
         //
         //If pre j2se1.4 
         // Introspection allows us to compile with pre j2se1.4 
