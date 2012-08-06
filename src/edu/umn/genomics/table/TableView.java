@@ -602,6 +602,17 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
     /**
     * Return a toolbar with selection set operator choices
     */
+    public Icon getIcon(String property){
+        ClassLoader cl = TableView.class.getClassLoader();
+        Properties properties = new Properties();
+        try{
+        properties.load(cl.getResourceAsStream("tableview.properties"));
+        }catch(IOException ex){
+            ExceptionHandler.popupException(""+ex);
+        }
+        return new ImageIcon(cl.getResource(properties.getProperty(property)));
+    }
+    
     private JToolBar getSetToolBar() {
         JToolBar tb = new JToolBar();
         JButton sClear = new JButton("Clear");
