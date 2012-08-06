@@ -37,6 +37,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.InvalidPreferencesFormatException;
 import java.util.prefs.Preferences;
 import javax.swing.*;
@@ -318,7 +320,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
      *
      * @param tableModel the data model to view.
      */
-    public TableView(TableModel tableModel) {
+    public TableView(TableModel tableModel) throws IOException {
         this();
         setTableModel(tableModel, " ");
     }
@@ -328,7 +330,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
      *
      * @param filename the data table file to view.
      */
-    public TableView(String filename) {
+    public TableView(String filename) throws IOException {
         this();
         setFile(filename);
     }
@@ -358,13 +360,13 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         return loadTable;
     }
 
-    private JMenuBar getJMenuBar() {
+    private JMenuBar getJMenuBar(){
         JMenuBar mb = new JMenuBar();
         JMenuItem mi;
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic('f');
-
-        mi = (JMenuItem) fileMenu.add(new JMenuItem("Load Table"));
+        Icon loadIcon = getIcon("load.icon16");
+        mi = (JMenuItem) fileMenu.add(new JMenuItem("Load Table",loadIcon));
         mi.setMnemonic('l');
         mi.getAccessibleContext().setAccessibleDescription("Load Table");
         mi.addActionListener(new ActionListener() {
@@ -378,7 +380,8 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
             }
         });
 
-        mi = (JMenuItem) fileMenu.add(new JMenuItem("Save Selection"));
+        Icon saveIcon = getIcon("save.icon16");
+        mi = (JMenuItem) fileMenu.add(new JMenuItem("Save Selection" , saveIcon));
         mi.setMnemonic('s');
         mi.getAccessibleContext().setAccessibleDescription("Save Selection");
         mi.addActionListener(new ActionListener() {
@@ -399,9 +402,10 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
             }
         });
 
-        mi = (JMenuItem) fileMenu.add(new JMenuItem("Output Selection"));
+        Icon outputIcon = getIcon("output.icon16");
+        mi = (JMenuItem) fileMenu.add(new JMenuItem("Output Selection" , outputIcon));
         mi.setMnemonic('o');
-        mi.getAccessibleContext().setAccessibleDescription("Output Selectiont");
+        mi.getAccessibleContext().setAccessibleDescription("Output Selection");
         mi.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -420,7 +424,8 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
 
 
 
-        mi = (JMenuItem) fileMenu.add(new JMenuItem("Exit"));
+        Icon exitIcon = getIcon("exit.icon16");
+        mi = (JMenuItem) fileMenu.add(new JMenuItem("Exit", exitIcon));
         mi.setMnemonic('x');
         mi.getAccessibleContext().setAccessibleDescription("Exit");
         mi.addActionListener(new ActionListener() {
@@ -442,14 +447,14 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
                 }
             }
         });
-
+        
         mb.add(fileMenu);
         JMenu editMenu = new JMenu("Edit");
         editMenu.setMnemonic('e');
 
-        mi = (JMenuItem) editMenu.add(new JMenuItem("Edit Table Columns"));
+        mi = (JMenuItem) editMenu.add(new JMenuItem("Edit Table Columns" , getIcon("edit.icon16")));
         mi.setMnemonic('c');
-        mi.getAccessibleContext().setAccessibleDescription("Edit Table Columns");
+        mi.getAccessibleContext().setAccessibleDescription("Edit Table Columns...");
         mi.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -493,7 +498,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         sortGrp.add(mi);
         editMenu.add(defsort);
 
-        mi = (JMenuItem) editMenu.add(new JMenuItem("Create Table from Selected Rows"));
+        mi = (JMenuItem) editMenu.add(new JMenuItem("Create Table from Selected Rows" , getIcon("create.icon16")));
         mi.setMnemonic('s');
         mi.getAccessibleContext().setAccessibleDescription("Create Table from Selected Rows");
         mi.addActionListener(new ActionListener() {
@@ -503,7 +508,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
             }
         });
 
-        mi = (JMenuItem) editMenu.add(new JMenuItem("Delete item"));
+        mi = (JMenuItem) editMenu.add(new JMenuItem("Delete item" , getIcon("delete.icon16")));
         mi.setMnemonic('d');
         mi.getAccessibleContext().setAccessibleDescription("Delete");
         mi.addActionListener(new ActionListener() {
@@ -513,7 +518,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
             }
         });
 
-        mi = (JMenuItem) editMenu.add(new JMenuItem("JavaScript Window"));
+        mi = (JMenuItem) editMenu.add(new JMenuItem("JavaScript Window..." , getIcon("java.icon16")));
         mi.setMnemonic('j');
         mi.getAccessibleContext().setAccessibleDescription("JavaScript");
         mi.addActionListener(new ActionListener() {
@@ -523,7 +528,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
             }
         });
 
-        mi = (JMenuItem) editMenu.add(new JMenuItem("BeanShell Window"));
+        mi = (JMenuItem) editMenu.add(new JMenuItem("BeanShell Window..." , getIcon("bean.icon16")));
         mi.setMnemonic('j');
         mi.getAccessibleContext().setAccessibleDescription("BeanShell");
         mi.addActionListener(new ActionListener() {
@@ -549,7 +554,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         mb.add(viewMenu);
         JMenu helpMenu = new JMenu("Help");
         helpMenu.setMnemonic('h');
-        mi = (JMenuItem) helpMenu.add(new JMenuItem("TableView User's Guide"));
+        mi = (JMenuItem) helpMenu.add(new JMenuItem("TableView User's Guide" , getIcon("guide.icon16")));
         mi.setMnemonic('g');
         mi.setActionCommand("TableView User's Guide");
         mi.addActionListener(new ActionListener() {
@@ -560,7 +565,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
             }
         });
         mi.getAccessibleContext().setAccessibleDescription("TableView User's Guide");
-        mi = (JMenuItem) helpMenu.add(new JMenuItem("Get Help"));
+        mi = (JMenuItem) helpMenu.add(new JMenuItem("Get Help", getIcon("help.icon16")));
         mi.setMnemonic('t');
         mi.getAccessibleContext().setAccessibleDescription("Get Help");
         mi.addActionListener(new ActionListener() {
@@ -571,6 +576,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
             }
         });
         JMenu tutorialMenu = new JMenu("Tutorials");
+        tutorialMenu.setIcon(getIcon("tutorial.icon16"));
         mi = (JMenuItem) tutorialMenu.add(new JMenuItem("Using TableView to view expression data from CressExpress"));
         mi.setMnemonic('c');
         mi.getAccessibleContext().setAccessibleDescription("Using TableView to view expression data from CressExpress");
@@ -592,7 +598,7 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
             }
         });
         helpMenu.add(tutorialMenu);
-        mi = (JMenuItem) helpMenu.add(new JMenuItem("Show Console"));
+        mi = (JMenuItem) helpMenu.add(new JMenuItem("Show Console" , getIcon("console.icon16")));
         mi.setMnemonic('s');
         mi.getAccessibleContext().setAccessibleDescription("Show Console");
         mi.addActionListener(new ActionListener() {
@@ -622,6 +628,17 @@ public class TableView extends JPanel implements Serializable //, Printable //Pr
         frame.pack();
     }
 
+    public Icon getIcon(String property){
+        ClassLoader cl = TableView.class.getClassLoader();
+        Properties properties = new Properties();
+        try{
+        properties.load(cl.getResourceAsStream("tableview.properties"));
+        }catch(IOException ex){
+            ExceptionHandler.popupException(""+ex);
+        }
+        return new ImageIcon(cl.getResource(properties.getProperty(property)));
+    }
+    
     public JScrollPane writeOutPane() {
         JTextArea outArea = new JTextArea(20, 50);
         outArea.setEditable(false);
