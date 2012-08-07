@@ -809,11 +809,14 @@ public class DBBrowser extends AbstractTableSource {
                 new ListSelectionListener() {
 
                     public void valueChanged(ListSelectionEvent e) {
+                        tableList.clearSelection();
                         setTables((Object[]) (catalogList.getSelectedValues()), null);
                         colModel.setRowCount(0);
-                        setPrimaryKeyInfo(tableList.getSelectedValues());
-                        setForeignKeyInfo(tableList.getSelectedValues());
-                        setExportedKeyInfo(tableList.getSelectedValues());
+                        if(tableList.getSelectedValues().length > 0){
+                            setPrimaryKeyInfo(tableList.getSelectedValues());
+                            setForeignKeyInfo(tableList.getSelectedValues());
+                            setExportedKeyInfo(tableList.getSelectedValues());
+                        }
                     }
                 });
 
