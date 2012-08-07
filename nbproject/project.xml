@@ -95,7 +95,7 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
             <compilation-unit>
                 <package-root>src</package-root>
-                <classpath mode="compile">lib/bsh.jar:lib/classes12.jar:lib/cluto.jar:lib/colt.jar:lib/iText.jar:lib/jcluto.jar:lib/jconn2.jar:lib/js.jar:lib/mysql.jar:lib/postgreSQL.jar:lib/vecmath.jar</classpath>
+                <classpath mode="compile">lib/bsh.jar:lib/classes12.jar:lib/cluto.jar:lib/colt.jar:lib/iText.jar:lib/jcluto.jar:lib/jconn2.jar:lib/js.jar:lib/mysql.jar:lib/postgreSQL.jar:lib/vecmath.jar:lib/mysql-connector-java-5.1.21-bin.jar</classpath>
                 <built-to>build</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>
