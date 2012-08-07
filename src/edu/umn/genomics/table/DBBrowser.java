@@ -160,11 +160,10 @@ public class DBBrowser extends AbstractTableSource {
     private Connection getConnection() {
         try {
             try {
-                if (conn != null || !conn.isClosed()) {
+              if (conn != null || !conn.isClosed()) {
                     return conn;
                 }
-            } catch (Exception ex1) {
-                ExceptionHandler.popupException(""+ex1);
+            } catch (Exception ex1) {                
             }
             if (dbuser == null) {
                 dbuser = getDBParams();
