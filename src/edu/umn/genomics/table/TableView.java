@@ -77,6 +77,8 @@ public final class TableView extends JPanel implements Serializable //, Printabl
     boolean j2available = System.getProperty("java.specification.version").compareTo("1.2") >= 0;
   DefaultTableContext ctx = new DefaultTableContext();
   TreeModel tree = ctx.getTreeModel();
+  private static final String APP_NAME = "TableView";
+  private static final String APP_VERSION = "1.4";
   JTree jtr = new JTree(tree);
   TableViewPreferenceEditor preferenceFrame;
   ClassLoader loader = TableView.class.getClassLoader();
@@ -575,6 +577,14 @@ public final class TableView extends JPanel implements Serializable //, Printabl
     mb.add(viewMenu);
         JMenu helpMenu = new JMenu("Help");
         helpMenu.setMnemonic('h');
+        mi = (JMenuItem)helpMenu.add(new JMenuItem("About Tableview" , getIcon("edu/umn/genomics/table/Icons/TipOfTheDay16.gif")));
+        mi.setMnemonic('t');
+        mi.setActionCommand("About Tableview");
+        mi.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                showAboutDialog();
+            }
+        });
         mi = (JMenuItem) helpMenu.add(new JMenuItem("TableView User's Guide" , getIcon("edu/umn/genomics/table/Icons/Information16.gif")));
         mi.setMnemonic('g');
         mi.setActionCommand("TableView User's Guide");
@@ -739,6 +749,27 @@ public final class TableView extends JPanel implements Serializable //, Printabl
     frame.setVisible(true);
   }
 
+  private void showAboutDialog(){
+      JPanel message_pane = new JPanel();
+      message_pane.setLayout(new BoxLayout(message_pane, BoxLayout.Y_AXIS));
+      JTextArea about_text = new JTextArea();
+      about_text.setEditable(false);
+      String text = APP_NAME+" "+ APP_VERSION +"\n\n"
+              + "TableView is a product of the open source GenoViz project,\n"
+              + "which develops interactive visualization software for genomics and bioinformatics.\n\n"
+              + "TableView was originally developed at the University of Minnesota\n"
+              + " and is now being maintained and developed by the GenoViz project.\n\n"
+              + "If you use TableView, please cite:\n\n"
+              + "Johnson JE, Stromvik MV, Silverstein KA, Crow JA, Shoop E, Retzel EF.\n"
+              + "TableView: portable genomic data visualization. Bioinformatics. \n"
+              + "2003 Jul 1;19(10):1292-3. PubMed PMID: 12835275.";
+      about_text.append(text);
+      message_pane.add(new JScrollPane(about_text));
+      final JOptionPane pane = new JOptionPane(message_pane, JOptionPane.INFORMATION_MESSAGE,
+        JOptionPane.DEFAULT_OPTION, new ImageIcon(TableView.class.getClassLoader().getResource("edu/umn/genomics/table/TableView96.png")));
+      final JDialog dialog = pane.createDialog("About TableView");
+      dialog.setVisible(true);
+  }
     private void browse(String link) {
         try {
             URI u = new URI(link);
