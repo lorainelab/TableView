@@ -125,7 +125,6 @@ public class LineDataModel implements DataModel {
         pnts[1][j] = yb - axes[1].getIntPosition(line.getY(axes[0].getValue(x)));
         pnts[0][j+1] = x+w;
         pnts[1][j+1] = yb - axes[1].getIntPosition(line.getY(axes[0].getValue(x+w)));
-System.err.println("line:"+pnts[0][j]+","+pnts[1][j]+" "+pnts[0][j+1]+","+pnts[1][j+1]);
       } catch (ClassCastException ccex) {
           ExceptionHandler.popupException(""+ccex);
       }
