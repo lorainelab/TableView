@@ -1,0 +1,125 @@
+/*
+ * @(#) $RCSfile: DefaultColumnMap.java,v $ $Revision: 1.7 $ $Date: 2003/10/07 14:22:28 $ $Name: TableView1_2 $
+ *
+ * Center for Computational Genomics and Bioinformatics
+ * Academic Health Center, University of Minnesota
+ * Copyright (c) 2000-2002. The Regents of the University of Minnesota  
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * see: http://www.gnu.org/copyleft/gpl.html
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ */
+
+
+package edu.umn.genomics.table;
+
+import java.io.Serializable;
+import java.lang.ref.*;
+import java.util.*;
+import java.text.DecimalFormat;
+import java.text.ParsePosition;
+import javax.swing.*;
+import javax.swing.table.*;
+import javax.swing.event.*;
+import edu.umn.genomics.graph.LineFormula;
+
+/**
+ * DefaultColumnMap maps the values of a TableModel column to a numeric range.
+ * If Class type of the column is Number, or if all of the values of the 
+ * column are Strings that can be parsed as class Number, the range will 
+ * be from the minimum to the maximun of the values in the column. 
+ * If any value can not be parsed as class Number, the values will be mapped 
+ * to integral values from 0 to the number of distinct values - 1,
+ * (distinct values are determined by the value's equals method.)
+ * The DefaultColumnMap can also be used to select a range of mapped values 
+ * from the column and indicate the selected rows in a ListSelectionModel.  
+ * A new selection is be specified as a subrange of values between the
+ * the minimum and maximum values of the column.
+ * New selections may be combined with the previous selections using standard 
+ * set operators.
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.7 $ $Date: 2003/10/07 14:22:28 $  $Name: TableView1_2 $ 
+ * @since        1.0
+ * @see  SetOperator 
+ * @see  javax.swing.table.TableModel 
+ * @see  javax.swing.ListSelectionModel
+ */
+public class ObjectMap implements Serializable {
+  class Elem {      // class to hold info in colHash
+    int index = 0;  // ordinal for distinct values in this column
+    int count = 0;  // count of rows that have this value
+    Elem(int index) {
+      this.index = index;
+    }
+  }
+  // Non Number or Date Values - Char VarChar
+  Hashtable colHash = null; // map cell value Object to an Elem Object
+  Vector objList = null;    // sequential list of distinct cell value Objects
+                            // This should probably be Object[] and String[]
+  OneToOneIndexMap sortIndex = null; // alternative sorting for Objects
+
+  public ObjectMap() {
+  }
+
+  public synchronized int mapObject(Object val) {
+    if (colHash == null) {
+      colHash = new Hashtable();
+      objList = new Vector();
+      min = 0.;
+    }
+    if (val == null) {
+      val = nullTag;
+    }
+    Elem el = (Elem)colHash.get(val);
+    if (el == null) {
+      int idx = objList.size();
+      if (max < idx) {
+        max = idx;
+      }
+      el = new Elem(idx);
+      objList.add(val);
+      colHash.put(val,el);
+      if (distinctCount < ++idx) {
+        distinctCount = idx;
+      }
+    }
+    el.count++;
+    return el.index;
+  }
+
+  public void sort(Comparator comparator) {
+    if (comparator != null) {
+      sortIndex = new OneToOneIndexMap(Cells.getSortIndex(objList, Cells.alphaNumericComparator));
+    } else {
+      sortIndex = new OneToOneIndexMap(Cells.getSortIndex(objList));
+    }
+  }
+
+  public int getIndex(Object val) {
+    int idx = -1;
+    Elem el = (Elem)colHash.get(val);
+    if (el != null) {
+      idx = sortIndex != null ? sortIndex.getDst(el.index) : el.index;
+    }
+    return idx;
+  }
+
+  public Object getValue(int index) {
+    int idx = sortIndex != null ? sortIndex.getSrc(index) : index;
+    return objList != null && idx >= 0 && idx < objList.length ? objList.get(idx) : null;
+  }
+  
+}

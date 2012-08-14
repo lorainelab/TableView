@@ -1,0 +1,144 @@
+
+package edu.umn.genomics.table;
+
+import java.io.Serializable;
+import java.util.*;
+
+/**
+ * ColumnMapBinModel partitions the values in a CColumnMap 
+ * into bins to support a histogram.
+ * 
+ * @author       J Johnson
+ * @version      %I%, %G%
+ * @since        1.0
+ * @see  ColumnMap
+ */
+public class ColumnMapBinModel implements BinModel {
+  int type = 0;
+  int binCount;
+  double startingValue;
+  double increment;
+  double dividers[];
+  PartitionIndexMap partitionMap;
+  ColumnMap cmap;
+  public ColumnMapBinModel(ColumnMap cmap) {
+    this.cmap = cmap;
+  }
+  public ColumnMap getColumnMap() {
+    return cmap;
+  }
+  public void setBins(int binCount) {
+    type = 1;
+    this.binCount = binCount;
+  }
+  public void setBins(double startingValue, double increment) {
+    type = 2;
+    this.startingValue = startingValue;
+    this.increment = increment;
+  }
+  public void setBins(double startingValue, double increment, int binCount) {
+    type = 3;
+    this.startingValue = startingValue;
+    this.increment = increment;
+    this.binCount = binCount;
+  }
+  public void setBins(double dividers[]) {
+    type = 4;
+    this.dividers = dividers;
+  }
+  public void setBins(PartitionIndexMap partitionMap){  
+    type = 5;
+    this.partitionMap = partitionMap;
+  }
+  public int getBinCount() {
+    int cnt = 0;
+    switch (type) {
+    case 0:
+      break;
+    case 1:
+      cnt = binCount;
+      break;
+    case 2:
+      if (increment > 0) 
+        cnt = (int)Math.ceil((cmap.getMax() - startingValue) / increment);
+      else if (increment < 0)
+        cnt = (int)Math.ceil((startingValue - cmap.getMin()) / increment);
+      break;
+    case 3:
+      cnt = binCount;
+      break;
+    case 4:
+      cnt = dividers.length - 1;
+      break;
+    case 5:
+      cnt = partitionMap.getDstSize();
+      break;
+    } 
+    return cnt;
+  }
+  public double getBinMin(int binIndex) {
+    return getIntervals()[binIndex];
+  }
+  public double getBinMax(int binIndex) {
+    return getIntervals()[binIndex+1];
+  }
+  public double[] getIntervals() {
+    int cnt = getBinCount() + 1;
+    double divisions[] = null;
+    switch (type) { 
+    case 0:
+      break;
+    case 1:
+    case 2:
+    case 3:
+      double start = type == 1 ? cmap.getMin() : startingValue;
+      double incr = type == 1 ? (cmap.getMax() - cmap.getMin()) / cnt : increment;
+      divisions = new double[cnt]; 
+      for (int i = 0; i < divisions.length; i++) {
+        divisions[i] = start + i * incr;
+      }
+      break;
+    case 4:
+      divisions =  dividers;
+      break;
+    }
+    return divisions;
+  }
+
+  public int getBin(double val) {
+    int idx = -1;
+    switch (type) { 
+    case 0:
+      break;
+    case 1:
+      idx = (int)((val - cmap.getMin()) / (cmap.getMax() - cmap.getMin()) * getBinCount());
+      break;
+    case 2:
+      if (increment != 0) 
+        idx = (int)((val - startingValue) / increment);
+      break;
+    case 3:
+      if (increment != 0) 
+        idx = (int)((val - startingValue) / increment);
+      break;
+    case 4:
+      for (int i = 0; i < dividers.length - 1; i++) {
+        if (val >= dividers[i] && val <= dividers[i+1]) {
+          idx = i;
+          break;
+        }
+      }
+      break;
+    case 5:
+      break;
+    }
+    return idx;
+  }
+
+  public int getBin(int rowIndex) {
+    if (type == 5) {
+      return partitionMap.getDst(rowIndex);
+    }
+    return getBin(cmap.getMapValue(rowIndex));
+  }
+}

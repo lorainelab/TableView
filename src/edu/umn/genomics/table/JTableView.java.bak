@@ -1,0 +1,748 @@
+/*
+ * @(#) $RCSfile: JTableView.java,v $ $Revision: 1.6 $ $Date: 2003/05/22 13:21:18 $ $Name:  $
+ *
+ * Center for Computational Genomics and Bioinformatics
+ * Academic Health Center, University of Minnesota
+ * Copyright (c) 2000-2002. The Regents of the University of Minnesota  
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * see: http://www.gnu.org/copyleft/gpl.html
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ */
+
+
+package edu.umn.genomics.table;
+
+import java.io.Serializable;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+
+
+  class SortArrow implements Icon {
+    int arrowSize = 3;
+    int h = arrowSize * 4 + 4;
+    int w = arrowSize * 2 + 2;
+
+    int[] xpntU = {0, -arrowSize, arrowSize};
+    int[] ypntU = {0, arrowSize*2-2, arrowSize*2-2};
+
+    int[] xpntD = {0, -arrowSize, arrowSize};
+    int[] ypntD = {arrowSize*4 - 2 , arrowSize*2, arrowSize*2};
+
+    int[] xpnt = xpntU;
+    int[] ypnt = ypntU;
+
+    boolean filled = false;
+    boolean asc = true;
+    Color fill = Color.black;
+
+    public SortArrow(boolean asc, boolean filled) {
+      this.asc = asc;
+      this.filled = filled;
+    }
+    public Icon get(boolean asc, boolean filled, Color color) {
+      this.asc = asc;
+      this.filled = filled;
+      this.fill = color;
+      return this;
+    }
+    public int getIconWidth() {
+      return w;
+    }
+    public int getIconHeight() {
+      return w;
+    }
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+      Color prevColor = g.getColor();
+      int xt = x + w/2;
+      int yt = y;
+      g.translate(xt,yt);
+      g.setColor(Color.white);
+      g.fillPolygon(xpnt,ypntU,xpnt.length);
+      g.fillPolygon(xpnt,ypntD,xpnt.length);
+      g.setColor(Color.black);
+      g.drawPolygon(xpnt,ypntU,xpnt.length);
+      g.drawPolygon(xpnt,ypntD,xpnt.length);
+      if (filled) {
+        g.setColor(fill);
+        if (asc) {
+          g.fillPolygon(xpnt,ypntU,xpnt.length);
+        } else {
+          g.fillPolygon(xpnt,ypntD,xpnt.length);
+        }
+      }
+      g.translate(-xt,-yt);
+      g.setColor(prevColor);
+    }
+  }
+
+/**
+ * JTableView presents the table as a JTable with the ability to sort the values 
+ * on a column.  It also adds a ListSelectionView along the left side of the 
+ * JTable that displays the relative location of all selected rows in the table,
+ * Clicking on the ListSelectView will scroll the JTable to that location.
+ *
+ * @author       J Johnson
+ * @version $Revision: 1.6 $ $Date: 2003/05/22 13:21:18 $  $Name:  $ 
+ * @since        1.0
+ * @see  javax.swing.JTable
+ * @see  javax.swing.table.TableModel
+ * @see  javax.swing.ListSelectionModel
+ * @see  ListSelectionView
+ */
+public class JTableView extends AbstractTableModelView implements Serializable {
+/*
+  Use a VirtualTableModelProxy so we can sort on a column.
+  Use IndexMapSelection to map selections to the sorted row indexes.  
+*/
+
+  static SortArrow sortArrow = new SortArrow(false,false);
+  
+  class SortColumnRenderer extends DefaultTableCellRenderer {
+    public Component getTableCellRendererComponent(JTable table,
+                                               Object value,
+                                               boolean isSelected,
+                                               boolean hasFocus,
+                                               int row,
+                                               int column) {
+
+      Icon icon = sortArrow.get(true, false, Color.black);
+      int ci = table.convertColumnIndexToModel(column);
+      int ciDesc = -ci-1;
+      for (int i = 0; sortColumns != null && i < sortColumns.length; i++) {
+        float c = 1f - (1f / (i+1));
+        if (sortColumns[i] == ci) {
+          icon = sortArrow.get(true,true,new Color(c,c,c));
+          break;
+        } else if (sortColumns[i] == ciDesc) {
+          icon = sortArrow.get(false,true,new Color(c,c,c));
+          break;
+        }
+      }
+      setIcon(icon);
+      setHorizontalTextPosition(JLabel.RIGHT);
+      setHorizontalAlignment(JLabel.LEFT);
+      if (table != null) {
+        JTableHeader header = table.getTableHeader();
+        if (header != null) {
+          setForeground(header.getForeground());
+          setBackground(header.getBackground());
+          setFont(header.getFont());
+        }
+      }
+      setText((value == null) ? "" : value.toString());
+      setBorder(UIManager.getBorder("TableHeader.cellBorder"));
+      return this;
+    }
+  }
+  JTable table = null;
+  JScrollPane jsp = null;
+  JToolBar toolbar = new JToolBar();
+  ListSelectionView lsv = null;
+  TableModel     tm = null;
+  ListSelectionModel lsm = null;
+  TableContext ctx = null;
+  VirtualTableModelProxy vtm = new VirtualTableModelProxy();
+  DefaultListSelectionModel tlsm = new DefaultListSelectionModel();
+  IndexMap indexMap = null;
+  IndexMapSelection ims = null;
+  Cursor cursor = getCursor();
+  boolean showRowNums = false;
+  int sortColumn = -1;
+  int[] sortColumns = null;
+  int sortOrder = CellMap.ROWORDERSORT;
+  boolean sortAscending = false;
+
+  JTextArea textArea = new JTextArea();
+   
+  class SortThread extends Thread {
+    int[] column;
+    int order;
+    boolean ascending;
+    SortThread(int[] column, int order, boolean ascending) {
+      this.column = column;
+      this.order = order;
+      this.ascending = ascending;
+    }
+    public void run() {
+      try {
+        sortOnColumn(column, order, ascending);
+      } catch (Exception iex) {
+        System.err.println(" Interrupted " + column + "  " + iex);
+      }
+      setCursor(cursor);
+    }
+  }
+  SortThread sortThread = null;
+
+  /**
+   *  This removes this view as a listener to the TableModel
+   *  and to the ListSelectionModel.  Classes overriding this
+   *  method should call super.cleanUp();
+   */
+  public void cleanUp() {
+    if (ims != null) {
+      ims.cleanUp();
+    }
+    super.cleanUp();
+  }
+
+  private void printArray(String name, int arr[]) {
+    if (arr != null) {
+      System.err.print(name + " [");
+      for(int i = 0; i < arr.length; i++) 
+        System.err.print(" " + arr[i]);
+      System.err.println(" ]");
+    }
+  } 
+
+  private void init() {
+    setLayout(new BorderLayout());
+    if (table == null) {
+      table = new JTable(vtm);
+      table.getTableHeader().setDefaultRenderer(new SortColumnRenderer());
+      table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+      if (lsm != null) {
+        ims = new IndexMapSelection(lsm,tlsm,vtm.getIndexMap());
+      }
+      table.setSelectionModel(tlsm);
+      if (true) {  // Cells now handles sorting for JDK1.1 too.
+        table.getTableHeader().addMouseListener(
+          new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+              int colIdx = table.getTableHeader().columnAtPoint(e.getPoint()); 
+              Rectangle rect = table.getTableHeader().getHeaderRect(colIdx);
+              if (colIdx >= 0 && e.getX() < rect.x + sortArrow.getIconWidth()) {
+                TableColumnModel columnModel = table.getColumnModel();
+                int viewColumn = columnModel.getColumnIndexAtX(e.getX()); 
+                int column = table.convertColumnIndexToModel(viewColumn); 
+                if (e.getClickCount() == 1 && column != -1) {
+                  if ((e.getModifiers()&InputEvent.CTRL_MASK) != 0) {
+                    if (sortThread != null) {
+                      sortThread.interrupt();
+                      sortThread = null;
+                    }
+                    sortColumns = null;
+                    sortOrder = CellMap.ROWORDERSORT;
+                    sortThread = new SortThread(null, sortOrder, true);
+                    sortThread.start();
+                    // sortOnColumn(column, CellMap.ROWORDERSORT, true);
+                  } else {
+                    boolean shiftPressed = (e.getModifiers()&InputEvent.SHIFT_MASK) != 0;
+                    boolean ascending = e.getY() <= rect.y + rect.height/2 ? true : false; 
+                    sortOrder = e.isAltDown() || e.isMetaDown() 
+                                      ? CellMap.ALPHANUMSORT
+                                      : CellMap.NATURALSORT;
+                    if (sortThread != null) {
+                      sortThread.interrupt();
+                      sortThread = null;
+                    }
+                    
+                    int ncol = shiftPressed && sortColumns != null ? sortColumns.length+1 : 1;
+                    // Is column already in sortList
+                    int ciDesc = -column-1;
+                    int ci = ascending ? column : -column-1;
+                    boolean inList = false;
+                    if (shiftPressed && sortColumns != null) {
+                      for (int i = 0; i < sortColumns.length; i++) {
+                        if (sortColumns[i] == column || sortColumns[i] == ciDesc) {
+                          inList = true;
+                          if (i == sortColumns.length - 1 && sortColumns[i] == ci) {
+                            return;
+                          } else {
+                            for (int j = i+1; j < sortColumns.length; j++) {
+                              sortColumns[j-1] = sortColumns[j];
+                            }
+                          }
+                          break;
+                        }
+                      }
+                    }
+                    if (!inList) {
+                      int[] tmp = sortColumns;
+                      sortColumns = new int[ncol];
+                      if (shiftPressed && tmp != null && tmp.length > 0) {
+                        System.arraycopy(tmp,0,sortColumns,0,tmp.length);
+                      }
+                    }
+                    sortColumns[sortColumns.length-1] = ascending ? column : -column-1;
+                    sortThread = new SortThread(sortColumns, sortOrder, ascending);
+                    repaint();
+                    sortThread.start();
+                    // sortOnColumn(column, sortOrder, ascending);
+                  }
+                }
+                return;
+              }
+            }
+        });
+      }
+    }
+    jsp = new JScrollPane(table,
+                          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+    lsv = new ListSelectionView(tlsm, vtm.getRowCount());
+    lsv.setSelectionModel(table.getSelectionModel());
+    lsv.setListSize(table.getModel().getRowCount());
+
+    final TableModelListener tml = new TableModelListener() {
+      public void tableChanged(TableModelEvent e) {
+        if (e.getSource() != null) {
+          try {
+            showRowNumbers(showRowNums);
+            if (lsv != null && table != null) {
+              lsv.setListSize(table.getModel().getRowCount());
+              lsv.setSelectionModel(table.getSelectionModel());
+            } else {
+            }
+            if (vtm.getIndexMap() != null) {
+              if (vtm.getIndexMap() != indexMap || 
+                  vtm.getTableModel().getRowCount() != vtm.getIndexMap().getDstSize()) {
+                if (sortThread != null) {
+                  sortThread.interrupt();
+                  sortThread = null;
+                }
+                sortThread = new SortThread(sortColumns, sortOrder, sortAscending);
+                sortThread.start();
+              }
+            }
+            table.invalidate();
+            jsp.validate();
+          } catch (Exception ex) {
+            System.err.println("lsv ex : " + ex);
+          }
+        }
+      }
+      public String toString() {
+        return lsv.hashCode() + " " + lsv.toString();
+      }
+    };
+    table.getModel().addTableModelListener(tml);
+    lsv.setOpaque(true);
+    lsv.setPreferredSize(new Dimension(8,100));
+    lsv.addMouseListener( 
+      new MouseAdapter() {
+        public void mouseClicked(MouseEvent e) {
+          int nrows = table.getRowCount();
+          table.scrollRectToVisible(table.getCellRect(
+            (int)Math.round((double)e.getY() / 
+            ((Component)e.getSource()).getSize().height * nrows), 
+            0, true));
+        }
+      }
+    );
+    jsp.getViewport().addChangeListener(
+      new ChangeListener() {
+        public void stateChanged(ChangeEvent e) {
+          if (lsv != null && table != null) { 
+            int nrows = table.getRowCount();
+            Rectangle vr = jsp.getViewport().getViewRect(); 
+            double tr = table.rowAtPoint(new Point(0,vr.y));
+            double br = table.rowAtPoint(new Point(0,vr.y+vr.height-1));
+            lsv.setWindow(tr/nrows,br/nrows);
+          } else {
+          }
+        }
+      }
+    );
+
+    JCheckBox jcbx;
+    jcbx = new JCheckBox("Row Numbers",showRowNums);
+    jcbx.setToolTipText("Show Row Numbers");
+    jcbx.addItemListener(
+      new ItemListener() {
+        public void itemStateChanged(ItemEvent e) {
+          if (e.getStateChange() == ItemEvent.SELECTED) {
+            showRowNumbers(true);
+          } else  if (e.getStateChange() == ItemEvent.DESELECTED) {
+            showRowNumbers(false);
+          }
+        }
+      });
+    toolbar.add(jcbx);
+
+    jcbx = new JCheckBox("Fit Columns",false);
+    jcbx.setToolTipText("Show the Whole Table");
+    jcbx.addItemListener(
+      new ItemListener() {
+        public void itemStateChanged(ItemEvent e) {
+          table.setAutoResizeMode(e.getStateChange() == ItemEvent.SELECTED
+                                  ? JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS
+                                  : JTable.AUTO_RESIZE_OFF);
+        }
+      });
+    toolbar.add(jcbx);
+
+    jcbx = new JCheckBox("Select Columns",false);
+    jcbx.setToolTipText("Allow selection of columns as well as rows.");
+    jcbx.addItemListener(
+      new ItemListener() {
+        public void itemStateChanged(ItemEvent e) {
+          table.setColumnSelectionAllowed(e.getStateChange() == ItemEvent.SELECTED
+                                  ? true
+                                  : false);
+        }
+      });
+    toolbar.add(jcbx);
+
+    table.setDragEnabled(true);
+
+    JButton jbtn = new JButton("Copy");
+    jbtn.setToolTipText("Copies selected cells to ClipBoard.");
+    jbtn.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          textArea.setText("");
+          int[] selRows = table.getSelectedRows();
+          int[] selCols = table.getSelectedColumns();
+          int colCnt = table.getColumnCount();
+          for (int ri = 0; ri < selRows.length; ri++) {
+            if (table.getColumnSelectionAllowed()) {
+              for (int ci = 0; ci < selCols.length; ci++) {
+                if (ci > 0) 
+                  textArea.append("\t");
+                Object val = table.getValueAt(selRows[ri],selCols[ci]);
+                textArea.append(val != null ? val.toString() : "");
+              }
+            } else {
+              for (int ci = 0; ci < colCnt; ci++) {
+                if (ci > 0) 
+                  textArea.append("\t");
+                Object val = table.getValueAt(selRows[ri],ci);
+                textArea.append(val != null ? val.toString() : "");
+              }
+            }
+            textArea.append("\n");
+          }
+          textArea.selectAll();
+          textArea.copy();
+        }
+      });
+    toolbar.add(jbtn);
+
+    add(toolbar,BorderLayout.NORTH);
+    JPanel lsvPnl = new JPanel(new BorderLayout());
+/*
+*/
+    if (!true) {
+    final JLabel lsvSort = new JLabel(sortArrow);
+    lsvSort.setBorder(BorderFactory.createEtchedBorder());
+    table.getTableHeader().addComponentListener(
+      new ComponentAdapter() {
+        public void componentResized(ComponentEvent e) {
+          lsvSort.setPreferredSize(new Dimension(
+              sortArrow.getIconWidth(), 
+              Math.max(sortArrow.getIconHeight(), table.getTableHeader().getPreferredSize().height)));
+        }
+      }
+    );
+    //lsv.setPreferredSize(new Dimension(sortArrow.getIconWidth(),sortArrow.getIconHeight()));
+    
+    Box lsvBox = new Box(BoxLayout.Y_AXIS);
+    lsvBox.add(lsvSort);
+    lsvPnl.add(lsvSort,BorderLayout.NORTH);
+    lsvPnl.add(lsv,BorderLayout.WEST);
+    add(lsvPnl,BorderLayout.WEST);
+    }  else {
+    add(lsv,BorderLayout.WEST);
+    } 
+
+    add(jsp,BorderLayout.CENTER);
+  }
+
+  private void sortOnSelection(boolean selectedFirst) {
+    int selLen = 0;
+    int notLen = 0;
+    // setIndexMap
+  }
+
+  private void sortOnColumn(int column, int order, boolean ascending) {
+    // System.err.println(" sort start  " + column);
+    boolean rowNumAscending = false;
+    try {
+      if (ascending && vtm.getColumnList().getElementAt(column) instanceof RowNumColumn) 
+        rowNumAscending = true;
+    } catch (Exception ex) {
+    }
+    setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    OneToOneIndexMap map = null;
+    if (ims != null) {
+      ims.cleanUp();
+      ims = null;
+    }
+    if (order == CellMap.ROWORDERSORT || rowNumAscending) {
+      sortColumn = -1;
+    }  else {
+      if (ims != null) {
+        ims.cleanUp();
+      }
+      sortColumn = column;
+      sortAscending = ascending;
+      setIndexMap(null);
+      setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+      int si[] = Cells.getSortIndex(
+                   Cells.getValuesFrom(vtm,0,column,
+                                       vtm.getRowCount(),column),
+                   order == CellMap.ALPHANUMSORT
+                     ? Cells.alphaNumericComparator 
+                     // CellMap.NATURALSORT
+                     : Cells.defaultComparator);
+      if (!ascending) {
+        int ti[] = si;
+        si = new int[ti.length];
+        for(int i = 0, j = ti.length-1; i < ti.length; i++,j--)
+          si[i] = ti[j];
+      }
+      map = new OneToOneIndexMap(si);
+    }
+    tlsm = new DefaultListSelectionModel();
+    if (lsm != null) {
+      ims = new IndexMapSelection(lsm,tlsm,map);
+    }
+    setIndexMap(map);
+    table.setSelectionModel(tlsm);
+    lsv.setSelectionModel(tlsm);
+    setCursor(cursor);
+    repaint();
+    // System.err.println(" sort done   " + column);
+  }
+
+  private void sortOnColumn(int[] column, int order, boolean ascending) {
+    // System.err.println(" sort start  " + column);
+    setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    // Disconnect the mapped selection models
+    OneToOneIndexMap map = null;
+    if (column == null || column.length < 1) {
+       
+    } else {
+      setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+      int ci = column[0] >= 0 ? column[0] : -column[0] - 1;
+      if (vtm.getColumnList().getElementAt(ci) instanceof RowNumColumn) {
+        if (column[0] < 0) {
+          int si[] = new int[vtm.getRowCount()];
+          for (int i = 0, j = si.length-1; i < si.length; i++, j--) {
+            si[i] = j;
+          }
+          map = new OneToOneIndexMap(si);
+        }
+      } else {
+        int si[] = Cells.getSortIndex(vtm, column);
+        map = new OneToOneIndexMap(si);
+      }
+    }
+    //  setIndexMap(null);
+    if (ims != null) {
+      ims.cleanUp();
+      ims = null;
+    }
+    tlsm = new DefaultListSelectionModel();
+    if (lsm != null) {
+      ims = new IndexMapSelection(lsm,tlsm,map);
+    }
+    setIndexMap(map);
+    table.setSelectionModel(tlsm);
+    lsv.setSelectionModel(tlsm);
+    setCursor(cursor);
+    repaint();
+    // System.err.println(" sort done   " + column);
+  }
+
+  /**
+   * Constructs a JTableView display.  Nothing will be displayed
+   * until a data model is set.
+   * @see #setTableModel(TableModel tableModel)
+   */
+  public JTableView() {
+    super();
+    init();
+  }
+
+  /**
+   * Constructs a JTableView diaplay which is initialized with
+   * tableModel as the data model, and a default selection model.
+   * @param tableModel the data model for the parallel coordinate display
+   */
+  public JTableView(TableModel tableModel) {
+    super();
+    init();
+    setTableModel(tableModel);
+  }
+
+  /**
+   * Constructs a JTableView diaplay which is initialized with
+   * tableModel as the data model, and the given selection model.
+   * @param tableModel the data model for the parallel coordinate display
+   * @param lsm  the ListSelectionModel for the parallel coordinate display
+   */
+  public JTableView(TableModel tableModel, ListSelectionModel lsm) {
+    super();
+    init();
+    setTableModel(tableModel);
+    setSelectionModel(lsm);
+  }
+
+  /**
+   * Sets tableModel as the data model.
+   * @param tableModel the data model for the parallel coordinate display
+   */
+  public void setTableModel(TableModel tableModel) {
+    tm = tableModel;
+    if (vtm != null) {
+      vtm.setTableModel(tm);
+      table.setModel(vtm);
+      showRowNumbers(showRowNums);
+      ListSelectionModel _lsm = lsm;
+      if (_lsm != null) {
+        lsm = null;
+        setSelectionModel(_lsm);
+      } else {
+        table.setSelectionModel(tlsm);
+      }
+    }
+    repaint();
+  }
+
+  /** 
+   * Sets whether to display a row number column in the table.
+   * @param showRowNumbers If true display a row number column.
+   */
+  public void showRowNumbers(boolean showRowNumbers) {
+    showRowNums = showRowNumbers;
+    if (vtm != null) {
+      int rowNumCol = -1;
+      ListModel cols = vtm.getColumnList();
+      if (cols != null) { 
+        for (int c = 0; c < cols.getSize(); c++) {
+          Object col = cols.getElementAt(c);
+          if (col != null && col instanceof RowNumColumn) {
+            rowNumCol = c;
+          }
+        }
+      }
+      if (showRowNumbers) {
+        if (rowNumCol < 0) {
+          if (ims != null) {
+            ims.cleanUp();
+            ims = null;
+          }
+          vtm.addColumn(new RowNumColumn(),0);
+          if (sortColumn >= 0) {
+            sortColumn++;
+          }
+          // Handle Selection Model
+          //tlsm = new DefaultListSelectionModel();
+          if (lsm != null) {
+            ims = new IndexMapSelection(lsm,tlsm, vtm.getIndexMap());
+          }
+          //table.setSelectionModel(tlsm);
+          //lsv.setSelectionModel(tlsm);
+        }
+      } else {
+        if (rowNumCol >= 0) {
+          if (ims != null) {
+            ims.cleanUp();
+            ims = null;
+          }
+          vtm.removeColumn(rowNumCol);
+          if (sortColumn >= rowNumCol) {
+            sortColumn--;
+          }
+          // Handle Selection Model
+          //tlsm = new DefaultListSelectionModel();
+          if (lsm != null) {
+            ims = new IndexMapSelection(lsm,tlsm, vtm.getIndexMap());
+          }
+          //table.setSelectionModel(tlsm);
+          //lsv.setSelectionModel(tlsm);
+        }
+      }
+    }
+  }
+
+  /** Return the table model being displayed.
+   * @return the table being displayed.
+   */
+  public TableModel getTableModel() {
+    return tm;
+  }
+
+  /**
+   * Sets the row selection model for this table to newModel and registers
+   * with for listener notifications from the new selection model.
+   * @param newModel the new selection model
+   */
+  public void setSelectionModel(ListSelectionModel newModel) {
+    if (newModel != null && newModel != lsm) {
+      lsm = newModel;
+      if (table != null && tm != null) {
+        if (ims != null) {
+          ims.cleanUp();
+          ims = null;
+        }
+        tlsm = new DefaultListSelectionModel();
+        if (lsm != null) {
+          ims = new IndexMapSelection(lsm,tlsm, vtm.getIndexMap());
+        }
+        table.setSelectionModel(tlsm);
+      }
+      if (lsv != null) {
+        lsv.setSelectionModel(table.getSelectionModel());
+      }
+      repaint();
+    }
+  }
+
+  /**
+   * Returns the ListSelectionModel that is used to maintain row
+   * selection state.
+   * @return the object that provides row selection state.
+   */
+  public ListSelectionModel getSelectionModel() {
+    return table.getSelectionModel();
+  }
+
+  /**
+   * Get the component displaying the table data in this view.
+   * @return the component displaying the table data.
+   */
+  public Component getCanvas() {
+    return this.jsp;
+  }
+
+  /**
+   * Set the TableContext that manages TableModels and Views.
+   * @param ctx The context to use for TableModels and Views.
+   */
+  public void setTableContext(TableContext ctx) {
+    this.ctx = ctx;
+  }
+  /**
+   * Set the TableContext that manages TableModels and Views.
+   * @return The context to use for TableModels and Views.
+   */
+  public TableContext getTableContext() {
+    return ctx;
+  }
+
+  private void setIndexMap(IndexMap map) {
+    indexMap = map;
+    ((VirtualTableModelProxy)table.getModel()).setIndexMap(map);
+  }
+}
+

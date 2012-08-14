@@ -1,0 +1,73 @@
+
+
+
+table  ->  DataMap       ->  View
+           Coordinates
+           Color
+           Transparency
+           Shape
+           Texture
+
+
+Coordinate
+  col -> offset scale -> X
+  col -> offset scale -> Y
+  col -> offset scale -> Z
+         Axis
+         Log
+         Exp
+         Hyperbolic
+  Vec Transform
+  script
+
+
+Color 
+
+  col -> offset scale -> H R
+  col -> offset scale -> S G
+  col -> offset scale -> B B
+
+
+Graph
+  coords
+  map  coordIndex -> coordIndex
+  rowIndex to endpoint
+  IndexMap
+  
+
+
+DataMap
+Scale
+
+Show 
+  axis
+  all
+  selected
+  nonselected
+
+Coordinates
+  []
+  X
+  Y
+  Z
+
+Color
+  []
+  HSB
+  RGB
+  IndexMap
+
+Shape
+  default
+
+Transparency
+
+Texture
+
+
+PointSet
+
+LineSet
+
+BranchGroup
+  Primitive Shapes

@@ -1,0 +1,44 @@
+ATF	1.0
+27	82    
+"Type=GenePix Results 2"
+"DateTime=2003/04/23 16:44:28"
+"Settings=D:\Axon_Data\Kavitha\sl176_590_500.gps"
+"GalFile=C:\Axon\Params\newgal3_cont_chim.txt"
+"PixelSize=10"
+"Wavelengths=635	532"
+"ImageFiles=D:\Axon_Data\Kavitha\2003-04-23_k176_590_500.tif 2	D:\Axon_Data\Kavitha\2003-04-23_k176_590_500.tif 3"
+"NormalizationMethod=None"
+"NormalizationFactors=1	1"
+"JpegImage=D:\Natasha\SMD\New Folder\2003-04-23_k176_590_500.jpg"
+"RatioFormulations=W1/W2 (635/532)"
+"Barcode="
+"BackgroundSubtraction=LocalFeature"
+"ImageOrigin=1600, 21200"
+"JpegOrigin=1840, 21590"
+"Creator=GenePix Pro 4.0.0.54"
+"Scanner=GenePix 4000B [84940]"
+"FocusPosition=0"
+"Temperature=30.72"
+"LinesAveraged=1"
+"Comment=A17 day8 cy5 vs A17 72hpi cy3"
+"PMTGain=590	500"
+"ScanPower=100	100"
+"LaserPower=3.48	3.98"
+"LaserOnTime=12102	12115"
+"ScanRegion=160,2120,1844,3924"
+"Supplier="
+
+
+"Type=GenePix Results 2"
+
+
+"PixelSize=10"
+"ImageOrigin=1600, 21200"
+"JpegOrigin=1840, 21590"
+"ScanRegion=160,2120,1844,3924"
+
+
+tif 
+tif
+jpg
+gal

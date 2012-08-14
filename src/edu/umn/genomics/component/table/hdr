@@ -1,0 +1,8 @@
+
+/*
+ * Borrowed from the Java Tutorial.
+ * http://java.sun.com/docs/books/tutorial/uiswing/components/examples/
+ */
+package edu.umn.genomics.component.table;
+
+

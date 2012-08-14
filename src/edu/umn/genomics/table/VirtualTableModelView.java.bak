@@ -1,0 +1,524 @@
+/*
+ * @(#) $RCSfile: VirtualTableModelView.java,v $ $Revision: 1.10 $ $Date: 2003/09/17 17:32:57 $ $Name: TableView1_2 $
+ *
+ * Center for Computational Genomics and Bioinformatics
+ * Academic Health Center, University of Minnesota
+ * Copyright (c) 2000-2002. The Regents of the University of Minnesota  
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * see: http://www.gnu.org/copyleft/gpl.html
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ */
+
+
+package edu.umn.genomics.table;
+
+import java.util.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import java.lang.reflect.InvocationTargetException;
+
+/**
+ * VirtualTableModel
+ *
+ * @author       J Johnson
+ * @version $Revision: 1.10 $ $Date: 2003/09/17 17:32:57 $  $Name: TableView1_2 $ 
+ * @since        1.0
+ * @see  JSFormula
+ * @see  javax.swing.table.TableModel
+ */
+/*
+  Base table 
+    column objects
+      field
+      method
+        methods params
+
+  remove             | add delete | add delete
+  -------------------+------------+-----------
+  virtualColumns     | addColumns | scripts
+  name | VirtualCell |
+
+
+  script defined vars 
+    table - the TableModel for which this script is invoked
+    row   - the cell row for which this script is invoked
+    col   - the cell column for which this script is invoked
+    example  script: table.getValueAt(row,0) - table.getValueAt(row,1)
+
+*/
+public class VirtualTableModelView extends JPanel {
+  VirtualTableModel vtm;
+  JTextField tableName = new JTextField();
+  /** list of virtual columns that vtm returns */
+  JList vtCols = new JList(); 
+  /** columns of the real TableModel */
+  JList tmCols = new JList(); 
+  /** formulas that can be used to generate a column in the virtual table*/
+  JList tfCols = new JList(); 
+  JTextArea formulaEdit = new JTextArea(8,40);
+  JTextField formulaName = new JTextField(20);
+  JComboBox formulaClass = new JComboBox(); 
+  TableModelFormula formulaObj = null;
+  JFrame helpFrame = null;
+  JEditorPane editorPane = null;
+
+  static Hashtable tmfClasses = new Hashtable();  
+  static { 
+      try { // Use rhino JavaScript if it is available
+        Class.forName("org.mozilla.javascript.Context");
+        tmfClasses.put(Class.forName("edu.umn.genomics.table.JSFormula"),"Rhino JavaScript");
+      } catch (Exception ex) {
+      }
+      try { // Use beanshell java if it is available
+        Class.forName("bsh.Interpreter");
+        tmfClasses.put(Class.forName("edu.umn.genomics.table.BshFormula"),"BeanShell Java");
+      } catch (Exception ex) {
+      }
+      //Jython place holder 
+      //try { // Use Jython Python if it is available
+      //  Class.forName("org.python.util.PythonInterpreter");
+      //  tmfClasses.put(Class.forName("edu.umn.genomics.table.JythonFormula"), "Jython Python");
+      //} catch (Exception ex) {
+      //}
+  }
+
+  static Class getFormulaClass(Object value) {
+    if (tmfClasses.contains(value)) {
+      for (Iterator i = tmfClasses.keySet().iterator(); i.hasNext();) {
+        Object key = i.next(); 
+        String val = (String)tmfClasses.get(key); 
+        if (val != null && val.equals(value) && key instanceof Class && 
+            TableModelFormula.class.isAssignableFrom((Class)key)) {
+          return (Class)key;
+        }
+      }
+    }
+    return null;
+  }
+
+  public VirtualTableModelView() {
+    JPanel colp = new JPanel();
+    colp.setLayout(new BoxLayout(colp,BoxLayout.X_AXIS));
+    JLabel vtl = new JLabel("Visible Columns");
+    JButton vtb = new JButton("delete");
+    vtb.setToolTipText("delete selected items from " + vtl.getText());
+    vtb.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          if (vtm != null) {
+            if (vtCols.getModel() instanceof DefaultListModel) { 
+              DefaultListModel lm = (DefaultListModel)vtCols.getModel();
+              int idx[] = vtCols.getSelectedIndices();
+              for (int i = idx.length - 1; i >= 0; i--) {
+                lm.removeElementAt(idx[i]);
+              }
+            }
+          }
+        }
+      }
+    );
+    JPanel vtbp = new JPanel();
+    vtbp.setLayout(new BoxLayout(vtbp,BoxLayout.X_AXIS));
+    vtbp.add(vtb);
+    JScrollPane vtsp = new JScrollPane(vtCols);
+    JPanel vtp = new JPanel(new BorderLayout());
+    vtp.setBorder(BorderFactory.createEtchedBorder());
+    vtp.add(vtl,BorderLayout.NORTH);
+    vtp.add(vtsp,BorderLayout.CENTER);
+    vtp.add(vtbp,BorderLayout.SOUTH);
+    colp.add(vtp); 
+
+    JLabel tml = new JLabel("Table Columns");
+    JButton tmib = new JButton("insert");
+    tmib.setToolTipText("insert selected columns into " + vtl.getText());
+    tmib.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          if (vtm != null) {
+            if (tmCols.getModel() instanceof DefaultListModel) { 
+              DefaultListModel lm = (DefaultListModel)vtCols.getModel();
+              int idx[] = vtCols.getSelectedIndices();
+              int p = 0;
+              if (idx != null && idx.length > 0) {
+                p = idx[0];
+              }
+              Object vals[] = tmCols.getSelectedValues();
+              for (int i = 0; i < vals.length; i++) {
+                lm.add(p++,vals[i]);
+              }
+            }
+          }
+        }
+      }
+    );
+    JButton tmab = new JButton("append");
+    tmab.setToolTipText("append selected columns to " + vtl.getText());
+    tmab.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          if (vtm != null) {
+            if (vtCols.getModel() instanceof DefaultListModel) { 
+              DefaultListModel lm = (DefaultListModel)vtCols.getModel();
+              int idx[] = vtCols.getSelectedIndices();
+              int p = lm.size()-1;
+              if (idx != null && idx.length > 0) {
+                p = idx[idx.length-1];
+              }
+              Object vals[] = tmCols.getSelectedValues();
+              for (int i = 0; i < vals.length; i++) {
+                lm.add(++p,vals[i]);
+              }
+            }
+          }
+        }
+      }
+    );
+    JPanel tmbp = new JPanel();
+    tmbp.setLayout(new BoxLayout(tmbp,BoxLayout.X_AXIS));
+    tmbp.add(tmib);
+    tmbp.add(tmab);
+    JScrollPane tmsp = new JScrollPane(tmCols);
+    JPanel tmp = new JPanel(new BorderLayout());
+    tmp.setBorder(BorderFactory.createEtchedBorder());
+    tmp.add(tml,BorderLayout.NORTH);
+    tmp.add(tmsp,BorderLayout.CENTER);
+    tmp.add(tmbp,BorderLayout.SOUTH);
+    colp.add(tmp); 
+
+    JLabel tfl = new JLabel("Formula Columns");
+    JButton tfib = new JButton("insert");
+    tfib.setToolTipText("insert selected formulas into " + vtl.getText());
+    tfib.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          if (vtm != null) {
+            if (vtCols.getModel() instanceof DefaultListModel) { 
+              DefaultListModel lm = (DefaultListModel)vtCols.getModel();
+              int idx[] = vtCols.getSelectedIndices();
+              int p = 0;
+              if (idx != null && idx.length > 0) {
+                p = idx[0];
+              }
+              Object vals[] = tfCols.getSelectedValues();
+              for (int i = 0; i < vals.length; i++) {
+                lm.add(p++,vals[i]);
+              }
+            }
+          }
+        }
+      }
+    );
+
+    JButton tfab = new JButton("append");
+    tfab.setToolTipText("append selected formulas to " + vtl.getText());
+    tfab.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          if (vtm != null) {
+            if (vtCols.getModel() instanceof DefaultListModel) { 
+              DefaultListModel lm = (DefaultListModel)vtCols.getModel();
+              int idx[] = vtCols.getSelectedIndices();
+              int p = lm.size()-1;
+              if (idx != null && idx.length > 0) {
+                p = idx[idx.length-1];
+              }
+              Object vals[] = tfCols.getSelectedValues();
+              for (int i = 0; i < vals.length; i++) {
+                lm.add(++p,vals[i]);
+              }
+            }
+          }
+        }
+      }
+    );
+
+    JButton tfdb = new JButton("delete");
+    tfdb.setToolTipText("delete selected formulas from " + tfl.getText());
+    tfdb.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          if (tfCols.getModel() instanceof DefaultListModel) { 
+            DefaultListModel lm = (DefaultListModel)tfCols.getModel();
+            int n = lm.size();
+            int idx[] = tfCols.getSelectedIndices();
+            if (idx != null) {
+              for (int i = idx.length-1; i >=0; i--) {
+                lm.remove(idx[i]);
+              }
+            }
+            tfCols.clearSelection();
+          }
+        }
+      }
+    );
+
+    JPanel tfbp = new JPanel();
+    tfbp.setLayout(new BoxLayout(tfbp,BoxLayout.X_AXIS));
+    tfbp.add(tfib);
+    tfbp.add(tfab);
+    tfbp.add(tfdb);
+    JScrollPane tfsp = new JScrollPane(tfCols);
+    JPanel tfp = new JPanel(new BorderLayout());
+    tfp.setBorder(BorderFactory.createEtchedBorder());
+    tfp.add(tfl,BorderLayout.NORTH);
+    tfp.add(tfsp,BorderLayout.CENTER);
+    tfp.add(tfbp,BorderLayout.SOUTH);
+    colp.add(tfp); 
+
+    
+    if (tmfClasses != null && tmfClasses.size() > 0) {
+      JLabel fel = new JLabel("Edit Column Formula");
+      for (Iterator i = tmfClasses.values().iterator(); i.hasNext();) {
+        formulaClass.addItem(i.next());
+      }
+      formulaClass.addItemListener(
+          new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+              if (helpFrame != null && e.getStateChange() == ItemEvent.SELECTED) {
+                showHelp();
+              }
+            }
+          });
+      JButton fehb = new JButton("help");
+      fehb.setToolTipText("help on writing formaulas");
+      fehb.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            showHelp();
+          }
+        }
+      );
+
+      JButton fecb = new JButton("clear");
+      fecb.setToolTipText("clear the " + fel.getText() + " text");
+      fecb.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            formulaEdit.setText("");
+          }
+        }
+      );
+
+      JButton fesb = new JButton("save");
+      fesb.setToolTipText("save the formula");
+      fesb.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            saveFormula();
+          }
+        }
+      );
+
+      ActionListener saveAs = 
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            formulaObj = null;
+            saveFormula();
+          }
+        };
+
+      JButton feab = new JButton("save as");
+      feab.setToolTipText("save the formula as " + formulaName.getText() 
+                           + "in " + tfl.getText());
+      feab.addActionListener(saveAs);
+      formulaName.addActionListener(saveAs);
+
+
+      JPanel fenp = new JPanel(new BorderLayout());
+      fenp.add(fel,BorderLayout.WEST); 
+      fenp.add(formulaName);
+
+      JPanel felp = new JPanel();
+      felp.setLayout(new BoxLayout(felp,BoxLayout.X_AXIS));
+      felp.add(formulaClass); 
+      felp.add(fehb); 
+
+      JPanel feltp = new JPanel(new BorderLayout());
+      feltp.add(fenp,BorderLayout.NORTH); 
+      feltp.add(felp,BorderLayout.SOUTH); 
+
+      JPanel febp = new JPanel();
+      febp.add(fecb);
+      febp.add(fesb);
+      febp.add(feab);
+
+      JScrollPane fesp = new JScrollPane(formulaEdit);
+      JPanel fep = new JPanel(new BorderLayout());
+      fep.setBorder(BorderFactory.createEtchedBorder());
+      fep.add(feltp,BorderLayout.NORTH);
+      fep.add(fesp,BorderLayout.CENTER);
+      fep.add(febp,BorderLayout.SOUTH);
+
+      JPanel panel = new JPanel(new BorderLayout());
+      panel.add(colp,BorderLayout.NORTH);
+      panel.add(fep,BorderLayout.CENTER);
+
+      tableName.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              try {
+                setTableName();
+              } catch (Exception ex) {
+              }
+          }
+        });
+
+      JLabel tableNameLbl = new JLabel("table name: ");
+      JPanel namep = new JPanel(new BorderLayout());
+      namep.setBorder(BorderFactory.createEtchedBorder());
+      namep.add(tableNameLbl,BorderLayout.WEST);
+      namep.add(tableName,BorderLayout.CENTER);
+
+      setLayout(new BorderLayout());
+      add(namep,BorderLayout.NORTH);
+      add(panel, BorderLayout.CENTER); 
+  
+      tfCols.addListSelectionListener(
+        new ListSelectionListener() {
+          public void valueChanged(ListSelectionEvent e) {
+            if (e.getValueIsAdjusting())
+              return;
+            JList theList = (JList)e.getSource();
+            if (theList.isSelectionEmpty()) {
+            } else {
+              int index = theList.getSelectedIndex();
+              Object o = theList.getSelectedValue();
+              if (o != null && o instanceof TableModelFormula) {
+                formulaObj = (TableModelFormula)o;
+                formulaName.setText(formulaObj.getName());
+                formulaEdit.setText(formulaObj.getFormula());
+                formulaClass.setSelectedItem(tmfClasses.get(formulaObj.getClass()));
+              } else {
+                formulaObj = null;
+                formulaName.setText("");
+                formulaEdit.setText("");
+              }
+            }
+          }
+        }
+      );
+    }
+  }
+
+  private void setTableName() {
+    if (vtm != null) {
+      vtm.setName(tableName.getText());
+    }
+  }
+
+  private void saveFormula() { 
+    try {
+      Object flc = formulaClass.getSelectedItem();
+      Class tmfc = getFormulaClass(flc);
+      if (formulaObj != null && tmfc != null && tmfc.isInstance(formulaObj) ) {
+        formulaObj.setFormula(formulaEdit.getText());
+        formulaObj.setName(formulaName.getText());
+      } else {
+        Class argClass[] = new Class[3];
+        argClass[0] =  String.class;
+        argClass[1] =  TableModel.class;
+        argClass[2] =  String.class;
+        Object args[] = new Object[3];
+        args[0] = formulaName.getText();
+        args[1] = vtm;
+        args[2] = formulaEdit.getText();
+        formulaObj = (TableModelFormula)tmfc.getConstructor(argClass).newInstance(args);
+      }
+      if (tfCols.getModel() instanceof DefaultListModel) { 
+        DefaultListModel lm = (DefaultListModel)tfCols.getModel();
+        if (lm.indexOf(formulaObj) < 0) {
+          int n = lm.size();
+          lm.add(n,formulaObj);
+          tfCols.setSelectedIndex(n);
+        }
+      }
+    } catch (IllegalAccessException accex) {
+    } catch (InvocationTargetException invex) {
+    } catch (NoSuchMethodException nosmex) {
+    } catch (InstantiationException instex) {
+    }
+  }
+
+  private void showHelp() {
+    if (helpFrame == null) {
+      helpFrame = new JFrame("Formula Help");
+      helpFrame.addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent e) {
+          try {
+            helpFrame.dispose();
+          } catch (Exception ex) {
+          }
+          helpFrame = null;
+        }
+        public void windowClosed(WindowEvent e) {
+          try {
+            helpFrame.dispose();
+          } catch (Exception ex) {
+          }
+          helpFrame = null;
+        }
+      });
+      editorPane = new JEditorPane();
+      editorPane.setEditable(false);
+      JScrollPane scrollpane = new JScrollPane(editorPane,
+                   JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                   JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+      scrollpane.setPreferredSize(new Dimension(600,600));
+      JButton close = new JButton("close");
+      close.addActionListener( new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          try {
+            helpFrame.dispose();
+          } catch (Exception ex) {
+          }
+          helpFrame = null;
+        }
+      });
+      JMenuBar mb = new JMenuBar();
+      mb.add(close);
+      helpFrame.getContentPane().add(mb,BorderLayout.NORTH);
+      helpFrame.getContentPane().add(scrollpane,BorderLayout.CENTER);
+      helpFrame.pack();
+    }
+    String help = ""; 
+    try { 
+      Object flc = formulaClass.getSelectedItem();
+      Class tmfc = getFormulaClass(flc);
+      help = (String)tmfc.getMethod("getHelpText",null).invoke(null,null);
+    } catch (Exception ex) {
+      System.err.println(" help " + ex);
+    }
+    editorPane.setText(help);
+    helpFrame.setVisible(true);
+  }
+  public VirtualTableModelView(VirtualTableModel vtm) {
+    this();
+    setVirtualTableModel(vtm);
+  }
+  public void setVirtualTableModel(VirtualTableModel vtm) {
+    this.vtm = vtm;
+    tableName.setText(vtm.getName());
+    vtCols.setModel(vtm.getColumnList());
+    tmCols.setModel(vtm.getDefaultColumnList());
+    tfCols.setModel(vtm.getFormulaList());
+  }
+  public VirtualTableModel getVirtualTableModel() {
+    return vtm;
+  }
+}

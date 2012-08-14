@@ -1,0 +1,88 @@
+
+package edu.umn.genomics.bi.dbutil;
+
+import java.sql.*;
+import java.util.*;
+
+public class DBCatalog {
+  String name;
+  Hashtable tableHash = new Hashtable();      // name -> Catalogue
+  DatabaseMetaData dbmd = null;
+
+  public DBCatalog(String name,  DatabaseMetaData dbmd) {
+    this.name = name;
+    this.dbmd = dbmd;
+    getMyTables();
+  }
+
+  public DatabaseMetaData getDatabaseMetaData() {
+    return dbmd;
+  }
+
+  public String[] getTableTypes() {
+    String[] tt = null;
+    try {
+      ResultSet rs = dbmd.getTableTypes();
+      Vector v = new Vector();
+      while (rs.next()) {
+        String t = rs.getString(1);
+        v.addElement(t);
+      }
+      tt = new String[v.size()];
+      v.toArray(tt);
+    } catch (SQLException sqle) {
+      System.err.println("getCatalog " + sqle);
+    }
+    return tt;
+  }
+
+
+  private void getMyTables() {
+    try {
+      String catalog = null;
+      String schemaPattern = name;
+      String tableNamePattern = null;
+      String [] types = getTableTypes();
+      ResultSet rs = dbmd.getTables(catalog,
+                     schemaPattern,
+                     tableNamePattern,
+                     types);
+      while (rs.next()) {
+        String tablename = rs.getString(3);
+        DBTable table = getTable(tablename);
+        table.setType(rs.getString(4));
+        table.setRemarks(rs.getString(4));
+        //System.out.println("  " + table.toString());
+      }
+    } catch (SQLException sqle) {
+      System.err.println("getTables " + sqle);
+    }
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public int getTableCount() {
+    return tableHash.size();
+  }
+
+  public DBTable getTable(String name) {
+    DBTable t = (DBTable)tableHash.get(name);
+    if (t == null) {
+      t = new DBTable(name, this);
+      tableHash.put(name, t);
+    }
+    return t;
+  }
+  public Collection getTables() {
+    return tableHash.values();
+  }
+  public Set getTableNames() {
+    return tableHash.keySet();
+  }
+
+  public String toString() {
+    return name;
+  }
+}
