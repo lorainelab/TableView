@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: AxisComponent.java,v $ $Revision: 1.4 $ $Date: 2002/07/30 19:44:48 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: AxisComponent.java,v $ $Revision: 1.4 $ $Date: 2002/07/30 19:44:48 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,102 +21,86 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.graph;
 
 import java.awt.Point;
-import java.awt.event.InputEvent;
-
+import java.awt.event.*;
 /**
- * An AxisComponent displays an axis that may be placed along the edge of a
- * Graph. The position of the axis component relative to the graph determines
- * where the tickmarks and labels are drawn.
- *
- * @author J Johnson
- * @version $Revision: 1.4 $ $Date: 2002/07/30 19:44:48 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * An AxisComponent displays an axis that may be placed along the edge 
+ * of a Graph.  The position of the axis component relative to the 
+ * graph determines where the tickmarks and labels are drawn.
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.4 $ $Date: 2002/07/30 19:44:48 $  $Name: TableView1_2 $ 
+ * @since        1.0
  */
 public interface AxisComponent {
+  /**
+   * The axis component is positioned at the top of the graph.
+   */
+  public static final int TOP = 1;
+  /**
+   * The axis component is positioned at the left of the graph.
+   */
+  public static final int LEFT = 2;
+  /**
+   * The axis component is positioned at the bottom of the graph.
+   */
+  public static final int BOTTOM = 3;
+  /**
+   * The axis component is positioned at the rigt of the graph.
+   */
+  public static final int RIGHT = 4;
+  /** 
+   * Set the axis for this display.
+   * @param axis the axis to display.
+   */
+  public void setAxis(Axis axis);
+  /** 
+   * Return the axis for this display.
+   * @return the axis fo this display.
+   */
+  public Axis getAxis();
+  /** 
+   * Set the position of this axis component relative to the graph component.
+   * @param position the position relative to the graph component..
+   */
+  public void setPosition(int position);
+  /** 
+   * Return the position of this axis component relative to the graph component.
+   * @return the position relative to the graph component..
+   */
+  public int getPosition();
+  /** 
+   * Return the value of the axis at the given point on the axis component.
+   * @param p the point on the axis component.
+   * @return the value of the axis at the given point on the axis component.
+   */
+  public double getValueAt(Point p);
+  /** 
+   * Return the value of the axis at the given point on the axis component.
+   * @param x the x offsset on the axis component.
+   * @param y the y offsset on the axis component.
+   * @return the value of the axis at the given point on the axis component.
+   */
+  public double getValueAt(int x, int y);
+  /**
+   * Set the value formatter for the display.
+   * @param axisLabeler formats labels for the values along the axis.
+   */
+  public void setAxisLabeler(AxisLabeler axisLabeler);
+  /**
+   * Return the value label formatter for the display.
+   * @return the label formatter for the axis values.
+   */
+  public AxisLabeler getAxisLabeler();
 
-    /**
-     * The axis component is positioned at the top of the graph.
-     */
-    public static final int TOP = 1;
-    /**
-     * The axis component is positioned at the left of the graph.
-     */
-    public static final int LEFT = 2;
-    /**
-     * The axis component is positioned at the bottom of the graph.
-     */
-    public static final int BOTTOM = 3;
-    /**
-     * The axis component is positioned at the rigt of the graph.
-     */
-    public static final int RIGHT = 4;
+  public final static int modifierMask =
+    InputEvent.BUTTON1_MASK | InputEvent.BUTTON2_MASK |
+    InputEvent.BUTTON3_MASK |
+    InputEvent.SHIFT_MASK | InputEvent.CTRL_MASK |
+    InputEvent.ALT_MASK | InputEvent.META_MASK;
 
-    /**
-     * Set the axis for this display.
-     *
-     * @param axis the axis to display.
-     */
-    public void setAxis(Axis axis);
-
-    /**
-     * Return the axis for this display.
-     *
-     * @return the axis fo this display.
-     */
-    public Axis getAxis();
-
-    /**
-     * Set the position of this axis component relative to the graph component.
-     *
-     * @param position the position relative to the graph component..
-     */
-    public void setPosition(int position);
-
-    /**
-     * Return the position of this axis component relative to the graph
-     * component.
-     *
-     * @return the position relative to the graph component..
-     */
-    public int getPosition();
-
-    /**
-     * Return the value of the axis at the given point on the axis component.
-     *
-     * @param p the point on the axis component.
-     * @return the value of the axis at the given point on the axis component.
-     */
-    public double getValueAt(Point p);
-
-    /**
-     * Return the value of the axis at the given point on the axis component.
-     *
-     * @param x the x offsset on the axis component.
-     * @param y the y offsset on the axis component.
-     * @return the value of the axis at the given point on the axis component.
-     */
-    public double getValueAt(int x, int y);
-
-    /**
-     * Set the value formatter for the display.
-     *
-     * @param axisLabeler formats labels for the values along the axis.
-     */
-    public void setAxisLabeler(AxisLabeler axisLabeler);
-
-    /**
-     * Return the value label formatter for the display.
-     *
-     * @return the label formatter for the axis values.
-     */
-    public AxisLabeler getAxisLabeler();
-    public final static int modifierMask =
-            InputEvent.BUTTON1_MASK | InputEvent.BUTTON2_MASK
-            | InputEvent.BUTTON3_MASK
-            | InputEvent.SHIFT_MASK | InputEvent.CTRL_MASK
-            | InputEvent.ALT_MASK | InputEvent.META_MASK;
 }

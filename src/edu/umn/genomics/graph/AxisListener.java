@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: AxisListener.java,v $ $Revision: 1.1 $ $Date: 2004/01/28 20:32:56 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: AxisListener.java,v $ $Revision: 1.1 $ $Date: 2004/01/28 20:32:56 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,21 +21,25 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.graph;
 
 import java.util.EventListener;
+import java.util.EventObject;
 
 /*
- * Still need to consider: min == max min > max
- */
+ * Still need to consider:
+ *   min == max
+ *   min > max
+*/
+
 /**
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2004/01/28 20:32:56 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2004/01/28 20:32:56 $  $Name: TableView1_2 $ 
+ * @since        1.0
  */
 public interface AxisListener extends EventListener {
-
-    public void axisChanged(AxisEvent e);
+  public void axisChanged(AxisEvent e);
 }

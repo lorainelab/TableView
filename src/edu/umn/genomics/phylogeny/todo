@@ -1,0 +1,47 @@
+    PhyloGenTree
+
+      TODO list
+        lock graph aspect ratio
+        tree selection
+        list of labels
+          sort list by distance from node
+          inset of node
+        table
+          node distance to select node
+        Alternate treediagrams: eurogram, dendogram
+        svg ouput
+
+  // Ties the selection of all view models together
+  PhyloModel
+    rootTree(Node node);
+    List getTreeNodeList()
+    List getNamedTreeNodeList()
+    getTreeDiagram()
+    getPhenogram
+    // getCladogram()
+    // getCurvogram
+    // getEurogram
+    // getSwoopogram
+
+
+
+
+Links to jalview
+  SelectionModel
+  Partition
+  PartitionModel
+    ColorModel
+    ShapeModel
+
+  jalview 
+    ids 
+    base range
+
+
+
+Oslo                      59° 56' N     10° 44' E
+                          21° :18 m:22 s N   157° :51 m:35 s 
+44° :58 m:57 s N  93° :15 m:43 s W
+    41°59'58"    -95°59'59"
+  
+

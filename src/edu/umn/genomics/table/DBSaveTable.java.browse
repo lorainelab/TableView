@@ -1,0 +1,999 @@
+/*
+ * @(#) $RCSfile$ $Revision$ $Date$ $Name$
+ *
+ * Center for Computational Genomics and Bioinformatics
+ * Academic Health Center, University of Minnesota
+ * Copyright (c) 2000-2002. The Regents of the University of Minnesota  
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * see: http://www.gnu.org/copyleft/gpl.html
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ */
+
+
+package edu.umn.genomics.table;
+
+import java.util.*;
+import java.sql.*;
+import java.text.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.lang.reflect.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import edu.umn.genomics.bi.dbutil.*;
+import edu.umn.genomics.component.DoSpinner;
+
+/**
+ * Browse the contents of a database, and supply a TabelModel 
+ * for the table selected.
+ *
+ * @author       J Johnson
+ * @version $Revision$ $Date$  $Name$
+ * @since        1.0
+ */
+public class DBSaveTable extends AbstractTableSource {
+  // known database accounts
+  DBComboBoxModel dbmodel;
+  JComboBox dbChooser; 
+  DBConnectParams dbuser;
+  Connection conn;
+  Statement stmt;
+  DatabaseMetaData dbmd;
+  JFrame frame;
+  // displays query row count
+  JLabel rowLabel = new JLabel("Rows     ");
+  // connection status
+  JTextField status;
+  // query status
+  JTextField queryStatus;
+  // split panes
+  JSplitPane spltc;
+  JSplitPane splts;
+  JSplitPane splt;
+  JSplitPane spltq;
+  JSplitPane spltr;
+  TreeSet dbDataTypes = new TreeSet();
+  // Catalogs
+  DefaultListModel catalogModel;
+  JList catalogList;
+  JScrollPane gjsp;
+  // Schemas
+  DefaultListModel schemaModel;
+  JList schemaList;
+  JScrollPane sjsp;
+  // Tables
+  DefaultListModel tableModel;
+  JList tableList;
+  JScrollPane tjsp;
+
+  // columns
+  DefaultListModel colListModel;
+  JList colList;
+
+  // columns info
+  DefaultTableModel colModel;
+  JTable colTable;
+
+  JScrollPane cjsp;
+  // TabbedPane for Columns, Database Info, etc.
+  JTabbedPane cPnl;
+  // Database MetaData Info Panel
+  DBInfoPanel dbinfoPanel = new DBInfoPanel();
+  // SQL query
+  JTextArea queryText;
+  JScrollPane qjsp;
+  // query results table
+  JDBCTableModel rowModel;
+  JTableView rowTable;
+  JScrollPane rjsp;
+  //
+  JButton submitBtn = new JButton("submit");
+  JButton stopBtn = new JButton("stop");
+  // Limit Rows Returned
+  JComponent rowLimit = DoSpinner.getComponent(100, 0, 10000000, 1);
+  JCheckBox limitRows = new JCheckBox("Limit Rows");
+
+  StatusListener statusListener = 
+    new StatusListener() {
+      public void statusChanged(StatusEvent e) {
+        setQueryStatus(e.getStatus()); 
+      }
+    };
+
+  static Hashtable sqlTypeName = SQLTypeNames.getSharedInstance();
+
+  private static String getSqlTypeFor(Class jc) {
+    try {
+      if (java.lang.Double.class.isAssignableFrom(jc)) {
+        return "NUMBER";
+      } else if (java.lang.Integer.class.isAssignableFrom(jc)) {
+        return "INTEGER";
+      } else if (java.lang.Number.class.isAssignableFrom(jc)) {
+        return "NUMBER";
+      } else if (java.util.Date.class.isAssignableFrom(jc)) {
+        return "DATE";
+      } else {
+        return "VARCHAR(32)";
+      }
+    } catch (Exception ex) {
+      System.err.println("getSqlTypeFor " + ex);
+    }
+    return null;
+  }
+
+  private Connection getConnection() {
+    try {
+      try {
+        if (conn != null || !conn.isClosed()) {
+          return conn;
+        }
+      } catch (Exception ex1) {
+        conn = null;
+      }
+      dbuser = (DBConnectParams)dbChooser.getSelectedItem(); 
+      String usr = dbuser.getUser();
+      String pw =  dbuser.getPassword();
+      String url = dbuser.getURL();
+      String driver = dbuser.getDriverName();
+      Class.forName(driver);
+      conn = DriverManager.getConnection(url,usr,pw);
+      int idx = url.indexOf('@');
+      status.setText("connected to " + url.substring(idx>0?idx+1:0));
+      dbmd = conn.getMetaData();
+      dbinfoPanel.setMetaData(dbmd);
+      cPnl.setEnabledAt(2,true);
+      // System.err.println("dbmd = " + dbmd);
+      ResultSet rs = dbmd.getTypeInfo();
+      if (rs != null) {
+        dbDataTypes.clear(); 
+        while(rs.next()) {
+          DBTypeInfo dbti = new DBTypeInfo(rs);
+          dbDataTypes.add(dbti);
+        }
+      }
+    } catch (Exception ex) {
+          status.setText("DB connection failed " + ex);
+          JOptionPane.showMessageDialog(frame,
+                                     ex,
+                                     "Data base connection failed",
+                                     JOptionPane.ERROR_MESSAGE);
+    }
+    return conn;
+  }
+
+  private DatabaseMetaData getDBMetaData() {
+    if (dbmd == null) {
+      getConnection();
+    }
+    return dbmd;
+  }
+
+  private void setCatalogs() {
+    try {
+      DatabaseMetaData dbmd = getDBMetaData();
+      ResultSet rs = dbmd.getCatalogs();
+      if (rs != null) {
+        catalogModel.clear(); 
+        while(rs.next()) {
+          String s = rs.getString(1);
+          catalogModel.addElement(s);
+        }
+      }
+    } catch (Exception ex) {
+      status.setText("DB connection failed " + ex);
+    }
+  }
+
+  private void setSchemas() {
+    try {
+      DatabaseMetaData dbmd = getDBMetaData();
+      ResultSet rs = dbmd.getSchemas();
+      if (rs != null) {
+        schemaModel.clear(); 
+        while(rs.next()) {
+          String s = rs.getString(1);
+          schemaModel.addElement(s);
+        }
+      }
+    } catch (Exception ex) {
+      status.setText("DB connection failed " + ex);
+    }
+  }
+
+  private void setTables(Object[] catalog, Object[] schema) {
+    tableModel.clear();
+    if (catalog != null) {
+      for (int i = 0; i < catalog.length; i++) {
+        if (schema != null) {
+          for (int j = 0; j < schema.length; j++) {
+            setTables((String)catalog[i], (String)schema[j]);
+          }
+        } else {
+          setTables((String)catalog[i], null);
+        }
+      }
+    } if (schema != null) {
+      for (int j = 0; j < schema.length; j++) {
+        setTables(null, (String)schema[j]);
+      }
+    } else {
+    }
+  }
+
+  private void setTables(String catalog, String schema) {
+    try {
+      DatabaseMetaData dbmd = getDBMetaData();
+      //ResultSet rs = dbmd.getTables(catalog,schema,null,null);
+      //if (rs != null) {
+      //  while(rs.next()) {
+      //    String s = rs.getString(3);
+      //    tableModel.addElement(new DBTable(rs.getString(1),rs.getString(2),rs.getString(3)));
+      //  }
+      //}
+      java.util.List tblList = DBTable.getDBTables(dbmd, catalog, schema, null, null);
+      for (Iterator iter = tblList.listIterator(); iter.hasNext(); ) {
+          tableModel.addElement(iter.next());
+      } 
+      //splt.resetToPreferredSizes();
+    } catch (Exception ex) {
+      status.setText("DB connection failed " + ex);
+      if (ex instanceof SQLException) {
+        for (SQLException sqlex = (SQLException)ex; sqlex != null; sqlex = sqlex.getNextException()) {
+          System.err.println(sqlex.toString());
+        }
+      }
+      ex.printStackTrace(); 
+    }
+  }
+
+  private void setColumns(Object[] tables) {
+    Vector cols = new Vector();
+    Vector rows = new Vector();
+    for (int i = 0; i < tables.length; i++) {
+      DBTable tbl = (DBTable)tables[i];
+      setColumns(tbl, cols, rows);
+    }
+    setColumns(cols, rows);
+  }
+
+  private void setColumns(DBTable dbTable, Vector cols, Vector rows) {
+//System.err.println(">>> setColumns");
+    try {
+        if (cols != null && cols.size() == 0) {
+          //cols.add("Show");
+          cols.add("NAME");
+          cols.add("JDBCTYPE");
+          cols.add("DBTYPE");
+          cols.add("SIZE");
+          cols.add("NULLABLE");
+        } 
+        DBColumn[] tblCol = dbTable.getColumns();
+        for (int i = 0; i < tblCol.length; i++) {
+          Vector row = new Vector(5);
+          row.add(tblCol[i]);
+          row.add(new Short(tblCol[i].getDataType()));
+          row.add(tblCol[i].getTypeName());
+          row.add(new Integer(tblCol[i].getColumnSize()));
+          row.add(tblCol[i].getIsNullable());
+          rows.add(row);
+        }
+    } catch (Exception ex) {
+      status.setText("DB connection failed " + ex);
+    }
+//System.err.println("<<< setColumns");
+  }
+
+  private void setColumns(Vector cols, Vector rows) {
+    cPnl.setEnabledAt(0,rows.size()>0);
+    cPnl.setEnabledAt(1,rows.size()>0);
+    if (rows.size() < 1) {
+      colModel.setRowCount(0);
+      return;
+    } 
+    colListModel.removeAllElements();
+    for (int i = 0; i < rows.size(); i++) {
+      colListModel.addElement(((Vector)rows.get(i)).get(0));
+    }
+    colModel.setDataVector(rows,cols); 
+    JComboBox sqlTypes = new JComboBox();
+    for (Iterator i = sqlTypeName.keySet().iterator();i.hasNext();) {
+      sqlTypes.addItem(i.next());
+    }
+    sqlTypes.setRenderer(new SQLTypeListRenderer());
+    JComboBox colTypes = new JComboBox();
+    for (Iterator i = dbDataTypes.iterator();i.hasNext();) {
+      colTypes.addItem(i.next());
+    }
+    JComboBox nullTypes = new JComboBox();
+    nullTypes.addItem("YES");
+    nullTypes.addItem("NO");
+    nullTypes.addItem("");
+    TableColumn col;
+    //col = colTable.getColumnModel().getColumn(0);
+    //col.setCellRenderer(new ShowColumnRenderer());
+    //col.setCellEditor(new ShowColumnEditor());
+    col = colTable.getColumnModel().getColumn(1);
+    col.setCellRenderer(new SQLTypeTableCellRenderer());
+    col.setCellEditor(new DefaultCellEditor(sqlTypes));
+    col = colTable.getColumnModel().getColumn(2);
+    col.setCellEditor(new DefaultCellEditor(colTypes));
+    col = colTable.getColumnModel().getColumn(4);
+    col.setCellEditor(new DefaultCellEditor(nullTypes));
+  }
+
+  private void setRowCount() {
+    int cnt = rowModel.getRowCount();
+    //System.err.println("setRowCount" + cnt);
+    rowLabel.setText("Rows " + cnt);
+  }
+
+  private void setRows(Object[] table, String columns) {
+    if (table == null || table.length < 1) {
+      return;
+    }
+    String tables = "";
+    for (int i = 0; i < table.length; i++) {
+      tables += (i > 0 ? ", " : "") 
+                 + (table[i] instanceof DBTable 
+                    ? ((DBTable)table[i]).getQualifiedName() 
+                    : table[i].toString());
+    }
+    String sql = "select " +  columns + " \nfrom " + tables;
+    queryText.setText(sql);
+  }
+
+  private void setRows(String catalog, String schema, String table, String columns) {
+//System.err.println(">>> setRows");
+    if (table == null || table.length() < 1)
+      return;
+    String loc = catalog != null && catalog.length() > 0 ? catalog + "." : "";
+           loc += schema != null && schema.length() > 0 ? schema + "." : "";
+    String sql = "select " +  columns + " \nfrom " + loc + table;
+    queryText.setText(sql);
+//System.err.println("<<< setRows");
+  }
+
+  private void setQueryStatus(String msg) {
+    queryStatus.setText(msg);
+  }
+
+  private void submitQuery() {
+    String sql = queryText.getText();
+    if (dbuser == null) {
+      setQueryStatus("Not connected to a database");
+      return;
+    }
+    if (sql == null || sql.length() < 1) {
+      setQueryStatus("No query entered");
+      return;
+    }
+    // if (rowModel != null && sql.equals(rowModel.getQuery())) {
+    //   return;
+    // }
+    rowLabel.setText("Rows  ?");
+    try {
+      if (rowModel != null) {
+        rowModel.cancelQuery();
+      }
+      setQueryStatus("executing query");
+      rowModel = new JDBCTableModel(dbuser);
+      rowModel.addStatusListener(statusListener);
+      rowModel.addTableModelListener(
+          new TableModelListener() {
+            public void tableChanged(TableModelEvent e) {
+              setRowCount();
+            }
+          });
+      rowTable.setTableModel(new VirtualTableModelProxy(rowModel));
+    } catch (Exception ex) {
+      System.err.println(ex);
+    }
+    rowModel.setRowLimit(getRowLimit());
+    rowModel.setQuery(sql);
+    setRowCount();
+    setTableSource(rowModel, (dbuser != null? dbuser+" : ":"") + sql);
+  }
+
+  public void connectToDatabase() {
+    dbuser = (DBConnectParams)dbChooser.getSelectedItem(); 
+    String usr = dbuser.getUser();
+    String pw =  dbuser.getPassword();
+    String url = dbuser.getURL();
+    String driver = dbuser.getDriverName();
+    try {
+      DBTestConnection.testConnection(usr, pw, url, driver);
+      dbuser = new DBUser(usr, pw, url, driver);
+      if (conn != null) {
+        if (!conn.isClosed()) {
+          conn.close();
+        }
+        conn = null;
+      }
+      dbmd = null;
+      catalogModel.clear();
+      catalogList.clearSelection();
+      schemaModel.clear();
+      schemaList.clearSelection();
+      tableModel.clear();
+      tableList.clearSelection();
+      colModel.setRowCount(0);
+      queryText.setText("");
+      cPnl.setEnabledAt(2,false);
+      cPnl.setEnabledAt(1,false);
+      cPnl.setEnabledAt(0,false);
+      if (rowModel != null) {
+        // rowModel.cancelQuery();
+      }
+      rowModel = new JDBCTableModel(dbuser);
+      rowTable.setTableModel(new VirtualTableModelProxy(rowModel));
+      setRowCount();
+      status.setText("connected to " + url);
+      dbmd = getDBMetaData();
+      if (!dbmd.supportsCatalogsInDataManipulation() && 
+          !dbmd.supportsSchemasInDataManipulation()) {
+        tableModel.clear(); 
+        setTables(null,usr);
+      } else {
+        if (dbmd.supportsCatalogsInDataManipulation()) {
+          setCatalogs();
+        }
+        if (dbmd.supportsSchemasInDataManipulation()) {
+          setSchemas();
+        }
+      }
+      splt.resetToPreferredSizes();              
+      splts.resetToPreferredSizes();              
+      spltc.resetToPreferredSizes();              
+      if (!dbmd.supportsCatalogsInDataManipulation()) {
+        splt.setDividerLocation(.0);              
+        splt.validate();
+      }
+      if (!dbmd.supportsSchemasInDataManipulation()) {
+        splts.setDividerLocation(.0);              
+        splts.validate();
+      }
+      int i = schemaModel.indexOf(usr);
+      if (i > -1) {
+        schemaList.setSelectedIndex(i);
+      }
+    } catch (Exception ex) {
+      status.setText("DB connection failed " + ex);
+      JOptionPane.showMessageDialog(frame,
+                               ex,
+                               "Data base connection failed",
+                               JOptionPane.ERROR_MESSAGE);
+      System.err.println("DB connection failed " + ex);
+    }
+  }
+
+  public DBSaveTable() {
+    JLabel label;
+    dbmodel = new DBComboBoxModel(); 
+    JButton dbServices = new JButton("Edit Connections"); 
+    dbServices.setToolTipText("Edit Database Account Preferences");
+    dbServices.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          (new DBUserPanel(dbmodel)).show((Window)getTopLevelAncestor());
+        }
+      }
+    );
+
+
+    dbChooser = new JComboBox(dbmodel); 
+    dbChooser.setToolTipText("Select a database account");
+    JButton connBtn = new JButton("connect");
+    connBtn.setToolTipText("Establish a connection to the selected database");
+    connBtn.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          connectToDatabase();
+        }
+      }
+    );
+
+    JPanel connectionPanel = new JPanel(new BorderLayout());
+
+    JPanel connChoicePanel = new JPanel();
+    JPanel connBtnPanel = new JPanel(new BorderLayout());
+    connChoicePanel.setLayout(new BoxLayout(connChoicePanel, BoxLayout.X_AXIS));
+
+    connChoicePanel.add(dbServices);
+    connChoicePanel.add(dbChooser);
+    connBtnPanel.add(connBtn,BorderLayout.WEST);
+    status = new JTextField("Not connected to a database");
+    status.setBackground(null);
+    status.setToolTipText("Status of database connection");
+    connBtnPanel.add(status);
+
+    connectionPanel.add(connChoicePanel,BorderLayout.NORTH);
+    connectionPanel.add(connBtnPanel,BorderLayout.SOUTH);
+
+    // Catalogs
+    catalogModel = new DefaultListModel();
+    catalogList = new JList(catalogModel);
+    catalogList.setVisibleRowCount(8);
+    catalogList.setToolTipText("Select a database Catalog");
+    gjsp = new JScrollPane(catalogList);
+
+    catalogList.addListSelectionListener(
+      new ListSelectionListener() {
+        public void valueChanged(ListSelectionEvent e) {
+          setTables((Object[])(catalogList.getSelectedValues()),null);
+          colModel.setRowCount(0);
+        }
+      }
+    );
+
+    // Schemas
+    schemaModel = new DefaultListModel();
+    schemaList = new JList(schemaModel);
+    schemaList.setToolTipText("Select a database Schema");
+    schemaList.setVisibleRowCount(8);
+    sjsp = new JScrollPane(schemaList);
+
+    schemaList.addListSelectionListener(
+      new ListSelectionListener() {
+        public void valueChanged(ListSelectionEvent e) {
+          setTables(null,(Object[])(schemaList.getSelectedValues()));
+          colModel.setRowCount(0);
+        }
+      }
+    );
+
+    // Tables
+    tableModel = new DefaultListModel();
+    tableList = new JList(tableModel);
+    tableList.setToolTipText("Select a database Table");
+    tableList.setVisibleRowCount(8);
+    tjsp = new JScrollPane(tableList);
+
+    tableList.addListSelectionListener(
+      new ListSelectionListener() {
+        public void valueChanged(ListSelectionEvent e) {
+          if (!e.getValueIsAdjusting()) {
+            setColumns(tableList.getSelectedValues());
+            setRows( tableList.getSelectedValues(), "*");
+          }
+        }
+      }
+    );
+
+    // columns
+    colModel = new DefaultTableModel(1,1);
+    colTable = new JTable(colModel);
+    cjsp = new JScrollPane(colTable);
+
+    colListModel  = new DefaultListModel();
+    colList = new JList(colListModel);
+    colList.setToolTipText("Select Columns for query");
+    JScrollPane cljsp = new JScrollPane(colList);
+
+    colList.addListSelectionListener(
+      new ListSelectionListener() {
+        public void valueChanged(ListSelectionEvent e) {
+          if (!e.getValueIsAdjusting()) {
+            setRows( tableList.getSelectedValues(), getRowColumns());
+          }
+        }
+      }
+    );
+
+    // rows
+    rowTable = new JTableView();
+    //rowTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    //rjsp = new JScrollPane(rowTable);
+
+    // query
+
+    limitRows.addItemListener( 
+      new ItemListener() {
+        public void itemStateChanged(ItemEvent e) {
+          rowLimit.setEnabled(limitRows.isSelected());
+        }
+      }
+    );
+    rowLimit.setEnabled(limitRows.isSelected());
+
+    submitBtn.setToolTipText("Start the query to view the table");
+    submitBtn.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          submitQuery();
+          stopBtn.setEnabled(true);
+        }
+      }
+    );
+
+    stopBtn.setEnabled(false);
+    stopBtn.setToolTipText("Stop the current query");
+    stopBtn.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          if (rowModel != null) {
+            rowModel.stopQuery();
+          }
+          if (!limitRows.isSelected()) {
+            limitRows.doClick();
+          }
+          if (rowModel != null) {
+            DoSpinner.setValue(rowLimit,new Integer(rowModel.getRowCount()));
+          }
+          ((JComponent)e.getSource()).setEnabled(false);
+          try {
+            // since this can change the preferredsize of the JTable...
+            rowTable.validate();
+          } catch (Exception ex) {
+          }
+        }
+      }
+    );
+
+    queryStatus = new JTextField();
+    queryStatus.setBackground(null);
+    queryStatus.setToolTipText("Status of database query");
+
+    queryText = new JTextArea(5,80);
+    qjsp = new JScrollPane(queryText);
+
+
+    JPanel gPnl = new JPanel();
+    gPnl.setLayout(new BoxLayout(gPnl, BoxLayout.Y_AXIS));
+    label = new JLabel("Catalogs");
+    label.setToolTipText("Select a database Catalog");
+    gPnl.add(label);
+    gPnl.add(gjsp);
+
+    JPanel sPnl = new JPanel();
+    sPnl.setLayout(new BoxLayout(sPnl, BoxLayout.Y_AXIS));
+    label = new JLabel("Schemas");
+    label.setToolTipText("Select a database Schema");
+    sPnl.add(label);
+    sPnl.add(sjsp);
+
+    JPanel tPnl = new JPanel();
+    tPnl.setLayout(new BoxLayout(tPnl, BoxLayout.Y_AXIS));
+    label = new JLabel("Tables");
+    label.setToolTipText("Select a database Table");
+    tPnl.add(label);
+    tPnl.add(tjsp);
+
+    cPnl = new JTabbedPane();
+    cPnl.addTab("Select Columns", null, cljsp, "Select which database Columns to query");
+    cPnl.addTab("Column Info", null, cjsp, "Column Information");
+    cPnl.addTab("Database Info",  null, dbinfoPanel, "About this Database");
+    cPnl.setEnabledAt(2,false);
+    cPnl.setEnabledAt(1,false);
+    cPnl.setEnabledAt(0,false);
+
+    JPanel qPnl = new JPanel(new BorderLayout());
+    JPanel sbPnl = new JPanel(new BorderLayout()); 
+    
+    Box sbBox = new Box(BoxLayout.X_AXIS); 
+    sbBox.add(limitRows);
+    sbBox.add(rowLimit);
+    sbBox.add(submitBtn);
+    sbBox.add(stopBtn);
+    sbPnl.add(sbBox,BorderLayout.WEST);
+    sbPnl.add(queryStatus);
+
+    label = new JLabel("Query");
+    label.setToolTipText("You may edit this query");
+    label.setAlignmentX(Component.LEFT_ALIGNMENT);
+    JButton qClearBtn = new JButton("Clear");
+    qClearBtn.setToolTipText("Clear the query window");
+    qClearBtn.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          queryText.setText("");
+        }
+      }
+    );
+
+
+    JPanel qlPnl = new JPanel(new BorderLayout());
+    qlPnl.add(label,BorderLayout.WEST);
+    Box qhBox = new Box(BoxLayout.X_AXIS);
+    qhBox.add(qClearBtn);
+    qhBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+    qlPnl.add(qhBox,BorderLayout.EAST);
+
+    qPnl.add(qlPnl,BorderLayout.NORTH);
+    qPnl.add(sbPnl,BorderLayout.SOUTH);
+    qPnl.add(qjsp);
+
+    JPanel rPnl = new JPanel();
+    rPnl.setLayout(new BoxLayout(rPnl, BoxLayout.Y_AXIS));
+    rPnl.add(rowLabel);
+    //rPnl.add(rjsp);
+    rPnl.add(rowTable);
+
+    spltc = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,tPnl,cPnl);
+    spltc.setOneTouchExpandable(true);
+
+    splts = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,sPnl,spltc);
+    splts.setOneTouchExpandable(true);
+
+    splt = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,gPnl,splts);
+    splt.setOneTouchExpandable(true);
+
+    spltq = new JSplitPane(JSplitPane.VERTICAL_SPLIT,splt,qPnl);
+    spltq.setOneTouchExpandable(true);
+
+    spltr = new JSplitPane(JSplitPane.VERTICAL_SPLIT,spltq,rPnl);
+    spltr.setOneTouchExpandable(true);
+
+    setLayout(new BorderLayout());
+    //status = new JTextField();
+    add(connectionPanel,BorderLayout.NORTH);
+    add(spltr,BorderLayout.CENTER);
+    //add(status,BorderLayout.SOUTH);
+    spltr.setDividerLocation(.7);
+    spltq.setDividerLocation(.7);
+    spltr.setResizeWeight(.5);
+    spltq.setResizeWeight(.5);
+  }
+
+  public TableModel getTableModel() {
+    return rowModel;
+  }
+
+  private int getRowLimit() {
+    if (limitRows.isSelected()) {
+       return ((Number)DoSpinner.getValue(rowLimit)).intValue();
+    }
+    return -1;
+  }
+
+  private void parseArgs(String args[]) {
+    String dbname = null;
+    for (int i = 0; i < args.length; i++) {
+      if (args[i].startsWith("-")) {
+        if (args[i].equals("-preferences")) {
+          String source = args[++i];
+          try {
+            DBUserList.getSharedInstance().importDBUsers(source);
+          } catch (Exception ex) {
+            System.err.println("Unable to set preferences from " + source + "  " + ex);
+          }
+        } else if (args[i].equals("-dbname")) {
+          dbname = args[++i];
+        }
+      }
+    }
+    if (dbname != null) {
+      setDatabase(dbname);
+    }
+  }
+
+  public void setDatabase(String dbname) {
+    if (dbname != null) {
+      for (int i = 0; i < dbmodel.getSize(); i++) {
+        DBConnectParams dbc = (DBConnectParams)dbmodel.getElementAt(i);
+        if (dbc != null && dbc.getName() != null && dbc.getName().equals(dbname)) {
+          dbChooser.setSelectedIndex(i);
+          connectToDatabase();
+          break;
+        }
+      }
+    }
+  }
+
+  public static void main(String args[]) {
+    DBSaveTable dbp = new DBSaveTable();
+    dbp.parseArgs(args);
+    JFrame frame = new JFrame("Browse Database Tables");
+    frame.addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent e) {System.exit(0);}
+      public void windowClosed(WindowEvent e) {System.exit(0);}
+    });
+    frame.getContentPane().add(dbp);
+    JButton closeBtn = new JButton("Close");
+    closeBtn.setToolTipText("Close this window");
+    closeBtn.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          try {
+            ((Window)((JComponent)e.getSource()).getTopLevelAncestor()).dispose();
+          } catch (Exception ex) {
+          }
+        }
+      }
+    );
+    JToolBar tb = new JToolBar();
+    tb.add(closeBtn);
+    frame.getContentPane().add(tb,BorderLayout.NORTH);
+
+    frame.pack();
+    Dimension dim = frame.getSize();
+    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+    dim.width = dim.width < screen.width-50 ? dim.width : screen.width-50;
+    dim.height = dim.height < screen.height-50 ? dim.height : screen.height-50;
+    frame.setSize(dim);
+    frame.setVisible(true);
+  }
+
+  class DBTypeInfo implements Comparable {
+    public String type_name;
+    public short data_type;
+    public int precision;
+    public String literal_prefix;
+    public String literal_suffix;
+    public String create_params;
+    public short nullable;
+    public boolean case_sensitive;
+    public short searchable;
+    public boolean unsigned_attribute;
+    public boolean fixed_prec_scale;
+    public boolean auto_increment;
+    public String local_type_name;
+    public short minimum_scale;
+    public short maximum_scale;
+    public int sql_data_type;
+    public int sql_datetime_sub;
+    public int num_prec_radix;
+
+    /** 
+      Creates DBTypeInfo instance for the current row in the resultset.
+    */
+    DBTypeInfo(ResultSet rs) {
+      try {
+        type_name = rs.getString(1);
+        data_type = rs.getShort(2);
+        precision = rs.getInt(3);
+        literal_prefix = rs.getString(4);
+        literal_suffix = rs.getString(5);
+        create_params = rs.getString(6);
+        nullable = rs.getShort(7);
+        case_sensitive = rs.getBoolean(8);
+        searchable = rs.getShort(9);
+        unsigned_attribute = rs.getBoolean(10);
+        fixed_prec_scale = rs.getBoolean(11);
+        auto_increment = rs.getBoolean(12);
+        local_type_name = rs.getString(13);
+        minimum_scale = rs.getShort(14);
+        maximum_scale = rs.getShort(15);
+        sql_data_type = rs.getInt(16);
+        sql_datetime_sub = rs.getInt(17);
+        num_prec_radix = rs.getInt(18);
+      } catch (SQLException sqlex) {
+      }
+    }
+
+    public DBTypeInfo makeDBTypeInfo(ResultSet rs) {
+      return null;
+    }
+    public HashSet makeDBTypeInfoHash(ResultSet rs) {
+      return null;
+    }
+    public String toString() {
+      return type_name + (create_params != null ? create_params : "");
+    }
+    public int compareTo(Object o) {
+      return compareTo(((DBTypeInfo)o));
+    }
+    public int compareTo(DBTypeInfo o) {
+      int c = -1;
+      c = type_name.compareTo(o.type_name);
+      if (c == 0) 
+        c = precision - o.precision;
+      if (c == 0) 
+        c = data_type - o.data_type;
+      return c;
+    }
+  }
+
+  private String getRowColumns() {
+    if (colList != null) {
+      Object[] selCols =  colList.getSelectedValues();
+      if (selCols != null && selCols.length > 0) {
+        String cols = ""; 
+        for (int i = 0, n = 0; i < selCols.length; i++) {
+          if (selCols[i] != null) {
+             cols += (n++ > 0 ? ", " : "") 
+                     + ( selCols[i] instanceof DBColumn 
+                        ? ((DBColumn)selCols[i]).getQualifiedName()
+                        : selCols[i].toString());
+          }
+        }
+        if (cols.length() > 0) {
+          return cols;
+        }
+      } else {
+        System.err.println("getRowColumns " + selCols);
+      }
+    }
+    return "*" ;
+  }
+
+  class ShowColumnEditor extends DefaultCellEditor {
+    ShowColumnEditor() {
+      super(new JCheckBox());
+    }
+    public boolean stopCellEditing() {
+      boolean done = super.stopCellEditing();
+      setRows( tableList.getSelectedValues(), getRowColumns());
+      return done;
+    }
+  }
+
+  class ShowColumnRenderer extends JCheckBox implements TableCellRenderer {
+    public Component getTableCellRendererComponent(JTable table,
+                                                   Object value,
+                                                   boolean isSelected,
+                                                   boolean hasFocus,
+                                                   int row,
+                                                   int column) {
+      try {
+        setSelected(((Boolean)value).booleanValue());
+      } catch (Exception ex) {
+      }
+      return this;
+    }
+    public void validate() {}
+    public void revalidate() {}
+    public void repaint(long tm, int x, int y, int width, int height) {}
+    public void repaint(Rectangle r) {}
+    protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {}
+    public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {}
+  }
+}
+
+/*
+class DBTable {
+  String catalog;
+  String schema;
+  String table;
+  DBTable(String catalog, String schema, String table) {
+    this.catalog = catalog;
+    this.schema = schema;
+    this.table = table;
+  }
+  public String getCatalog() {
+    return catalog;
+  }
+  public String getSchema() {
+    return schema;
+  }
+  public String getTable() {
+    return table;
+  }
+  public String toString() {
+    return (catalog != null ? catalog + "." : "") + 
+           (schema != null ? schema + "." : "") + table;
+  }
+}
+  
+class DBColumn extends DBTable {
+  String column;
+  DBColumn(String catalog, String schema, String table, String column) {
+    super(catalog, schema, table);
+    this.column = column;
+  }
+  public String getColumn() {
+    return column;
+  }
+  public String toString() {
+    return (catalog != null && catalog.length() > 0? catalog + "." : "") + 
+           (schema != null && schema.length() > 0? schema + "." : "") + 
+           (table != null && table.length() > 0? table + "." : "") + 
+           column;
+  }
+}
+*/
+  
+

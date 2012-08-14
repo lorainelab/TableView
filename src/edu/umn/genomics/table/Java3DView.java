@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: Java3DView.java,v $ $Revision: 1.3 $ $Date: 2003/05/15 18:23:35 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: Java3DView.java,v $ $Revision: 1.3 $ $Date: 2003/05/15 18:23:35 $ $Name: TableView1_3 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,69 +21,71 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
-import edu.umn.genomics.table.dv.j3d.DataViewJ3D;
-import java.awt.BorderLayout;
 import java.io.Serializable;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.TableModel;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.table.*;
+import javax.swing.event.*;
+import edu.umn.genomics.table.dv.*;
+import edu.umn.genomics.table.dv.j3d.*;
 
 /**
  * Java3DView provides common TableModel View elements.
- *
- * @author J Johnson
- * @version $Revision: 1.3 $ $Date: 2003/05/15 18:23:35 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see ColumnMap
- * @see TableContext
- * @see javax.swing.table.TableModel
- * @see javax.swing.ListSelectionModel
+ * @author       J Johnson
+ * @version $Revision: 1.3 $ $Date: 2003/05/15 18:23:35 $  $Name: TableView1_3 $ 
+ * @since        1.0
+ * @see  ColumnMap
+ * @see  TableContext
+ * @see  javax.swing.table.TableModel
+ * @see  javax.swing.ListSelectionModel
  */
 public class Java3DView extends DvWrapper implements Serializable {
 
-    /**
-     * Constructs a view display. Nothing will be displayed until a data model
-     * is set.
-     *
-     * @see #setTableModel(TableModel tableModel)
-     */
-    public Java3DView() {
-        super();
-        init();
-    }
+  /**
+   * Constructs a view display.  Nothing will be displayed 
+   * until a data model is set.
+   * @see #setTableModel(TableModel tableModel)
+   */
+  public Java3DView() {
+    super();
+    init();
+  }
 
-    /**
-     * Constructs a view display which is initialized with tableModel as the
-     * data model, and a default selection model.
-     *
-     * @param tableModel the data model for the parallel coordinate display
-     */
-    public Java3DView(TableModel tableModel) {
-        super(tableModel);
-        init();
-    }
+  /**
+   * Constructs a view  display which is initialized with 
+   * tableModel as the data model, and a default selection model.
+   * @param tableModel the data model for the parallel coordinate display
+   */
+  public Java3DView(TableModel tableModel) {
+    super(tableModel);
+    init();
+  }
 
-    /**
-     * Constructs a view display which is initialized with tableModel as the
-     * data model, and the given selection model.
-     *
-     * @param tableModel the data model for the parallel coordinate display
-     * @param lsm the ListSelectionModel for the parallel coordinate display
-     */
-    public Java3DView(TableModel tableModel, ListSelectionModel lsm) {
-        super(tableModel, lsm);
-        init();
-    }
+  /**
+   * Constructs a view  display which is initialized with 
+   * tableModel as the data model, and the given selection model.
+   * @param tableModel the data model for the parallel coordinate display
+   * @param lsm  the ListSelectionModel for the parallel coordinate display
+   */
+  public Java3DView(TableModel tableModel, ListSelectionModel lsm) {
+    super(tableModel, lsm);
+    init();
+  }
 
-    private void init() {
-        dv = new DataViewJ3D();
-        if (ctx != null) {
-            dv.setSetOperatorModel(ctx.getSetOperator(tm));
-        }
-        setLayout(new BorderLayout());
-        add(dv);
-        setDataMap();
+  private void init() {
+    dv = new DataViewJ3D();
+    if (ctx != null) {
+      dv.setSetOperatorModel(ctx.getSetOperator(tm));
     }
+    setLayout(new BorderLayout());
+    add(dv);
+    setDataMap();
+  }
+
 }

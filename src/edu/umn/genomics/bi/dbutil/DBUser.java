@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: DBUser.java,v $ $Revision: 1.7 $ $Date: 2003/07/28 15:07:08 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: DBUser.java,v $ $Revision: 1.7 $ $Date: 2003/07/28 15:07:08 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -27,143 +27,116 @@ import java.io.Serializable;
 
 /**
  * Holds the parameters required for making a JDBC connection to a database.
- *
- * @author J Johnson
- * @version $Revision: 1.7 $ $Date: 2003/07/28 15:07:08 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.7 $ $Date: 2003/07/28 15:07:08 $  $Name: TableView1_2 $
+ * @since        1.0
  */
-public class DBUser implements DBConnectParams, Serializable {
+public class DBUser implements DBConnectParams,Serializable {
+  String name;
+  String user; 
+  String passwd;
+  String url; 
+  String driverName; 
+  public DBUser(String user, String password, String url, String driverName) {
+    this.user = user != null ? user.trim() : "";
+    this.passwd = password != null ? password.trim() : "";
+    this.url = url != null ? url.trim() : "";
+    this.driverName = driverName;
+    String loc = url == null ? "" 
+                             : url.indexOf("@") >= 0 
+                               ? url.substring( url.indexOf("@")+1) 
+                               : url;
+    this.name = loc.length() > 0 ? user+"@"+loc : "";
+  }
+  public DBUser(String name, String user, String password, String url, String driverName) {
+    this(user, password, url, driverName);
+    if (name != null && name.length() > 0)
+      this.name = name;
+  }
+  public DBUser(DBConnectParams params) {
+    this.name = params.getName();
+    this.user = params.getUser();
+    this.passwd = params.getPassword();
+    this.url = params.getURL();
+    this.driverName = params.getDriverName();
+  }
+  public String getName() {
+    return name;
+  }
+  public String getUser() {
+    return user;
+  }
+  public String getPassword() {
+    return passwd;
+  }
+  public String getURL() {
+    return url;
+  }
+  public String getDriverName() {
+    return driverName;
+  }
 
-    String name;
-    String user;
-    String passwd;
-    String url;
-    String driverName;
+  void setUser(String val) {
+    this.user = user;
+  }
+  void setPassword(String passwd) {
+    this.passwd = passwd;
+  }
+  void setURL(String url) {
+    this.url = url;
+  }
+  void setDriverName(String driverName) {
+    this.driverName = driverName;
+  }
 
-    public DBUser(String user, String password, String url, String driverName) {
-        this.user = user != null ? user.trim() : "";
-        this.passwd = password != null ? password.trim() : "";
-        this.url = url != null ? url.trim() : "";
-        this.driverName = driverName;
-        String loc = url == null ? ""
-                : url.indexOf("@") >= 0
-                ? url.substring(url.indexOf("@") + 1)
-                : url;
-        this.name = loc.length() > 0 ? user + "@" + loc : "";
-    }
-
-    public DBUser(String name, String user, String password, String url, String driverName) {
-        this(user, password, url, driverName);
-        if (name != null && name.length() > 0) {
-            this.name = name;
-        }
-    }
-
-    public DBUser(DBConnectParams params) {
-        this.name = params.getName();
-        this.user = params.getUser();
-        this.passwd = params.getPassword();
-        this.url = params.getURL();
-        this.driverName = params.getDriverName();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public String getPassword() {
-        return passwd;
-    }
-
-    public String getURL() {
-        return url;
-    }
-
-    public String getDriverName() {
-        return driverName;
-    }
-
-    void setUser(String val) {
-        this.user = user;
-    }
-
-    void setPassword(String passwd) {
-        this.passwd = passwd;
-    }
-
-    void setURL(String url) {
-        this.url = url;
-    }
-
-    void setDriverName(String driverName) {
-        this.driverName = driverName;
-    }
-
-    /**
-     * Returns whether this DBConnectParams represents the same database user
-     * account as the given dbConnectParams. The name given to the
-     * DBConnectParams instances are ignored for this comparison.
-     *
-     * @param user one of the DBConnectParams to compare
-     * @param other the other DBConnectParams to compare
-     * @return whether these represent the same database user.
-     */
-    public static boolean userEquals(DBConnectParams user, DBConnectParams other) {
-        if (user == null) {
-            return false;
-        }
-        if (other != null) {
-            if (user == other) {
-                return true;
-            }
-            if (!user.getUser().equals(other.getUser())) {
-                return false;
-            }
-            if (!user.getPassword().equals(other.getPassword())) {
-                return false;
-            }
-            if (!user.getURL().equals(other.getURL())) {
-                return false;
-            }
-            return true;
-        }
+  /** Returns whether this DBConnectParams represents the same database
+   *  user account as the given dbConnectParams.  The name given 
+   *  to the DBConnectParams instances are ignored for this comparison. 
+   * @param user one of the DBConnectParams to compare
+   * @param other the other DBConnectParams to compare
+   * @return whether these represent the same database user.
+   */
+  public static boolean userEquals(DBConnectParams user, DBConnectParams other) {
+    if (user == null)
+      return false;
+    if (other != null) {
+      if (user == other)
+        return true;
+      if (!user.getUser().equals(other.getUser()))
         return false;
-    }
-
-    /**
-     * Returns whether this DBConnectParams represnets the same database user
-     * account as the given dbConnectParams. The name given to the
-     * DBConnectParams instances are ignored for this comparison.
-     *
-     * @param dbConnectParams
-     * @return whether these represent the same database user.
-     */
-    public boolean userEquals(DBConnectParams dbConnectParams) {
-        if (super.equals(dbConnectParams)) {
-            return true;
-        }
-        return userEquals(this, dbConnectParams);
-    }
-
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        if (obj != null && obj instanceof DBConnectParams) {
-            DBConnectParams other = (DBConnectParams) obj;
-            if (getName().equals(other.getName()) && userEquals(other)) {
-                return true;
-            }
-        }
+      if (!user.getPassword().equals(other.getPassword()))
         return false;
+      if (!user.getURL().equals(other.getURL()))
+        return false;
+      return true;
     }
+    return false;
+  }
 
-    public String toString() {
-        return name;
+  /** Returns whether this DBConnectParams represnets the same database
+   *  user account as the given dbConnectParams.  The name given 
+   *  to the DBConnectParams instances are ignored for this comparison. 
+   * @param dbConnectParams 
+   * @return whether these represent the same database user.
+   */
+  public boolean userEquals(DBConnectParams dbConnectParams) {
+    if (super.equals(dbConnectParams))
+      return true;
+    return userEquals(this, dbConnectParams);
+  }
+
+  public boolean equals(Object obj) {
+    if (super.equals(obj))
+      return true;
+    if (obj != null && obj instanceof DBConnectParams) {
+      DBConnectParams other = (DBConnectParams)obj;
+      if (getName().equals(other.getName()) && userEquals(other)) 
+        return true;
     }
-}
+    return false;
+  }
+
+  public String toString() {
+    return name;
+  }
+} 

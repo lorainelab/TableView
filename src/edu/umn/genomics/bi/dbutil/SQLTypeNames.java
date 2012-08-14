@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: SQLTypeNames.java,v $ $Revision: 1.1 $ $Date: 2003/07/28 16:36:21 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: SQLTypeNames.java,v $ $Revision: 1.1 $ $Date: 2003/07/28 16:36:21 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -39,40 +39,36 @@ import java.util.Hashtable;
  */
 public class SQLTypeNames extends Hashtable {
 
-    static SQLTypeNames sharedInstance = new SQLTypeNames();
+  static SQLTypeNames sharedInstance = new SQLTypeNames();
 
-    /**
-     * Construct a Hashtable of java.sql.Types field names using the value as
-     * the key and the field name as the value.
-     */
-    public SQLTypeNames() {
-        try {
-            Field[] fld = java.sql.Types.class.getFields();
-            for (int i = 0; i < fld.length; i++) {
-                super.put(fld[i].get(null), fld[i].getName());
-            }
-        } catch (Exception ex) {
+  /** 
+   * Construct a Hashtable of java.sql.Types field names 
+   * using the value as the key and the field name as the value.
+   */
+  public SQLTypeNames() {
+    try {
+      Field[] fld = java.sql.Types.class.getFields();
+      for (int i = 0; i < fld.length; i++) {
+        super.put(fld[i].get(null),fld[i].getName());
+      }
+    } catch (Exception ex) {
             ExceptionHandler.popupException(""+ex);
-        }
     }
-
-    /**
-     * Return the field name for the java.sql.Types value.
-     *
-     * @param value the java.sql.Types value.
-     * @return the field name for the java.sql.Types value, or null if not a
-     * defined value.
-     */
-    public String get(int value) {
-        return (String) get(new Integer(value));
-    }
-
-    /**
-     * Return a shared instance of this class.
-     *
-     * @return an instance of this class.
-     */
-    public static SQLTypeNames getSharedInstance() {
-        return sharedInstance;
-    }
+  }
+  /** 
+   * Return the field name for the java.sql.Types value.
+   * @param value the java.sql.Types value.
+   * @return the field name for the java.sql.Types value, 
+   *         or null if not a defined value.
+   */
+  public String get(int value) {
+    return (String) get(new Integer(value));
+  }
+  /**
+   * Return a shared instance of this class.
+   * @return an instance of this class.
+   */
+  public static SQLTypeNames getSharedInstance() {
+    return sharedInstance;
+  }
 }

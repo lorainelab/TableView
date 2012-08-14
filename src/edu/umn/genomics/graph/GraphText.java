@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: GraphText.java,v $ $Revision: 1.4 $ $Date: 2004/01/28 20:32:58 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: GraphText.java,v $ $Revision: 1.4 $ $Date: 2004/01/28 20:32:58 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,114 +21,111 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.graph;
 
 import java.awt.*;
-
+import java.util.*;
 /**
  */
+
 /**
- * @author J Johnson
- * @version $Revision: 1.4 $ $Date: 2004/01/28 20:32:58 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.4 $ $Date: 2004/01/28 20:32:58 $  $Name: TableView1_2 $
+ * @since        1.0
  */
 public abstract class GraphText extends AbstractGraphItem {
+  Color color;
+  String label;
+  DataModel dataModel;
+  String text;
+  double pos[];
+  Font font = null;
+  FontMetrics fm = null;
 
-    Color color;
-    String label;
-    DataModel dataModel;
-    String text;
-    double pos[];
-    Font font = null;
-    FontMetrics fm = null;
+  public void setColor(Color color) {
+    this.color = color;
+    fireChangeEvent(); 
+  }
+  public Color getColor() {
+    return color;
+  }
+  public void setLabel(String label) {
+    this.label = label;
+    fireChangeEvent(); 
+  }
+  public String getLabel() {
+    return label;
+  }
 
-    public void setColor(Color color) {
-        this.color = color;
-        fireChangeEvent();
+  /** 
+   */
+  public void setText(String s, double x, double y) {
+    this.text = s;
+    fireChangeEvent(); 
+  }
+
+  public String getText() {
+    return text;
+  }
+
+  public void draw(Component c, Graphics g, Rectangle r, 
+                            Axis xAxis, Axis yAxis) {
+    Font f = font != null ? font : 
+               c.getFont() != null ? c.getFont() : g.getFont();
+    
+    g.setFont(f);
+    fm = g.getFontMetrics(f);
+    int x = xAxis.getIntPosition(pos[0]);
+    int y = xAxis.getIntPosition(pos[1]);
+    g.drawString(text, x, y - fm.getAscent());
+  }
+
+
+  /**
+   * Returns whether this graph item intersects the given rectangle.
+   * @param r the area to test for intersection.
+   * @param xAxis The X axis of the graph.
+   * @param yAxis The Y axis of the graph.
+   * @return true if the item intersects the given rectangle, else false.
+   */
+  public boolean intersects(Rectangle r, Axis xAxis, Axis yAxis) {
+
+    if (fm != null && text != null) {
+      int xr = r.x + r.width;
+      int yb = r.y + r.height;
+      int x = xAxis.getIntPosition(pos[0]);
+      int y = xAxis.getIntPosition(pos[1]);
+      int w = x + fm.stringWidth(text);
+      int t = y - fm.getAscent();
+      int b = y + fm.getDescent();
+      if ( (x <= xr && w >= r.x) && (t <= yb && b >= r.y) ) {
+        return true;
+      }
     }
 
-    public Color getColor() {
-        return color;
+    return false;
+  }
+
+  /**
+   * Returns whether this graph item intersects the given point.
+   * @param p the point to test for intersection.
+   * @param xAxis The X axis of the graph.
+   * @param yAxis The Y axis of the graph.
+   * @return true if the item intersects the given point, else false.
+   */
+  public boolean intersects(Point p, Axis xAxis, Axis yAxis) {
+    if (fm != null && text != null) {
+      int x = xAxis.getIntPosition(pos[0]);
+      int y = xAxis.getIntPosition(pos[1]);
+      int w = x + fm.stringWidth(text);
+      int t = y - fm.getAscent();
+      int b = y + fm.getDescent();
+      if ( p.x >= x && p.x <= w && p.y >= t && p.y <= b) {
+        return true;
+      }
     }
-
-    public void setLabel(String label) {
-        this.label = label;
-        fireChangeEvent();
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    /**
-     */
-    public void setText(String s, double x, double y) {
-        this.text = s;
-        fireChangeEvent();
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void draw(Component c, Graphics g, Rectangle r,
-            Axis xAxis, Axis yAxis) {
-        Font f = font != null ? font
-                : c.getFont() != null ? c.getFont() : g.getFont();
-
-        g.setFont(f);
-        fm = g.getFontMetrics(f);
-        int x = xAxis.getIntPosition(pos[0]);
-        int y = xAxis.getIntPosition(pos[1]);
-        g.drawString(text, x, y - fm.getAscent());
-    }
-
-    /**
-     * Returns whether this graph item intersects the given rectangle.
-     *
-     * @param r the area to test for intersection.
-     * @param xAxis The X axis of the graph.
-     * @param yAxis The Y axis of the graph.
-     * @return true if the item intersects the given rectangle, else false.
-     */
-    public boolean intersects(Rectangle r, Axis xAxis, Axis yAxis) {
-
-        if (fm != null && text != null) {
-            int xr = r.x + r.width;
-            int yb = r.y + r.height;
-            int x = xAxis.getIntPosition(pos[0]);
-            int y = xAxis.getIntPosition(pos[1]);
-            int w = x + fm.stringWidth(text);
-            int t = y - fm.getAscent();
-            int b = y + fm.getDescent();
-            if ((x <= xr && w >= r.x) && (t <= yb && b >= r.y)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns whether this graph item intersects the given point.
-     *
-     * @param p the point to test for intersection.
-     * @param xAxis The X axis of the graph.
-     * @param yAxis The Y axis of the graph.
-     * @return true if the item intersects the given point, else false.
-     */
-    public boolean intersects(Point p, Axis xAxis, Axis yAxis) {
-        if (fm != null && text != null) {
-            int x = xAxis.getIntPosition(pos[0]);
-            int y = xAxis.getIntPosition(pos[1]);
-            int w = x + fm.stringWidth(text);
-            int t = y - fm.getAscent();
-            int b = y + fm.getDescent();
-            if (p.x >= x && p.x <= w && p.y >= t && p.y <= b) {
-                return true;
-            }
-        }
-        return false;
-    }
+    return false;
+  }
 }

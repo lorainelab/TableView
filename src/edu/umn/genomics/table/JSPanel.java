@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: JSPanel.java,v $ $Revision: 1.1 $ $Date: 2004/05/19 20:21:48 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: JSPanel.java,v $ $Revision: 1.1 $ $Date: 2004/05/19 20:21:48 $ $Name: TableView1_3 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -33,50 +33,46 @@ import javax.swing.JFrame;
 import javax.swing.ListSelectionModel;
 
 /**
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2004/05/19 20:21:48 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see javax.swing.table.TableModel
- * @see javax.swing.ListSelectionModel
- * @see Cells
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2004/05/19 20:21:48 $  $Name: TableView1_3 $ 
+ * @since        1.0
+ * @see  javax.swing.table.TableModel 
+ * @see  javax.swing.ListSelectionModel
+ * @see  Cells
  */
 public class JSPanel extends ScriptPanel {
 
-    public JSPanel() throws IOException {
-        this(null);
-    }
+  public JSPanel() throws IOException {
+    this(null);
+  }
+  
+  public JSPanel(Map vars) throws IOException {
+    super(new ScriptJS(), vars);
+  }
 
-    public JSPanel(Map vars) throws IOException {
-        super(new ScriptJS(), vars);
-    }
-
-    public static void main(String[] args) {
-        try {
-            Map vars = new Hashtable();
-            vars.put("me", vars);
-            JSPanel jsPnl = new JSPanel(vars);
-            JFrame frame = new JFrame("JavaScript");
-            frame.addWindowListener(new WindowAdapter() {
-
-                private void doClose(WindowEvent e) {
-                    System.exit(0);
-                }
-
-                public void windowClosing(WindowEvent e) {
-                    doClose(e);
-                }
-
-                public void windowClosed(WindowEvent e) {
-                    doClose(e);
-                }
-            });
-            frame.getContentPane().add(jsPnl, BorderLayout.CENTER);
-            frame.pack();
-            frame.setVisible(true);
-        } catch (Exception ex) {
-            ExceptionHandler.popupException(""+ex);
+  public static void main( String[] args) {
+    try {
+      Map vars = new Hashtable();
+      vars.put("me",vars);
+      JSPanel jsPnl = new JSPanel(vars);
+      JFrame frame = new JFrame("JavaScript");
+      frame.addWindowListener(new WindowAdapter() {
+        private void doClose(WindowEvent e) {
+          System.exit(0);
         }
+        public void windowClosing(WindowEvent e) {
+          doClose(e);
+        }
+        public void windowClosed(WindowEvent e) {
+          doClose(e);
+        }
+      });
+      frame.getContentPane().add(jsPnl,BorderLayout.CENTER);
+      frame.pack();
+      frame.setVisible(true);
+    } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex);
     }
+  }
 }

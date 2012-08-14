@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: CompositeCluster.java,v $ $Revision: 1.3 $ $Date: 2003/04/15 15:47:57 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: CompositeCluster.java,v $ $Revision: 1.3 $ $Date: 2003/04/15 15:47:57 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,39 +21,52 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table.cluster;
 
-import java.util.Enumeration;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.tree.*;
+import javax.swing.table.*;
 
 /**
  * A CompositeCluster is composed of other Clusters.
- *
- * @author J Johnson
- * @version $Revision: 1.3 $ $Date: 2003/04/15 15:47:57 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.3 $ $Date: 2003/04/15 15:47:57 $  $Name: TableView1_2 $ 
+ * @since        1.0
  */
 public class CompositeCluster extends Cluster {
-
-    public CompositeCluster() {
-        setAllowsChildren(true);
+  double[] values = null;  
+  public CompositeCluster() {
+    setAllowsChildren(true);
+  }
+  public CompositeCluster(Cluster c1, Cluster c2) {
+    this();
+    add(c1);
+    add(c2);
+  }
+  public double[] getValues() {
+    return values;
+  }
+  public void setValues(double[] values) {
+      this.values = values;
+  }
+  public String toString() {
+    StringBuilder s = new StringBuilder("[");
+    int n = 0;
+    for (Enumeration e = children();  e.hasMoreElements();) {
+      Cluster c = (Cluster)e.nextElement();
+      if (c != null) {
+          if (n++ > 0) {
+              s.append(","); 
+          } 
+        s.append(c.toString());
+          
+      }
     }
-
-    public CompositeCluster(Cluster c1, Cluster c2) {
-        this();
-        add(c1);
-        add(c2);
-    }
-
-    public String toString() {
-        String s = "[";
-        for (Enumeration e = children(); e.hasMoreElements();) {
-            Cluster c = (Cluster) e.nextElement();
-            if (c != null) {
-                s += c.toString();
-            }
-        }
-        s += "]";
-        return s;
-    }
+    s.append("]");
+    return s.toString();
+  }
 }
+

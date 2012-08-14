@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: DoSpinner.java,v $ $Revision: 1.2 $ $Date: 2003/07/28 15:34:25 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: DoSpinner.java,v $ $Revision: 1.2 $ $Date: 2003/07/28 15:34:25 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -29,49 +29,57 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeListener;
 
 /**
- * Hide all references to JSpinner and SpinnerNumberModel, and don't call this
- * class unless we're j2se1.4 or later.
+ * Hide all references to JSpinner and SpinnerNumberModel,
+ * and don't call this class unless we're j2se1.4 or later.
  *
- * try { // Check for JSpinner class Class.forName("javax.swing.JSpinner"); //
- * Found it so we can reference DoSpinner which will // cause the ClassLoader to
- * load javax.swing.JSpinner JComponent comp = DoSpinner.getComponent(1,1,10,1);
- * ChangeListener cl = new ChangeListener() { public void
- * stateChanged(ChangeEvent e) { DoSpinner.getValue(e.getSOurce()); } };
- * DoSpinner.addChangeListener(comp,cl); } catch (ClassNotFoundException e) { }
+ * try {
+ *   // Check for JSpinner class
+ *   Class.forName("javax.swing.JSpinner");
+ *   // Found it so we can reference DoSpinner which will
+ *   //   cause the ClassLoader to load javax.swing.JSpinner
+ *   JComponent comp = DoSpinner.getComponent(1,1,10,1);
+ *   ChangeListener cl = new ChangeListener() {
+ *     public void stateChanged(ChangeEvent e) {
+ *       DoSpinner.getValue(e.getSOurce());
+ *     }
+ *   };
+ *   DoSpinner.addChangeListener(comp,cl);
+ * } catch (ClassNotFoundException e) {
+ * }
  *
- * @author J Johnson
- * @version $Revision: 1.2 $ $Date: 2003/07/28 15:34:25 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see javax.swing.JSpinner
+ * @author       J Johnson
+ * @version $Revision: 1.2 $ $Date: 2003/07/28 15:34:25 $  $Name: TableView1_2 $ 
+ * @since        1.0
+ * @see  javax.swing.JSpinner
  */
 public class DoSpinner {
 
-    /**
-     *
-     */
-    public static JComponent getComponent(int value, int min, int max, int step) {
-        return new JSpinner(new SpinnerNumberModel(value, min, max, step));
-    }
+  /**
+   *
+   */
+  public static JComponent getComponent(int value, int min , int max, int step) {
+    return new JSpinner(new SpinnerNumberModel(value, min, max, step));
+  }
 
-    public static JComponent getComponent(double value, double min, double max, double step) {
-        return new JSpinner(new SpinnerNumberModel(value, min, max, step));
-    }
+  public static JComponent getComponent(double value, double min , double max, double step) {
+    return new JSpinner(new SpinnerNumberModel(value, min, max, step));
+  }
 
-    public static void addChangeListener(JComponent comp, ChangeListener listener) {
-        ((JSpinner) comp).addChangeListener(listener);
-    }
+  public static void addChangeListener(JComponent comp, ChangeListener listener) {
+    ((JSpinner)comp).addChangeListener(listener);
+  }
 
-    public static Object getValue(Object comp) {
-        if (comp instanceof JSpinner) {
-            return ((JSpinner) comp).getValue();
-        }
-        return null;
+  public static Object getValue(Object comp) {
+    if (comp instanceof JSpinner) {
+      return ((JSpinner)comp).getValue();
     }
+    return null;
+  }
 
-    public static void setValue(JComponent comp, Object value) {
-        if (comp instanceof JSpinner) {
-            ((JSpinner) comp).setValue(value);
-        }
+  public static void setValue(JComponent comp, Object value) {
+    if (comp instanceof JSpinner) {
+      ((JSpinner)comp).setValue(value);
     }
+  }
+
 }

@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: ClutoLoader.java,v $ $Revision: 1.3 $ $Date: 2004/05/13 14:42:46 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: ClutoLoader.java,v $ $Revision: 1.2 $ $Date: 2004/02/20 03:38:07 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,337 +21,322 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table.cluster.cluto;
 
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.table.*;
+import javax.swing.event.*;
+import edu.umn.genomics.table.*;
 import edu.umn.genomics.file.OpenInputSource;
 import edu.umn.genomics.layout.SpringUtilities;
-import edu.umn.genomics.table.*;
-import java.awt.BorderLayout;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.util.Vector;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import jcluto.ClutoFile;
-import jcluto.ClutoTableMatrix;
+import jcluto.*;
 
 /**
- * A Graphical User Interface for selecting a table from a file or URL, and
- * providing a TableModel interface to the datasource.
- *
- * @author J Johnson
- * @version $Revision: 1.3 $ $Date: 2004/05/13 14:42:46 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see javax.swing.table.TableModel
- * @see javax.swing.ListSelectionModel
+ * A Graphical User Interface for selecting a table from a file or URL, 
+ * and providing a TableModel interface to the datasource.
+ * @author       J Johnson
+ * @version $Revision: 1.2 $ $Date: 2004/02/20 03:38:07 $  $Name: TableView1_2 $ 
+ * @since        1.0
+ * @see  javax.swing.table.TableModel 
+ * @see  javax.swing.ListSelectionModel
  */
 public class ClutoLoader extends AbstractTableSource implements OpenTableSource {
+  TableModel tm = null;
+  JFileChooser fc;
+  JTextField path;
+  JTable jtable = new JTable();
+  // Need field for Row Labels
+  JTextField rowLabelPath;
+  JTextField colLabelPath;
+  // Need field for Column Labels
+  // Need custom ColumnMap
+  /**
+   * Creates a ClutoLoader Component for selecting a table from a file or URL.
+   */
+  public ClutoLoader() {
+    // file
+    String fs = "\t";
+    int colHeadersRows = -1;
 
-    TableModel tm = null;
-    JFileChooser fc;
-    JTextField path;
-    JTable jtable = new JTable();
-    // Need field for Row Labels
-    JTextField rowLabelPath;
-    JTextField colLabelPath;
-    // Need field for Column Labels
-    // Need custom ColumnMap
+    fc = new JFileChooser();
 
-    /**
-     * Creates a ClutoLoader Component for selecting a table from a file or URL.
-     */
-    public ClutoLoader() {
-        // file
-        String fs = "\t";
-        int colHeadersRows = -1;
+    JPanel clutoFileLoc = new JPanel(new SpringLayout());
 
-        fc = new JFileChooser();
-
-        JPanel clutoFileLoc = new JPanel(new SpringLayout());
-
-        JLabel pthLbl = new JLabel("Matrix File or URL:", JLabel.RIGHT);
-        path = new JTextField(40);
-        path.addActionListener(
-                new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        try {
-                            openTableSource();
-                        } catch (Exception ex) {
+    JLabel pthLbl = new JLabel("Matrix File or URL:",JLabel.RIGHT); 
+    path = new JTextField(40);
+    path.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            try {
+              openTableSource();
+            } catch (Exception ex) {
                             ExceptionHandler.popupException(""+ex);
-                        }
-                    }
-                });
-        JButton browseBtn = new JButton("browse");
-        browseBtn.setToolTipText("Open a file chooser");
-        browseBtn.addActionListener(
-                new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        int returnVal = fc.showOpenDialog(path);
-                        if (returnVal == JFileChooser.APPROVE_OPTION) {
-                            File file = fc.getSelectedFile();
-                            try {
-                                path.setText(file.getAbsolutePath());
-                                openTableSource();
-                            } catch (Exception ex) {
+            }
+        }
+      });
+    JButton browseBtn = new JButton("browse");
+    browseBtn.setToolTipText("Open a file chooser");
+    browseBtn.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          int returnVal = fc.showOpenDialog(path);
+          if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            try {
+              path.setText(file.getAbsolutePath());
+              openTableSource();
+            } catch (Exception ex) {
                                 ExceptionHandler.popupException(""+ex);
-                            }
-                        } else {
-                            System.err.println("Open command cancelled by user.");
-                        }
-                    }
-                });
-        JButton openBtn = new JButton("open");
-        openBtn.setToolTipText("Read the Matrix Source");
-        openBtn.addActionListener(
-                new ActionListener() {
+            }
+          } else {
+                System.err.println("Open command cancelled by user.");
+          }
+        }
+      });
+    JButton openBtn = new JButton("open");
+    openBtn.setToolTipText("Read the Matrix Source");
+    openBtn.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          openTableSource();
+        }
+      });
 
-                    public void actionPerformed(ActionEvent e) {
-                        openTableSource();
-                    }
-                });
+    clutoFileLoc.add(pthLbl);
+    clutoFileLoc.add(browseBtn);
+    clutoFileLoc.add(path);
+    clutoFileLoc.add(openBtn);
 
-        clutoFileLoc.add(pthLbl);
-        clutoFileLoc.add(browseBtn);
-        clutoFileLoc.add(path);
-        clutoFileLoc.add(openBtn);
-
-        pthLbl = new JLabel("Row Label    File or URL:", JLabel.RIGHT);
-        rowLabelPath = new JTextField(40);
-        rowLabelPath.addActionListener(
-                new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        try {
-                            addRowLabels();
-                        } catch (Exception ex) {
+    pthLbl = new JLabel("Row Label    File or URL:",JLabel.RIGHT); 
+    rowLabelPath = new JTextField(40);
+    rowLabelPath.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            try {
+              addRowLabels();
+            } catch (Exception ex) {
                             ExceptionHandler.popupException(""+ex);
-                        }
-                    }
-                });
-        browseBtn = new JButton("browse");
-        browseBtn.setToolTipText("Open a file chooser");
-        browseBtn.addActionListener(
-                new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        int returnVal = fc.showOpenDialog(path);
-                        if (returnVal == JFileChooser.APPROVE_OPTION) {
-                            File file = fc.getSelectedFile();
-                            try {
-                                rowLabelPath.setText(file.getAbsolutePath());
-                                addRowLabels();
-                            } catch (Exception ex) {
+            }
+        }
+      });
+    browseBtn = new JButton("browse");
+    browseBtn.setToolTipText("Open a file chooser");
+    browseBtn.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          int returnVal = fc.showOpenDialog(path);
+          if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            try {
+              rowLabelPath.setText(file.getAbsolutePath());
+              addRowLabels();
+            } catch (Exception ex) {
                                 ExceptionHandler.popupException(""+ex);
-                            }
-                        } else {
-                            System.err.println("Open command cancelled by user.");
-                        }
-                    }
-                });
-        openBtn = new JButton("open");
-        openBtn.setToolTipText("Read the Row Labels Source for the Matrix");
-        openBtn.addActionListener(
-                new ActionListener() {
+            }
+          } else {
+                System.err.println("Open command cancelled by user.");
+          }
+        }
+      });
+    openBtn = new JButton("open");
+    openBtn.setToolTipText("Read the Row Labels Source for the Matrix");
+    openBtn.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          addRowLabels();
+        }
+      });
 
-                    public void actionPerformed(ActionEvent e) {
-                        addRowLabels();
-                    }
-                });
+    clutoFileLoc.add(pthLbl);
+    clutoFileLoc.add(browseBtn);
+    clutoFileLoc.add(rowLabelPath);
+    clutoFileLoc.add(openBtn);
 
-        clutoFileLoc.add(pthLbl);
-        clutoFileLoc.add(browseBtn);
-        clutoFileLoc.add(rowLabelPath);
-        clutoFileLoc.add(openBtn);
-
-        pthLbl = new JLabel("Column Label File or URL:", JLabel.RIGHT);
-        colLabelPath = new JTextField(40);
-        colLabelPath.addActionListener(
-                new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        try {
-                            addColLabels();
-                        } catch (Exception ex) {
+    pthLbl = new JLabel("Column Label File or URL:",JLabel.RIGHT); 
+    colLabelPath = new JTextField(40);
+    colLabelPath.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            try {
+              addColLabels();
+            } catch (Exception ex) {
                             ExceptionHandler.popupException(""+ex);
-                        }
-                    }
-                });
-        browseBtn = new JButton("browse");
-        browseBtn.setToolTipText("Open a file chooser");
-        browseBtn.addActionListener(
-                new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        int returnVal = fc.showOpenDialog(path);
-                        if (returnVal == JFileChooser.APPROVE_OPTION) {
-                            File file = fc.getSelectedFile();
-                            try {
-                                colLabelPath.setText(file.getAbsolutePath());
-                                addColLabels();
-                            } catch (Exception ex) {
+            }
+        }
+      });
+    browseBtn = new JButton("browse");
+    browseBtn.setToolTipText("Open a file chooser");
+    browseBtn.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          int returnVal = fc.showOpenDialog(path);
+          if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            try {
+              colLabelPath.setText(file.getAbsolutePath());
+              addColLabels();
+            } catch (Exception ex) {
                                 ExceptionHandler.popupException(""+ex);
-                            }
-                        } else {
-                            System.err.println("Open command cancelled by user.");
-                        }
-                    }
-                });
-        openBtn = new JButton("open");
-        openBtn.setToolTipText("Read the Column Labels Source for the Matrix");
-        openBtn.addActionListener(
-                new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        addColLabels();
-                    }
-                });
-
-        clutoFileLoc.add(pthLbl);
-        clutoFileLoc.add(browseBtn);
-        clutoFileLoc.add(colLabelPath);
-        clutoFileLoc.add(openBtn);
-
-        SpringUtilities.makeCompactGrid(clutoFileLoc, //parent
-                3, 4, //rows, cols,
-                3, 3, //initX, initY
-                1, 3); //xPad, yPad
-
-        setLayout(new BorderLayout());
-        add(clutoFileLoc, BorderLayout.NORTH);
-        jtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        JScrollPane jsp = new JScrollPane(jtable);
-        add(jsp);
-    }
-
-    private Vector openLabelSource(String source) throws IOException, NullPointerException {
-        if (source == null) {
-            throw new NullPointerException("No input source location given.");
-        }
-        Vector v = new Vector();
-        BufferedReader rdr = OpenInputSource.getBufferedReader(source);
-        for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
-            v.add(line);
-        }
-        return v;
-    }
-    static String missingMatrixMsg = "No Matrix Source was entered";
-
-    private void addRowLabels() {
-        try {
-            if (getTableModel() == null) {
-                if (path.getText() != null && path.getText().length() > 0) {
-                    openTableSource();
-                }
             }
-            if (getTableModel() != null) {
-                addRowLabels(rowLabelPath.getText());
-            } else {
-                JOptionPane.showMessageDialog((Window) getTopLevelAncestor(),
-                        missingMatrixMsg,
-                        missingMatrixMsg,
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (IOException ex) {
+          } else {
+                System.err.println("Open command cancelled by user.");
+          }
+        }
+      });
+    openBtn = new JButton("open");
+    openBtn.setToolTipText("Read the Column Labels Source for the Matrix");
+    openBtn.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          addColLabels();
+        }
+      });
+
+    clutoFileLoc.add(pthLbl);
+    clutoFileLoc.add(browseBtn);
+    clutoFileLoc.add(colLabelPath);
+    clutoFileLoc.add(openBtn);
+
+    SpringUtilities.makeCompactGrid(clutoFileLoc, //parent
+                                    3, 4,  //rows, cols,
+                                    3, 3,  //initX, initY
+                                    1, 3); //xPad, yPad
+
+    setLayout(new BorderLayout());
+    add(clutoFileLoc,BorderLayout.NORTH);
+    jtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    JScrollPane jsp = new JScrollPane(jtable);
+    add(jsp);
+  }
+
+  private Vector openLabelSource(String source) throws IOException,NullPointerException {
+    if (source == null) {
+      throw new NullPointerException("No input source location given.");
+    }
+    Vector v = new Vector();
+    BufferedReader rdr = OpenInputSource.getBufferedReader(source);
+    for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
+      v.add(line);
+    }
+    return v;
+  }
+
+  static String missingMatrixMsg = "No Matrix Source was entered";
+  private void addRowLabels() {
+    try {
+      if (getTableModel() == null) {
+        if (path.getText() != null && path.getText().length() > 0) {
+          openTableSource();
+        }
+      }
+      if (getTableModel() != null) {
+        addRowLabels(rowLabelPath.getText());
+      } else {
+        JOptionPane.showMessageDialog((Window)getTopLevelAncestor(),
+                                       missingMatrixMsg,
+                                       missingMatrixMsg,
+                                       JOptionPane.ERROR_MESSAGE);
+      }
+    } catch (IOException ex) {
             ExceptionHandler.popupException(""+ex);
-        }
     }
+  }
 
-    private void addColLabels() {
-        try {
-            if (getTableModel() == null) {
-                if (path.getText() != null && path.getText().length() > 0) {
-                    openTableSource();
-                }
-            }
-            if (getTableModel() != null) {
-                addColLabels(colLabelPath.getText());
-            } else {
-                JOptionPane.showMessageDialog((Window) getTopLevelAncestor(),
-                        missingMatrixMsg,
-                        missingMatrixMsg,
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (IOException ex) {
+  private void addColLabels() {
+    try {
+      if (getTableModel() == null) {
+        if (path.getText() != null && path.getText().length() > 0) {
+          openTableSource();
+        }
+      }
+      if (getTableModel() != null) {
+        addColLabels(colLabelPath.getText());
+      } else {
+        JOptionPane.showMessageDialog((Window)getTopLevelAncestor(),
+                                       missingMatrixMsg,
+                                       missingMatrixMsg,
+                                       JOptionPane.ERROR_MESSAGE);
+      }
+    } catch (IOException ex) {
             ExceptionHandler.popupException(""+ex);
-        }
     }
+  }
 
-    public void addRowLabels(String source) throws IOException {
-        String rowColName = "Names";
-        TableModel tm = getTableModel();
-        if (tm != null) {
-            VirtualTableModel vtm = tm instanceof VirtualTableModel ? (VirtualTableModel) tm : null;
-            String[] labelArray = null;
-            if (source != null && source.length() > 0) {
-                Vector labels = openLabelSource(source);
-                labelArray = new String[labels.size()];
-                labelArray = (String[]) labels.toArray(labelArray);
-            }
-            if (vtm != null && vtm.getColumnCount() > 0
-                    && vtm.getColumnClass(0) == java.lang.String.class
-                    && vtm.getColumnName(0).equals(rowColName)) {
-                vtm.removeColumn(0);
-            }
-            if (labelArray != null) {
-                if (vtm == null) {
-                    vtm = new VirtualTableModelProxy(tm);
-                }
-                ArrayRefColumn col = new ArrayRefColumn(labelArray, rowColName);
-                vtm.addColumn(col, 0);
-                setTableSource(vtm, getTableSource());
-            }
-            jtable.setModel(getTableModel());
-        }
+  public void addRowLabels(String source)  throws IOException {
+    String rowColName = "Names";
+    TableModel tm = getTableModel();
+    if (tm != null) {
+      VirtualTableModel vtm = tm instanceof VirtualTableModel ? (VirtualTableModel)tm : null;
+      String[] labelArray = null;
+      if (source != null && source.length() > 0) {
+        Vector labels = openLabelSource(source);
+        labelArray = new String[labels.size()];
+        labelArray = (String[])labels.toArray(labelArray);
+      }
+      if (vtm != null && vtm.getColumnCount() > 0 && 
+          vtm.getColumnClass(0) == java.lang.String.class && 
+          vtm.getColumnName(0).equals(rowColName)) {
+        vtm.removeColumn(0);
+      }
+      if (labelArray != null) {
+        if (vtm == null) {
+          vtm = new VirtualTableModelProxy(tm);
+        } 
+        ArrayRefColumn col = new ArrayRefColumn(labelArray,rowColName);
+        vtm.addColumn(col,0);
+        setTableSource(vtm, getTableSource());
+      }
+      jtable.setModel(getTableModel());
     }
+  }
 
-    public void addColLabels(String source) throws IOException {
-        TableModel tm = getTableModel();
-        if (tm != null) {
-            Vector labels = null;
-            if (source != null && source.length() > 0) {
-                labels = openLabelSource(source);
-            }
-            if (tm instanceof VirtualTableModel) {
-                tm = ((VirtualTableModel) tm).getTableModel();
-            }
-            if (tm instanceof ClutoTableMatrix) {
-                ClutoTableMatrix ctm = (ClutoTableMatrix) tm;
-                for (int i = 0; i < ctm.getColumnCount(); i++) {
-                    ctm.setColumnName(i, labels != null && i < labels.size() ? (String) labels.get(i) : null);
-                }
-                jtable.setModel(new DefaultTableModel());  // Need to do this so table column header will update
-                jtable.setModel(getTableModel());
-            }
+  public void addColLabels(String source)  throws IOException {
+    TableModel tm = getTableModel();
+    if (tm != null) {
+      Vector labels = null;
+      if (source != null && source.length() > 0) {
+        labels = openLabelSource(source);
+      }
+      if (tm instanceof VirtualTableModel) {
+        tm = ((VirtualTableModel)tm).getTableModel();
+      }
+      if (tm instanceof ClutoTableMatrix) {
+        ClutoTableMatrix ctm =  (ClutoTableMatrix)tm;
+        for (int i = 0; i < ctm.getColumnCount(); i++) {
+          ctm.setColumnName(i, labels != null && i < labels.size() ? (String)labels.get(i) : null);
         }
-    }
-
-    private void openTableSource() {
-        try {
-            openTableSource(path.getText());
-        } catch (Exception ex) {
-            ExceptionHandler.popupException(""+ex);
-        }
-    }
-
-    /**
-     * Open the data source and create a TableModel.
-     *
-     * @param tableSource The URL or file path for the table data.
-     */
-    public void openTableSource(String tableSource) throws IOException {
-        ClutoFile cmf = new ClutoFile();
-        MappedClutoMatrix ctm = new MappedClutoMatrix(cmf.read(tableSource));
-        setTableSource(new VirtualTableModelProxy(ctm), tableSource);
-        addColLabels();
-        addRowLabels();
+        jtable.setModel(new DefaultTableModel());  // Need to do this so table column header will update
         jtable.setModel(getTableModel());
+      }
     }
+  }
+
+  private void openTableSource() {
+    try {
+      openTableSource(path.getText());
+    } catch (Exception ex) {
+            ExceptionHandler.popupException(""+ex);
+    }
+  }
+
+  /**
+   * Open the data source and create a TableModel.
+   * @param tableSource The URL or file path for the table data.
+   */
+  public void openTableSource(String tableSource) throws IOException {
+    ClutoFile cmf = new ClutoFile();
+    MappedClutoMatrix ctm = new MappedClutoMatrix(cmf.read(tableSource));
+    setTableSource(new VirtualTableModelProxy(ctm), tableSource);
+    addColLabels(); 
+    addRowLabels(); 
+    jtable.setModel(getTableModel());
+  }
+
 }

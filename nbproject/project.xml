@@ -95,7 +95,7 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
             <compilation-unit>
                 <package-root>src</package-root>
-                <classpath mode="compile">lib/bsh.jar:lib/classes12.jar:lib/cluto.jar:lib/colt.jar:lib/iText.jar:lib/jcluto.jar:lib/jconn2.jar:lib/js.jar:lib/postgreSQL.jar:lib/vecmath.jar:lib/mysql-connector-java-5.1.21-bin.jar</classpath>
+                <classpath mode="compile">lib/BSH/bsh.jar:lib/Colt/colt.jar:lib/iText/itextpdf-5.3.1.jar:lib/JCluto/jcluto.jar:lib/JCommon/jcommon-1.0.17.jar:lib/JFreeChart/jfreechart-1.0.14.jar:lib/junit_4/junit-4.8.2.jar:lib/junit_4/junit-4.8.2-src.jar:lib/MySQLDriver/mysql-connector-java-5.1.13-bin.jar:lib/PostgreSQLDriver/postgresql-8.3-603.jdbc3.jar:lib/Rhino/js.jar:lib/swing-app-framework/swing-worker-1.1.jar:lib/swing-app-framework/appframework-1.0.3.jar:lib/swing-layout/swing-layout-1.0.4.jar</classpath>
                 <built-to>build</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>

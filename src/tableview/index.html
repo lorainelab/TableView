@@ -1,0 +1,53 @@
+<!--
+Minnesota Supercomputing Institute, University of Minnesota
+Copyright (c) 2007-2009. The Regents of the University of Minnesota
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>TableView</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script language="Javascript">
+
+               var javawsInstalled = 0;
+               isIE = "false";
+
+               if (navigator.mimeTypes && navigator.mimeTypes.length) {
+                   x = navigator.mimeTypes['application/x-java-jnlp-file'];
+                 if (x) javawsInstalled = 1;
+               } else {
+                   isIE = "true";
+               }
+
+               function insertLink(url, name) {
+                if (javawsInstalled) {
+                     document.write("<a href=" + url + ">"  + name + "</a>");
+                  } else {
+                     document.write("Need to install Java Web Start");
+                  }
+               }
+
+
+
+  </script>
+  </head>
+  <body>
+<h1>TableView </h1>
+<p><font color="#000080"><a href="../Images/TableView.png"><font
+ color="#000080"><img src="../Images/TableViewSmall.png" name="Graphic1"
+ align="top" width="403" height="327" border="1"></font></a></font> </p>
+ <p>TableView is a Java application for data exploration and
+visualization. It provides several graphical overviews of the table of
+data. It allows the viewer to select rows of interest from the data
+table by selecting in any of the views. </p>
+
+<p>It has been developed as a portable, general purpose tool. It has
+been tested on the following platforms: Sun, SGI, Linux, MacOSX, and
+Windows. </p>
+<ul>
+    <li><a href="http://TableView.jnlp">Launch TableView webstart</a></li>
+    <li><a href="http://DBBrowser.jnlp">Launch DataBaseBrowser webstart</a></li>
+    <li><a href="http://doc/TableViewUserGuide.html">TableView User Guide</a></li>
+</ul>
+  </body>
+</html>

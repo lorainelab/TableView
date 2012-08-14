@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: DefaultTableContext.java,v $ $Revision: 1.16 $ $Date: 2004/09/16 19:09:40 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: DefaultTableContext.java,v $ $Revision: 1.15 $ $Date: 2004/09/16 13:44:48 $ $Name:  $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -47,7 +47,7 @@ import javax.swing.tree.TreeModel;
  * related to those tables.  
  * The managed objects are maintained in a TreeModel that may be viewed by JTree.
  * @author       J Johnson
- * @version $Revision: 1.16 $ $Date: 2004/09/16 19:09:40 $  $Name: TableView1_3_2 $ 
+ * @version $Revision: 1.15 $ $Date: 2004/09/16 13:44:48 $  $Name:  $ 
  * @since        1.0
  */
 public class DefaultTableContext implements TableContext {
@@ -143,8 +143,10 @@ public class DefaultTableContext implements TableContext {
     }
     public void tableChanged(TableModelEvent e) {
       if (e == null || e.getFirstRow() == TableModelEvent.HEADER_ROW) {
+System.err.println(" >>>> ColumnMaps " + e.getSource());
         destroyMaps();
         maps.setSize(tm.getColumnCount());
+System.err.println(" <<<< ColumnMaps " + e.getSource());
       }
     }
     public void setSetOperator(int setop) {
@@ -380,6 +382,11 @@ public class DefaultTableContext implements TableContext {
    * @param viewClass The viewing class.
    * @return the icon for this view.
    */
+  public Icon getViewIcon16(Class viewClass){
+      Icon icon = getViewIcon(viewClass, viewIcons16);
+      return icon;
+  }
+  
   public Icon getViewIcon(Class viewClass) {
     Icon icon = getViewIcon(viewClass, viewIcons24);
     // if (icon == null)
@@ -387,10 +394,6 @@ public class DefaultTableContext implements TableContext {
     return icon;
   }
 
-  public Icon getViewIcon16(Class viewClass){
-      Icon icon = getViewIcon(viewClass, viewIcons16);
-      return icon;
-  }
   /**
    * Get an icon for a view class.
    * @param viewClass The viewing class.
@@ -410,11 +413,10 @@ public class DefaultTableContext implements TableContext {
   public Icon getViewIcon(String viewName) {
     return getViewIcon((Class)views.get(viewName));
   }
-  
+
   public Icon getViewIcon16(String viewName) {
     return getViewIcon16((Class)views.get(viewName));
   }
-
   /**
    * Get an icon for a view.
    * @param treeNode The tree node for the view.
@@ -574,6 +576,11 @@ public class DefaultTableContext implements TableContext {
                                                  : new VirtualTableModelProxy(tm);
       tm_vtm.put(tm,vtm); 
     }
+    ColumnMaps maps = (ColumnMaps)tblMapHash.get(vtm);
+    if (maps == null) {
+      maps = new ColumnMaps(vtm);
+      tblMapHash.put(vtm,maps);
+    }
     return vtm;
   }
 
@@ -680,6 +687,20 @@ public class DefaultTableContext implements TableContext {
     return vtm;
   }
 
+    @Override
+  public TableModel getTableModel(TableModel tm, Partition partition) {
+    if (tm == null || partition == null) 
+      return null;
+    VirtualTableModelProxy vtm = new VirtualTableModelProxy(tm);
+    vtm.setIndexMap(partition.getPartitionIndexMap()); 
+    ListSelectionModel lsm1 = getRowSelectionModel(tm);
+    ListSelectionModel lsm2 = getRowSelectionModel(vtm);
+    IndexMapSelection ims = new IndexMapSelection(lsm1,lsm2,vtm.getIndexMap());
+    DefaultMutableTreeNode tn = addNode(tm, vtm);  
+    tn.setAllowsChildren(true);
+    return vtm;
+  }
+
   /**
    * Display and manage a view of the given TableModel.
    * This does a combination of getView and addView.
@@ -711,9 +732,9 @@ public class DefaultTableContext implements TableContext {
       try {
         //Class pc[] = new Class[1];
         //pc[0] = Class.forName("edu.umn.genomics.table.TableModel");
-        Constructor cons = vc.getConstructor(null);
+        Constructor cons = vc.getConstructor((Class[])null);
         Object po[] = null; // new Object[0];
-        jc = (JComponent)cons.newInstance(null);
+        jc = (JComponent)cons.newInstance((Object[])null);
         if (jc instanceof TableModelView) {
           ((TableModelView)jc).setTableContext(this);
           ((TableModelView)jc).setSelectionModel(getRowSelectionModel(vtm));
@@ -889,8 +910,7 @@ public class DefaultTableContext implements TableContext {
               try {
                 SaveImage.saveImage(comp instanceof TableModelView ? ((TableModelView)comp).getCanvas() : comp);
               } catch (IOException ioex) {
-                JOptionPane.showMessageDialog(comp, ioex.toString(), "Save Image",
-                  JOptionPane.ERROR_MESSAGE);
+                ExceptionHandler.popupException(""+ioex);
               }
             }
           }
@@ -920,8 +940,7 @@ public class DefaultTableContext implements TableContext {
                  Class.forName("edu.umn.genomics.component.SavePDF").
                     getMethod("savePDF",paramClass).invoke(null,args);
                 } catch (Exception ex) {
-                  JOptionPane.showMessageDialog(comp, comp.getClass() + "\n" + ex.toString(), "Save PDF",
-                    JOptionPane.ERROR_MESSAGE);
+                  ExceptionHandler.popupException(""+ex);
                 }
               }
             }

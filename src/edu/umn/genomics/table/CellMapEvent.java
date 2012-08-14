@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: CellMapEvent.java,v $ $Revision: 1.2 $ $Date: 2002/07/30 19:45:00 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: CellMapEvent.java,v $ $Revision: 1.2 $ $Date: 2002/07/30 19:45:00 $ $Name: TableView1_3 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,62 +21,54 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
+import java.io.Serializable;
 import java.util.EventObject;
 
 /**
  * An event indicating the change in state of a CellMap.
- *
- * @author J Johnson
- * @version $Revision: 1.2 $ $Date: 2002/07/30 19:45:00 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see edu.umn.genomics.table.CellMap
- * @see edu.umn.genomics.table.CellMapListener
+ * @author       J Johnson
+ * @version $Revision: 1.2 $ $Date: 2002/07/30 19:45:00 $  $Name: TableView1_3 $ 
+ * @since        1.0
+ * @see  edu.umn.genomics.table.CellMap
+ * @see  edu.umn.genomics.table.CellMapListener
  */
 public class CellMapEvent extends EventObject {
-
-    int mapState = CellMap.MAPPED;
-
-    /**
-     * Create a CellMapEvent for the given CellMap, setting the state to the
-     * current value of the CellMap.
-     *
-     * @param source The CellMap for this event.
-     */
-    public CellMapEvent(CellMap source) {
-        super(source);
-        this.mapState = source.getState();
-    }
-
-    /**
-     * Create a CellMapEvent for the given CellMap, setting the state to the
-     * given value.
-     *
-     * @param source The CellMap for this event.
-     * @param mapState The state for the CellMap.
-     */
-    public CellMapEvent(CellMap source, int mapState) {
-        super(source);
-        this.mapState = mapState;
-    }
-
-    /**
-     * Return whether mapping is in progress.
-     *
-     * @return whether mapping is in progress.
-     */
-    public boolean mappingInProgress() {
-        return mapState == CellMap.MAPPING;
-    }
-
-    /**
-     * Return the map state.
-     *
-     * @return the map state.
-     */
-    public int getMapState() {
-        return mapState;
-    }
+  int mapState = CellMap.MAPPED;
+  /**
+   * Create a CellMapEvent for the given CellMap, setting the state 
+   * to the current value of the CellMap.
+   * @param source The CellMap for this event.
+   */
+  public CellMapEvent(CellMap source) {
+    super(source);
+    this.mapState = source.getState();
+  }
+  /**
+   * Create a CellMapEvent for the given CellMap, setting the state 
+   * to the given value.
+   * @param source The CellMap for this event.
+   * @param mapState The state for the CellMap.
+   */
+  public CellMapEvent(CellMap source, int mapState) {
+    super(source);
+    this.mapState = mapState;
+  }
+  /**
+   * Return whether mapping is in progress.
+   * @return whether mapping is in progress.
+   */
+  public boolean mappingInProgress() {
+    return mapState == CellMap.MAPPING;
+  }
+  /**
+   * Return the map state.
+   * @return the map state.
+   */
+  public int getMapState() {
+    return mapState;
+  }
 }

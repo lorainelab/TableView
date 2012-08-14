@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: AbstractDataModel.java,v $ $Revision: 1.1 $ $Date: 2004/08/02 20:23:35 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: DataModel.java,v $ $Revision: 1.3 $ $Date: 2002/07/30 19:44:49 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,79 +21,72 @@
  * GNU General Public License for more details.
  * 
  */
-package edu.umn.genomics.graph;
 
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.EventListenerList;
+
+package edu.umn.genomics.graph;
+import javax.swing.event.*;
 
 /**
- * Return arrays of the x pixel location and the y pixel location for the data
- * values given the axes transformations.
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2004/08/02 20:23:35 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * Return arrays of the x pixel location and the y pixel location for 
+ * the data values given the axes transformations.
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.3 $ $Date: 2002/07/30 19:44:49 $  $Name: TableView1_2 $ 
+ * @since        1.0
  */
 public abstract class AbstractDataModel implements MutableDataModel {
+  protected EventListenerList listenerList = new EventListenerList();
+  /**
+   * Return arrays of the x pixel location and the y pixel location.
+   * @param x the x pixel offset
+   * @param y the y pixel offset
+   * @param axes the axes that transform the datapoints to the pixel area
+   * @param points the array of points: xpoints, ypoints
+   * @return the array of points: xpoints, ypoints
+   */
+  public abstract int[][] getPoints(int x, int y, Axis axes[], int points[][]);
 
-    protected EventListenerList listenerList = new EventListenerList();
+  /**
+   * Return any y values at the given x index.
+   * @param xi the x index into the array.
+   * @return the y values at the given x index.
+   */
+  public abstract double[] getYValues(int xi);
 
-    /**
-     * Return arrays of the x pixel location and the y pixel location.
-     *
-     * @param x the x pixel offset
-     * @param y the y pixel offset
-     * @param axes the axes that transform the datapoints to the pixel area
-     * @param points the array of points: xpoints, ypoints
-     * @return the array of points: xpoints, ypoints
-     */
-    public abstract int[][] getPoints(int x, int y, Axis axes[], int points[][]);
+  /**
+   * Add a Listener to be notified of changes.
+   * @param l the listener to be added.
+   */
+  public void addChangeListener(ChangeListener l) {
+    listenerList.add(ChangeListener.class, l);
+  }
 
-    /**
-     * Return any y values at the given x index.
-     *
-     * @param xi the x index into the array.
-     * @return the y values at the given x index.
-     */
-    public abstract double[] getYValues(int xi);
+  /**
+   * Remove the listener from the notification list.
+   * @param l the listener to be removed.
+   */
+  public void removeChangeListener(ChangeListener l) {
+    listenerList.remove(ChangeListener.class, l);
+  }
 
-    /**
-     * Add a Listener to be notified of changes.
-     *
-     * @param l the listener to be added.
-     */
-    public void addChangeListener(ChangeListener l) {
-        listenerList.add(ChangeListener.class, l);
+  /**
+   * Notify Listeners of change.
+   */
+  protected void fireChangeEvent() {
+    // Guaranteed to return a non-null array
+    Object[] listeners = listenerList.getListenerList();
+    // Process the listeners last to first, notifying
+    // those that are interested in this event
+    ChangeEvent changeEvent = null;
+    for (int i = listeners.length-2; i>=0; i-=2) {
+      if (listeners[i]==ChangeListener.class) {
+        // Lazily create the event:
+        if (changeEvent == null)
+          changeEvent = new ChangeEvent(this);
+        ((ChangeListener)listeners[i+1]).stateChanged(changeEvent);
+      }
     }
+  }
 
-    /**
-     * Remove the listener from the notification list.
-     *
-     * @param l the listener to be removed.
-     */
-    public void removeChangeListener(ChangeListener l) {
-        listenerList.remove(ChangeListener.class, l);
-    }
 
-    /**
-     * Notify Listeners of change.
-     */
-    protected void fireChangeEvent() {
-        // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
-        ChangeEvent changeEvent = null;
-        for (int i = listeners.length - 2; i >= 0; i -= 2) {
-            if (listeners[i] == ChangeListener.class) {
-                // Lazily create the event:
-                if (changeEvent == null) {
-                    changeEvent = new ChangeEvent(this);
-                }
-                ((ChangeListener) listeners[i + 1]).stateChanged(changeEvent);
-            }
-        }
-    }
 }

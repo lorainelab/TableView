@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: ScriptBsh.java,v $ $Revision: 1.2 $ $Date: 2004/08/02 20:23:46 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: ScriptBsh.java,v $ $Revision: 1.2 $ $Date: 2004/08/02 20:23:46 $ $Name: TableView1_3 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,84 +21,83 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
+import java.io.*;
+import java.util.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
 import bsh.Interpreter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.util.Iterator;
-import java.util.Map;
-import javax.swing.table.TableModel;
 
+  
 /**
  * ScriptBsh provides JavaScript formulas from tables.
- *
- * @author J Johnson
- * @version $Revision: 1.2 $ $Date: 2004/08/02 20:23:46 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see javax.swing.table.TableModel
- * @see javax.swing.ListSelectionModel
- * @see Cells
+ * @author       J Johnson
+ * @version $Revision: 1.2 $ $Date: 2004/08/02 20:23:46 $  $Name: TableView1_3 $ 
+ * @since        1.0
+ * @see  javax.swing.table.TableModel 
+ * @see  javax.swing.ListSelectionModel
+ * @see  Cells
  */
 public class ScriptBsh implements ScriptInterpreter {
+  InputStream in;
+  PrintStream out;
+  PrintStream err;
+  Map vars;
+  Interpreter interp;
 
-    InputStream in;
-    PrintStream out;
-    PrintStream err;
-    Map vars;
-    Interpreter interp;
+  public ScriptBsh(InputStream in, PrintStream out, PrintStream err, Map vars) {
+    initialize(in, out, err, vars);
+  }
 
-    public ScriptBsh(InputStream in, PrintStream out, PrintStream err, Map vars) {
-        initialize(in, out, err, vars);
-    }
+  /**
+   * Set the streams for input to and output from the script interpretter,
+   * and initialize global variables.
+   * @param in The input stream for the script interpretter.
+   * @param out The output stream from the script interpretter.
+   * @param err The error stream for the script interpretter.
+   * @param vars A map of global variable names to the Objects they represent.
+   */
+  public void initialize(InputStream in, PrintStream out, PrintStream err, Map vars) {
+    this.in = in;
+    this.out = out;
+    this.err = err;
+    this.vars = vars;
+  }
 
-    /**
-     * Set the streams for input to and output from the script interpretter, and
-     * initialize global variables.
-     *
-     * @param in The input stream for the script interpretter.
-     * @param out The output stream from the script interpretter.
-     * @param err The error stream for the script interpretter.
-     * @param vars A map of global variable names to the Objects they represent.
-     */
-    public void initialize(InputStream in, PrintStream out, PrintStream err, Map vars) {
-        this.in = in;
-        this.out = out;
-        this.err = err;
-        this.vars = vars;
-    }
+  public ScriptBsh() {
+    this(System.in, System.out, System.err, null); 
+  } 
 
-    public ScriptBsh() {
-        this(System.in, System.out, System.err, null);
-    }
-
-    public void run() {
-        interp = new Interpreter(new InputStreamReader(in), out, err, true);
-        interp.setExitOnEOF(false);
-        for (int i = 0; i < ScriptInterpreter.packageList.size(); i++) {
-            try {
-                interp.eval("import " + ScriptInterpreter.packageList.get(i) + ".*;");
-            } catch (Exception ex) {
+  public void run() {
+    interp = new Interpreter(new InputStreamReader(in), out, err, true);
+    interp.setExitOnEOF(false);
+    for (int i = 0; i < ScriptInterpreter.packageList.size(); i++) {
+      try {
+        interp.eval("import " + ScriptInterpreter.packageList.get(i) + ".*;");
+      } catch (Exception ex) {
                 ExceptionHandler.popupException(""+ex);
-            }
-        }
-        if (vars != null) {
-            for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
-                String key = (String) i.next();
-                try {
-                    interp.set(key, vars.get(key));
-                } catch (Exception ex) {
+      }
+    }
+    if (vars != null) {
+      for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
+        String key = (String)i.next();
+        try {
+          interp.set(key,vars.get(key));
+        } catch (Exception ex) {
                     ExceptionHandler.popupException(""+ex);
-                }
-            }
         }
-        interp.run();
+      }
     }
+    interp.run();
+  }
 
-    public static void main(String[] args) {
-        ScriptBsh bsh = new ScriptBsh();
-        new Thread(bsh).start();
-    }
+  public static void main( String[] args) {
+    ScriptBsh bsh = new ScriptBsh();
+    new Thread(bsh).start();
+  }
+
 }
+

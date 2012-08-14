@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: PartitionSource.java,v $ $Revision: 1.1 $ $Date: 2004/08/02 20:23:44 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: PartitionSource.java,v $ $Revision: 1.1 $ $Date: 2004/08/02 20:23:44 $ $Name: TableView1_3 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,23 +21,21 @@
  * GNU General Public License for more details.
  * 
  */
-package edu.umn.genomics.table;
 
+
+package edu.umn.genomics.table;
 import java.util.List;
 
 /**
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2004/08/02 20:23:44 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ *  
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2004/08/02 20:23:44 $  $Name: TableView1_3 $ 
+ * @since        1.0
  */
 public interface PartitionSource {
-
-    /**
-     * Return a list of Partitions
-     *
-     * @return a list of Partitions
-     */
-    public List getPartitions();
+  /** 
+   * Return a list of Partitions
+   * @return a list of Partitions
+   */
+  public List getPartitions();
 }

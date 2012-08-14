@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: DataModel.java,v $ $Revision: 1.3 $ $Date: 2002/07/30 19:44:49 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: DataModel.java,v $ $Revision: 1.3 $ $Date: 2002/07/30 19:44:49 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,44 +21,41 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.graph;
 
 /**
- * Return arrays of the x pixel location and the y pixel location for the data
- * values given the axes transformations.
- *
- * @author J Johnson
- * @version $Revision: 1.3 $ $Date: 2002/07/30 19:44:49 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * Return arrays of the x pixel location and the y pixel location for 
+ * the data values given the axes transformations.
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.3 $ $Date: 2002/07/30 19:44:49 $  $Name: TableView1_2 $ 
+ * @since        1.0
  */
 public interface DataModel {
+  /**
+   * Return arrays of the x pixel location and the y pixel location.
+   * @param x the x pixel offset
+   * @param y the y pixel offset
+   * @param axes the axes that transform the datapoints to the pixel area
+   * @param points the array of points: xpoints, ypoints
+   * @return the array of points: xpoints, ypoints
+   */
+  public int[][] getPoints(int x, int y, Axis axes[], int points[][]);
+  /**
+   * Return any y values at the given x index.
+   * @param xi the x index into the array.
+   * @return the y values at the given x index.
+   */
+  public double[] getYValues(int xi);
 
-    /**
-     * Return arrays of the x pixel location and the y pixel location.
-     *
-     * @param x the x pixel offset
-     * @param y the y pixel offset
-     * @param axes the axes that transform the datapoints to the pixel area
-     * @param points the array of points: xpoints, ypoints
-     * @return the array of points: xpoints, ypoints
-     */
-    public int[][] getPoints(int x, int y, Axis axes[], int points[][]);
+  /* // Some possible methods for future consideration:
+  public int[][] getDistributionPolyline(int x, int y, Axis axes[], 
+    double distribution[], int points[][]);
+  public int[][] getMedianPolyline(int x, int y, Axis axes[], int points[][]);
+  public int[][] getSampledPolyline(int x, int y, Axis axes[], int points[][]);
+  public int[][] getMeanPolyline(int x, int y, Axis axes[], int points[][]);
+  */
 
-    /**
-     * Return any y values at the given x index.
-     *
-     * @param xi the x index into the array.
-     * @return the y values at the given x index.
-     */
-    public double[] getYValues(int xi);
-
-    /*
-     * // Some possible methods for future consideration: public int[][]
-     * getDistributionPolyline(int x, int y, Axis axes[], double distribution[],
-     * int points[][]); public int[][] getMedianPolyline(int x, int y, Axis
-     * axes[], int points[][]); public int[][] getSampledPolyline(int x, int y,
-     * Axis axes[], int points[][]); public int[][] getMeanPolyline(int x, int
-     * y, Axis axes[], int points[][]);
-     */
 }

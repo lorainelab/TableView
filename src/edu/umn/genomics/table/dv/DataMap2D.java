@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: DataMap2D.java,v $ $Revision: 1.6 $ $Date: 2002/07/30 19:45:16 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: DataMap2D.java,v $ $Revision: 1.6 $ $Date: 2002/07/30 19:45:16 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,70 +21,58 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table.dv;  //DataViewer
 
 import java.io.Serializable;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.TableModel;
+import javax.swing.event.*;
+import javax.swing.table.*;
 
 /**
- * @author J Johnson
- * @version $Revision: 1.6 $ $Date: 2002/07/30 19:45:16 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.6 $ $Date: 2002/07/30 19:45:16 $  $Name: TableView1_2 $
+ * @since        1.0
  */
 public class DataMap2D extends DataMap implements Serializable {
-
-    float dpts[] = null;
-    int dptIncr = 3;
-
-    DataMap2D(String name, TableModel tableModel) {
-        super(name, tableModel);
+  float dpts[] = null;
+  int dptIncr = 3;
+  DataMap2D(String name, TableModel tableModel) {
+    super(name, tableModel);
+  }
+  public float[] getPoints() {
+    if (dpts == null) {
+      int nrow = tableModel.getRowCount();
+      dpts = new float[nrow * dptIncr];
+      getPointTranslation(0, nrow, dpts, 0, dptIncr); 
     }
+    return dpts;
+  }
+  /**
+   * Called when the column to axis mapping has been changed.
+   */
+  protected void reMapAxes() {
+    dpts = null;
+  }
 
-    public float[] getPoints() {
-        if (dpts == null) {
-            int nrow = tableModel.getRowCount();
-            dpts = new float[nrow * dptIncr];
-            getPointTranslation(0, nrow, dpts, 0, dptIncr);
-        }
-        return dpts;
-    }
-
-    /**
-     * Called when the column to axis mapping has been changed.
-     */
-    protected void reMapAxes() {
-        dpts = null;
-    }
-
-    public void tableChanged(TableModelEvent e) {
-    }
-
-    public void setPositionSource(String column[]) {
-    }
-
-    public void setPositionSource(int column[]) {
-    }
-
-    public void setColorSource(int column) {
-    }
-
-    public void setTransparencySource(int column) {
-    }
-
-    public void setScaleSource(int column) {
-    }
-
-    public void setScaleSource(int column[]) {
-    }
-
-    public void setColorMap() {
-    }
-
-    public void points() {
-    }
-
-    public void glyph() {
-    }
+  public void tableChanged(TableModelEvent e) {
+  }
+  public void setPositionSource(String column[]) {
+  }
+  public void setPositionSource(int column[]) {
+  }
+  public void setColorSource(int column) {
+  }
+  public void setTransparencySource(int column) {
+  }
+  public void setScaleSource(int column) {
+  }
+  public void setScaleSource(int column[]) {
+  }
+  public void setColorMap() {
+  }
+  public void points() {
+  }
+  public void glyph() {
+  }
 }

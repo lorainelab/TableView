@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: NumberField.java,v $ $Revision: 1.4 $ $Date: 2002/07/30 19:45:20 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: NumberField.java,v $ $Revision: 1.4 $ $Date: 2002/07/30 19:45:20 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,28 +21,28 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table.dv;  //DataViewer
 
-import edu.umn.genomics.table.ExceptionHandler;
-import java.awt.Toolkit;
 import java.io.Serializable;
+import javax.swing.*; 
+import javax.swing.text.*; 
+
+import java.awt.Toolkit;
 import java.text.NumberFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Locale;
-import javax.swing.JTextField;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.PlainDocument;
+import edu.umn.genomics.table.ExceptionHandler;
 
 /**
- * @author J Johnson
- * @version $Revision: 1.4 $ $Date: 2002/07/30 19:45:20 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.4 $ $Date: 2002/07/30 19:45:20 $  $Name: TableView1_2 $
+ * @since        1.0
  */
 public class NumberField extends JTextField implements Serializable {
-
+  
     private Toolkit toolkit;
     private NumberFormat numberFormatter;
 
@@ -76,19 +76,18 @@ public class NumberField extends JTextField implements Serializable {
     }
 
     protected class DecimalDocument extends PlainDocument {
-
         static final String dchars = "-.Ee+";
 
-        public void insertString(int offs, String str, AttributeSet a)
-                throws BadLocationException {
+        public void insertString(int offs, String str, AttributeSet a) 
+            throws BadLocationException {
 
             char[] source = str.toCharArray();
             char[] result = new char[source.length];
             int j = 0;
 
             for (int i = 0; i < result.length; i++) {
-                if (Character.isDigit(source[i])
-                        || dchars.indexOf(source[i]) >= 0) {
+                if (Character.isDigit(source[i]) || 
+                    dchars.indexOf(source[i]) >=0) { 
                     result[j++] = source[i];
                 } else {
                     toolkit.beep();
@@ -98,4 +97,5 @@ public class NumberField extends JTextField implements Serializable {
             super.insertString(offs, new String(result, 0, j), a);
         }
     }
+
 }

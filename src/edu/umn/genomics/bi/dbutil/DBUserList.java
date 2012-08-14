@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: DBUserList.java,v $ $Revision: 1.4 $ $Date: 2003/05/28 17:44:51 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: DBUserList.java,v $ $Revision: 1.4 $ $Date: 2003/05/28 17:44:51 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -28,310 +28,314 @@ import java.util.Vector;
 import javax.swing.DefaultListModel;
 
 /**
- * Provides a list of DBConnectParams that can be shared among a number
- * components in order that all componets can display a consistent list of
- * accounts. If java.util.prefs.Preferences are available, this list will
- * reflect the user's stored preferences.
- *
- * @author J Johnson
- * @version $Revision: 1.4 $ $Date: 2003/05/28 17:44:51 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * Provides a list of DBConnectParams that can be shared among a number 
+ * components in order that all componets can display a consistent list 
+ * of accounts.  If java.util.prefs.Preferences are available, this list 
+ *  will reflect the user's stored preferences.
+ * @author       J Johnson
+ * @version $Revision: 1.4 $ $Date: 2003/05/28 17:44:51 $  $Name: TableView1_2 $
+ * @since        1.0
  */
 public class DBUserList extends DefaultListModel {
-
-    static DBUserList sharedList = null;
-
-    /**
-     * Create a list model of Database user account connection parameters,
-     * reading the user's preferences if possible.
-     */
-    public DBUserList() {
-        super();
-        if (System.getProperty("java.specification.version").compareTo("1.4") >= 0) {
-            try {
-                DBConnectParams[] dbs = DBPreferences.getDBAccounts();
-                for (int i = 0; i < dbs.length; i++) {
-                    addElement(dbs[i]);
-                }
-            } catch (Throwable t) {
-                ExceptionHandler.popupException(""+t);
-            }
+  static DBUserList sharedList = null;
+  /**
+   * Create a list model of Database user account connection parameters, reading 
+   * the user's preferences if possible.
+   */
+  public DBUserList() {
+    super();
+    if (System.getProperty("java.specification.version").compareTo("1.4")>=0) {
+      try {
+        DBConnectParams[] dbs = DBPreferences.getDBAccounts();
+        for (int i = 0; i < dbs.length; i++) {
+          addElement(dbs[i]);
         }
+      } catch (Throwable t) {
+                ExceptionHandler.popupException(""+t);
+      }
     }
+  }
 
     /**
-     * Sets the component at the specified
-     * <code>index</code> of this list to be the specified object. The previous
-     * component at that position is discarded. <p> Throws an
-     * <code>ArrayIndexOutOfBoundsException</code> if the index is invalid.
-     * <blockquote> <b>Note:</b> Although this method is not deprecated, the
-     * preferred method to use is
-     * <code>set(int,Object)</code>, which implements the
-     * <code>List</code> interface defined in the 1.2 Collections framework.
+     * Sets the component at the specified <code>index</code> of this
+     * list to be the specified object. The previous component at that
+     * position is discarded.
+     * <p>
+     * Throws an <code>ArrayIndexOutOfBoundsException</code> if the index
+     * is invalid.
+     * <blockquote>
+     * <b>Note:</b> Although this method is not deprecated, the preferred
+     *    method to use is <code>set(int,Object)</code>, which implements the
+     *    <code>List</code> interface defined in the 1.2 Collections framework.
      * </blockquote>
      *
-     * @param obj what the component is to be set to
-     * @param index the specified index
+     * @param      obj     what the component is to be set to
+     * @param      index   the specified index
      * @see #set(int,Object)
      * @see Vector#setElementAt(Object,int)
      */
-    public void setElementAt(Object obj, int index) {
-        if (obj instanceof DBConnectParams) {
-            try {
+  public void setElementAt(Object obj, int index) {
+    if (obj instanceof DBConnectParams) {
+      try {
                 DBPreferences.deleteDBAccount((DBConnectParams) getElementAt(index));
                 DBPreferences.saveDBAccount((DBConnectParams) obj);
-            } catch (Throwable t) {
+      } catch (Throwable t) {
                 ExceptionHandler.popupException(""+t);
-            }
-            super.setElementAt(obj, index);
-        }
+      }
+      super.setElementAt(obj, index);
     }
+  }
 
     /**
-     * Inserts the specified object as a component in this list at the specified
-     * <code>index</code>. <p> Throws an
-     * <code>ArrayIndexOutOfBoundsException</code> if the index is invalid.
-     * <blockquote> <b>Note:</b> Although this method is not deprecated, the
-     * preferred method to use is
-     * <code>add(int,Object)</code>, which implements the
-     * <code>List</code> interface defined in the 1.2 Collections framework.
+     * Inserts the specified object as a component in this list at the
+     * specified <code>index</code>.
+     * <p>
+     * Throws an <code>ArrayIndexOutOfBoundsException</code> if the index
+     * is invalid.
+     * <blockquote>
+     * <b>Note:</b> Although this method is not deprecated, the preferred
+     *    method to use is <code>add(int,Object)</code>, which implements the
+     *    <code>List</code> interface defined in the 1.2 Collections framework.
      * </blockquote>
      *
-     * @param obj the component to insert
-     * @param index where to insert the new component
-     * @exception ArrayIndexOutOfBoundsException if the index was invalid
+     * @param      obj     the component to insert
+     * @param      index   where to insert the new component
+     * @exception  ArrayIndexOutOfBoundsException  if the index was invalid
      * @see #add(int,Object)
      * @see Vector#insertElementAt(Object,int)
      */
-    public void insertElementAt(Object obj, int index) {
-        if (obj instanceof DBConnectParams) {
-            try {
-                DBPreferences.saveDBAccount((DBConnectParams) obj);
-            } catch (Throwable t) {
+  public void insertElementAt(Object obj, int index) {
+    if (obj instanceof DBConnectParams) {
+      try {
+        DBPreferences.saveDBAccount((DBConnectParams)obj);
+      } catch (Throwable t) {
                 ExceptionHandler.popupException(""+t);
-            }
-            super.insertElementAt(obj, index);
-        }
+      }
+      super.insertElementAt(obj, index);
     }
+  }
 
     /**
      * Adds the specified component to the end of this list.
      *
-     * @param obj the component to be added
+     * @param   obj   the component to be added
      * @see Vector#addElement(Object)
      */
-    public void addElement(Object obj) {
-        if (obj instanceof DBConnectParams) {
-            try {
-                DBPreferences.saveDBAccount((DBConnectParams) obj);
-            } catch (Throwable t) {
+  public void addElement(Object obj) {
+    if (obj instanceof DBConnectParams) {
+      try {
+        DBPreferences.saveDBAccount((DBConnectParams)obj);
+      } catch (Throwable t) {
                 ExceptionHandler.popupException(""+t);
-            }
-            super.addElement(obj);
-        }
+      }
+      super.addElement(obj);
     }
+  }
 
     /**
      * Replaces the element at the specified position in this list with the
-     * specified element. <p> Throws an
-     * <code>ArrayIndexOutOfBoundsException</code> if the index is out of range
-     * (
-     * <code>index &lt; 0 || index &gt;= size()</code>).
+     * specified element.
+     * <p>
+     * Throws an <code>ArrayIndexOutOfBoundsException</code>
+     * if the index is out of range
+     * (<code>index &lt; 0 || index &gt;= size()</code>).
      *
      * @param index index of element to replace
      * @param element element to be stored at the specified position
      * @return the element previously at the specified position
      */
-    public Object set(int index, Object element) {
-        if (element instanceof DBConnectParams) {
-            try {
-                DBPreferences.deleteDBAccount((DBConnectParams) getElementAt(index));
-                DBPreferences.saveDBAccount((DBConnectParams) element);
-            } catch (Throwable t) {
+  public Object set(int index, Object element) {
+    if (element instanceof DBConnectParams) {
+      try {
+        DBPreferences.deleteDBAccount((DBConnectParams)getElementAt(index));
+        DBPreferences.saveDBAccount((DBConnectParams)element);
+      } catch (Throwable t) {
                 ExceptionHandler.popupException(""+t);
-            }
-            return super.set(index, element);
-        }
-        return null;
+      }
+      return super.set(index, element);
     }
+    return null;
+  }
 
     /**
-     * Inserts the specified element at the specified position in this list. <p>
-     * Throws an
-     * <code>ArrayIndexOutOfBoundsException</code> if the index is out of range
-     * (
-     * <code>index &lt; 0 || index &gt; size()</code>).
+     * Inserts the specified element at the specified position in this list.
+     * <p>
+     * Throws an <code>ArrayIndexOutOfBoundsException</code> if the
+     * index is out of range
+     * (<code>index &lt; 0 || index &gt; size()</code>).
      *
      * @param index index at which the specified element is to be inserted
      * @param element element to be inserted
      */
-    public void add(int index, Object element) {
-        if (element instanceof DBConnectParams) {
-            try {
-                DBPreferences.saveDBAccount((DBConnectParams) element);
-            } catch (Throwable t) {
+  public void add(int index, Object element) {
+    if (element instanceof DBConnectParams) {
+      try {
+        DBPreferences.saveDBAccount((DBConnectParams)element);
+      } catch (Throwable t) {
                 ExceptionHandler.popupException(""+t);
-            }
-            super.add(index, element);
-        }
+      }
+      super.add(index, element);
     }
+  }
 
     /**
-     * Deletes the component at the specified index. <p> Throws an
-     * <code>ArrayIndexOutOfBoundsException</code> if the index is invalid.
-     * <blockquote> <b>Note:</b> Although this method is not deprecated, the
-     * preferred method to use is
-     * <code>remove(int)</code>, which implements the
-     * <code>List</code> interface defined in the 1.2 Collections framework.
+     * Deletes the component at the specified index.
+     * <p>
+     * Throws an <code>ArrayIndexOutOfBoundsException</code> if the index
+     * is invalid.
+     * <blockquote>
+     * <b>Note:</b> Although this method is not deprecated, the preferred
+     *    method to use is <code>remove(int)</code>, which implements the
+     *    <code>List</code> interface defined in the 1.2 Collections framework.
      * </blockquote>
      *
-     * @param index the index of the object to remove
+     * @param      index   the index of the object to remove
      * @see #remove(int)
      * @see Vector#removeElementAt(int)
      */
-    public void removeElementAt(int index) {
-        try {
-            DBPreferences.deleteDBAccount((DBConnectParams) getElementAt(index));
-        } catch (Throwable t) {
+  public void removeElementAt(int index) {
+    try {
+      DBPreferences.deleteDBAccount((DBConnectParams)getElementAt(index));
+    } catch (Throwable t) {
             ExceptionHandler.popupException(""+t);
-        }
-        super.removeElementAt(index);
     }
+    super.removeElementAt(index);
+  }
 
     /**
-     * Removes the first (lowest-indexed) occurrence of the argument from this
-     * list.
+     * Removes the first (lowest-indexed) occurrence of the argument
+     * from this list.
      *
-     * @param obj the component to be removed
-     * @return
-     * <code>true</code> if the argument was a component of this list;
-     * <code>false</code> otherwise
+     * @param   obj   the component to be removed
+     * @return  <code>true</code> if the argument was a component of this
+     *          list; <code>false</code> otherwise
      * @see Vector#removeElement(Object)
      */
-    public boolean removeElement(Object obj) {
-        if (obj instanceof DBConnectParams) {
-            try {
-                DBPreferences.deleteDBAccount((DBConnectParams) obj);
-            } catch (Throwable t) {
+  public boolean removeElement(Object obj) {
+    if (obj instanceof DBConnectParams) {
+      try {
+        DBPreferences.deleteDBAccount((DBConnectParams)obj);
+      } catch (Throwable t) {
                 ExceptionHandler.popupException(""+t);
-            }
-            return super.removeElement(obj);
-        }
-        return false;
+      }
+      return super.removeElement(obj);
     }
+    return false;
+  }
 
     /**
      * Removes all components from this list and sets its size to zero.
-     * <blockquote> <b>Note:</b> Although this method is not deprecated, the
-     * preferred method to use is
-     * <code>clear</code>, which implements the
-     * <code>List</code> interface defined in the 1.2 Collections framework.
+     * <blockquote>
+     * <b>Note:</b> Although this method is not deprecated, the preferred
+     *    method to use is <code>clear</code>, which implements the
+     *    <code>List</code> interface defined in the 1.2 Collections framework.
      * </blockquote>
      *
      * @see #clear()
      * @see Vector#removeAllElements()
      */
-    public void removeAllElements() {
-        for (int i = 0; i < getSize(); i++) {
-            try {
-                DBPreferences.deleteDBAccount((DBConnectParams) getElementAt(i));
-            } catch (Throwable t) {
+  public void removeAllElements() {
+    for (int i = 0; i < getSize(); i++) {
+      try {
+        DBPreferences.deleteDBAccount((DBConnectParams)getElementAt(i));
+      } catch (Throwable t) {
                 ExceptionHandler.popupException(""+t);
-            }
-        }
-        super.removeAllElements();
+      }
     }
+    super.removeAllElements();
+  }
 
     /**
-     * Removes the element at the specified position in this list. Returns the
-     * element that was removed from the list. <p> Throws an
-     * <code>ArrayIndexOutOfBoundsException</code> if the index is out of range
-     * (
-     * <code>index &lt; 0 || index &gt;= size()</code>).
+     * Removes the element at the specified position in this list.
+     * Returns the element that was removed from the list.
+     * <p>
+     * Throws an <code>ArrayIndexOutOfBoundsException</code>
+     * if the index is out of range
+     * (<code>index &lt; 0 || index &gt;= size()</code>).
      *
      * @param index the index of the element to removed
      */
-    public Object remove(int index) {
-        try {
-            DBPreferences.deleteDBAccount((DBConnectParams) getElementAt(index));
-        } catch (Throwable t) {
+  public Object remove(int index) {
+    try {
+      DBPreferences.deleteDBAccount((DBConnectParams)getElementAt(index));
+    } catch (Throwable t) {
             ExceptionHandler.popupException(""+t);
-        }
-        return super.remove(index);
     }
+    return super.remove(index);
+  }
 
     /**
-     * Deletes the components at the specified range of indexes. The removal is
-     * inclusive, so specifying a range of (1,5) removes the component at index
-     * 1 and the component at index 5, as well as all components in between. <p>
-     * Throws an
-     * <code>ArrayIndexOutOfBoundsException</code> if the index was invalid.
-     * Throws an
-     * <code>IllegalArgumentException</code> if
+     * Deletes the components at the specified range of indexes.
+     * The removal is inclusive, so specifying a range of (1,5)
+     * removes the component at index 1 and the component at index 5,
+     * as well as all components in between.
+     * <p>
+     * Throws an <code>ArrayIndexOutOfBoundsException</code>
+     * if the index was invalid.
+     * Throws an <code>IllegalArgumentException</code> if
      * <code>fromIndex &gt; toIndex</code>.
      *
-     * @param fromIndex the index of the lower end of the range
-     * @param toIndex the index of the upper end of the range
-     * @see #remove(int)
+     * @param      fromIndex the index of the lower end of the range
+     * @param      toIndex   the index of the upper end of the range
+     * @see        #remove(int)
      */
-    public void removeRange(int fromIndex, int toIndex) {
-        int fi = fromIndex < toIndex ? fromIndex : toIndex;
-        int ti = fromIndex < toIndex ? toIndex : fromIndex;
-        for (int i = fi; i <= ti; i++) {
-            try {
-                DBPreferences.deleteDBAccount((DBConnectParams) getElementAt(i));
-            } catch (Throwable t) {
+  public void removeRange(int fromIndex, int toIndex) {
+    int fi = fromIndex < toIndex ? fromIndex : toIndex;
+    int ti = fromIndex < toIndex ? toIndex : fromIndex;
+    for (int i = fi; i <= ti; i++) {
+      try {
+        DBPreferences.deleteDBAccount((DBConnectParams)getElementAt(i));
+      } catch (Throwable t) {
                 ExceptionHandler.popupException(""+t);
-            }
-        }
-        super.removeRange(fromIndex, toIndex);
+      }
     }
+    super.removeRange(fromIndex,toIndex);
+  }
 
-    /**
-     * Import Data Base account connection parameters from the the given source.
+  /**
+   * Import Data Base account connection parameters from the the given source.
      *
-     * @param source a URL or file pathname to a preference file.
-     */
-    public void importDBUsers(String source) throws Exception {
-        if (System.getProperty("java.specification.version").compareTo("1.4") >= 0) {
-            try {
-                DBPreferences.importPreferences(source);
-                DBConnectParams[] dbs = DBPreferences.getDBAccounts();
-                for (int i = 0; i < dbs.length; i++) {
-                    if (!contains(dbs[i])) {
-                        addElement(dbs[i]);
-                    }
-                }
-            } catch (Throwable t) {
+   * @param source a URL or file pathname to a preference file.
+   */
+  public void importDBUsers(String source) throws Exception {
+    if (System.getProperty("java.specification.version").compareTo("1.4")>=0) {
+      try {
+        DBPreferences.importPreferences(source);
+        DBConnectParams[] dbs = DBPreferences.getDBAccounts();
+        for (int i = 0; i < dbs.length; i++) {
+          if (!contains(dbs[i])) {
+            addElement(dbs[i]);
+          }
+        }
+      } catch (Throwable t) {
                 ExceptionHandler.popupException(""+t);
-            }
-        } else {
-        }
+      }
+    } else {
     }
+  }
 
-    /**
-     * Export Data Base account connection parameters to the given file path.
-     *
-     * @param path file pathname to write the preferences file.
-     * @param accountName If not null, only export the connection parameters for
-     * this account, otherwise export all account parameters.
-     */
-    public void exportDBUsers(String path, String accountName) throws Exception {
-        if (System.getProperty("java.specification.version").compareTo("1.4") >= 0) {
-            DBPreferences.exportPreferences(path, accountName);
-        } else {
-        }
+  /**
+   * Export Data Base account connection parameters to the given file path.
+   * @param path file pathname to write the preferences file.
+   * @param accountName If not null, only export the connection parameters for this account, otherwise
+   * export all account parameters.
+   */
+  public void exportDBUsers(String path, String accountName) throws Exception {
+    if (System.getProperty("java.specification.version").compareTo("1.4")>=0) {
+      DBPreferences.exportPreferences(path, accountName);
+    } else {
     }
+  }
 
-    /**
-     * Get a Dasebase Accounts list that will be shared. return a shared
-     * Dasebase Accounts list model.
-     */
-    public static DBUserList getSharedInstance() {
-        if (sharedList == null) {
-            sharedList = new DBUserList();
-        }
-        return sharedList;
+  /**
+   * Get a Dasebase Accounts list that will be shared.
+   * return a shared Dasebase Accounts list model.
+   */
+  public static DBUserList getSharedInstance() {
+    if (sharedList == null) {
+      sharedList = new DBUserList();
     }
-}
+    return sharedList;
+  }
+  
+} 

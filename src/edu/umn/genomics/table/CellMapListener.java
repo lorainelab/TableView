@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: CellMapListener.java,v $ $Revision: 1.2 $ $Date: 2002/07/30 19:45:00 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: CellMapListener.java,v $ $Revision: 1.2 $ $Date: 2002/07/30 19:45:00 $ $Name: TableView1_3 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,24 +21,25 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
+import java.io.Serializable;
 import java.util.EventListener;
 
 /**
  * Listener for CellMapEvents.
- *
- * @author J Johnson
- * @version $Revision: 1.2 $ $Date: 2002/07/30 19:45:00 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see edu.umn.genomics.table.CellMap
- * @see edu.umn.genomics.table.CellMapEvent
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.2 $ $Date: 2002/07/30 19:45:00 $  $Name: TableView1_3 $ 
+ * @since        1.0
+ * @see  edu.umn.genomics.table.CellMap
+ * @see  edu.umn.genomics.table.CellMapEvent
  */
 public interface CellMapListener extends EventListener {
-    /*
-     *
-     */
-
-    public void cellMapChanged(CellMapEvent e);
+  /*
+   *
+   */
+  public void cellMapChanged(CellMapEvent e);
 }

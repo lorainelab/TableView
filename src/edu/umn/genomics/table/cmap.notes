@@ -1,0 +1,256 @@
+AWT-EventQueue-0:
+  [1] edu.umn.genomics.table.DefaultColumnMap.needsRemap (DefaultColumnMap.java:84)
+  [2] edu.umn.genomics.table.DefaultColumnMap.getCount (DefaultColumnMap.java:165)
+  [3] edu.umn.genomics.table.BinModelEditor.<init> (BinModelEditor.java:169)
+  [4] edu.umn.genomics.table.BinModelEditorDialog.updateEditor (BinModelEditorDialog.java:98)
+  [5] edu.umn.genomics.table.BinModelEditorDialog.<init> (BinModelEditorDialog.java:79)
+  [6] edu.umn.genomics.table.Histogram3dView.editBinModels (Histogram3dView.java:281)
+  [7] edu.umn.genomics.table.Histogram3dView.access$000 (Histogram3dView.java:48)
+  [8] edu.umn.genomics.table.Histogram3dView$4.actionPerformed (Histogram3dView.java:199)
+  [9] javax.swing.AbstractButton.fireActionPerformed (AbstractButton.java:1,786)
+  [10] javax.swing.AbstractButton$ForwardActionEvents.actionPerformed (AbstractButton.java:1,839)
+  [11] javax.swing.DefaultButtonModel.fireActionPerformed (DefaultButtonModel.java:420)
+  [12] javax.swing.DefaultButtonModel.setPressed (DefaultButtonModel.java:258)
+  [13] javax.swing.plaf.basic.BasicButtonListener.mouseReleased (BasicButtonListener.java:245)
+  [14] java.awt.AWTEventMulticaster.mouseReleased (AWTEventMulticaster.java:231)
+  [15] java.awt.Component.processMouseEvent (Component.java:5,100)
+  [16] java.awt.Component.processEvent (Component.java:4,897)
+  [17] java.awt.Container.processEvent (Container.java:1,569)
+  [18] java.awt.Component.dispatchEventImpl (Component.java:3,615)
+  [19] java.awt.Container.dispatchEventImpl (Container.java:1,627)
+  [20] java.awt.Component.dispatchEvent (Component.java:3,477)
+  [21] java.awt.LightweightDispatcher.retargetMouseEvent (Container.java:3,483)
+  [22] java.awt.LightweightDispatcher.processMouseEvent (Container.java:3,198)
+  [23] java.awt.LightweightDispatcher.dispatchEvent (Container.java:3,128)
+  [24] java.awt.Container.dispatchEventImpl (Container.java:1,613)
+  [25] java.awt.Window.dispatchEventImpl (Window.java:1,606)
+  [26] java.awt.Component.dispatchEvent (Component.java:3,477)
+  [27] java.awt.EventQueue.dispatchEvent (EventQueue.java:456)
+  [28] java.awt.EventDispatchThread.pumpOneEventForHierarchy (EventDispatchThread.java:201)
+  [29] java.awt.EventDispatchThread.pumpEventsForHierarchy (EventDispatchThread.java:151)
+  [30] java.awt.EventDispatchThread.pumpEvents (EventDispatchThread.java:145)
+  [31] java.awt.EventDispatchThread.pumpEvents (EventDispatchThread.java:137)
+  [32] java.awt.EventDispatchThread.run (EventDispatchThread.java:100)
+Thread-69:
+  [1] edu.umn.genomics.table.DefaultHistogramModel.recalcBinSizes (DefaultHistogramModel.java:89)
+  [2] edu.umn.genomics.table.DefaultHistogramModel.handleBinModelChange (DefaultHistogramModel.java:451)
+  [3] edu.umn.genomics.table.AbstractHistogramModel$1.binModelChanged (AbstractHistogramModel.java:44)
+  [4] edu.umn.genomics.table.ColumnMapBinModel.fireBinModelEvent (ColumnMapBinModel.java:492)
+  [5] edu.umn.genomics.table.ColumnMapBinModel$2.cellMapChanged (ColumnMapBinModel.java:97)
+  [6] edu.umn.genomics.table.AbstractColumnMap.fireColumnMapChanged (AbstractColumnMap.java:1,457)
+  [7] edu.umn.genomics.table.AbstractColumnMap.setState (AbstractColumnMap.java:162)
+  [8] edu.umn.genomics.table.BaseColumnMap.sortColumn (BaseColumnMap.java:537)
+  [9] edu.umn.genomics.table.BaseColumnMap.mapObjects (BaseColumnMap.java:503)
+  [10] edu.umn.genomics.table.DefaultColumnMap.mapTheColumn (DefaultColumnMap.java:529)
+  [11] edu.umn.genomics.table.DefaultColumnMap.access$000 (DefaultColumnMap.java:60)
+  [12] edu.umn.genomics.table.DefaultColumnMap$MapThread.run (DefaultColumnMap.java:76)
+Thread-72:
+  [1] edu.umn.genomics.table.DefaultColumnMap.needsRemap (DefaultColumnMap.java:84)
+  [2] edu.umn.genomics.table.DefaultColumnMap.getCount (DefaultColumnMap.java:165)
+  [3] edu.umn.genomics.table.DefaultColumnMap.getMapValue (DefaultColumnMap.java:287)
+  [4] edu.umn.genomics.table.ColumnMapBinModel.getBin (ColumnMapBinModel.java:298)
+  [5] edu.umn.genomics.table.DefaultHistogramModel.calculateBinSizes (DefaultHistogramModel.java:217)
+  [6] edu.umn.genomics.table.DefaultHistogramModel.updateBinSizes (DefaultHistogramModel.java:251)
+  [7] edu.umn.genomics.table.DefaultHistogramModel.run (DefaultHistogramModel.java:81)
+  [8] java.lang.Thread.run (Thread.java:534)
+Thread-73:
+  [1] edu.umn.genomics.table.DefaultHistogramModel.calculateBinSizes (DefaultHistogramModel.java:201)
+  [2] edu.umn.genomics.table.DefaultHistogramModel.updateBinSizes (DefaultHistogramModel.java:251)
+  [3] edu.umn.genomics.table.DefaultHistogramModel.run (DefaultHistogramModel.java:81)
+  [4] java.lang.Thread.run (Thread.java:534)
+> threads
+Group system:
+  (java.lang.ref.Reference$ReferenceHandler)0xdd                 Reference Handler cond. waiting
+  (java.lang.ref.Finalizer$FinalizerThread)0xdc                  Finalizer         cond. waiting
+  (java.lang.Thread)0xdb                                         Signal Dispatcher running
+  (java.lang.Thread)0x943                                        Shutdown-Thread   unknown
+Group main:
+  (java.util.TimerThread)0x1d4                                   Thread-0          cond. waiting
+  (java.util.prefs.FileSystemPreferences$6)0x946                 Thread-1          unknown
+  (java.util.prefs.AbstractPreferences$EventDispatchThread)0x1f6 Thread-2          cond. waiting
+  (java.lang.Thread)0x24e                                        AWT-Motif         running
+  (java.lang.Thread)0x364                                        Java2D Disposer   cond. waiting
+  (java.lang.Thread)0x4e8                                        AWT-Shutdown      cond. waiting
+  (java.lang.Thread)0x69e                                        DestroyJavaVM     running
+  (java.lang.Thread)0x6b5                                        TimerQueue        cond. waiting
+  (java.awt.EventDispatchThread)0x948                            AWT-EventQueue-0  waiting in a monitor
+  (edu.umn.genomics.table.DefaultColumnMap$MapThread)0x976       Thread-69         waiting in a monitor
+  (java.lang.Thread)0x97a                                        Thread-72         waiting in a monitor
+  (java.lang.Thread)0x97b                                        Thread-73         waiting in a monitor
+
+
+Thread-69:
+  [1] edu.umn.genomics.table.DefaultHistogramModel.recalcBinSizes (DefaultHistogramModel.java:89)
+  [2] edu.umn.genomics.table.DefaultHistogramModel.handleBinModelChange (DefaultHistogramModel.java:451)
+  [3] edu.umn.genomics.table.AbstractHistogramModel$1.binModelChanged (AbstractHistogramModel.java:44)
+  [4] edu.umn.genomics.table.ColumnMapBinModel.fireBinModelEvent (ColumnMapBinModel.java:492)
+  [5] edu.umn.genomics.table.ColumnMapBinModel$2.cellMapChanged (ColumnMapBinModel.java:97)
+  [6] edu.umn.genomics.table.AbstractColumnMap.fireColumnMapChanged (AbstractColumnMap.java:1,457)
+  [7] edu.umn.genomics.table.AbstractColumnMap.setState (AbstractColumnMap.java:162)
+  [8] edu.umn.genomics.table.BaseColumnMap.sortColumn (BaseColumnMap.java:537)
+  [9] edu.umn.genomics.table.BaseColumnMap.mapObjects (BaseColumnMap.java:503)
+  [10] edu.umn.genomics.table.DefaultColumnMap.mapTheColumn (DefaultColumnMap.java:529)
+  [11] edu.umn.genomics.table.DefaultColumnMap.access$000 (DefaultColumnMap.java:60)
+  [12] edu.umn.genomics.table.DefaultColumnMap$MapThread.run (DefaultColumnMap.java:76)
+Thread-72:
+  [1] edu.umn.genomics.table.DefaultColumnMap.needsRemap (DefaultColumnMap.java:84)
+  [2] edu.umn.genomics.table.DefaultColumnMap.getCount (DefaultColumnMap.java:165)
+  [3] edu.umn.genomics.table.DefaultColumnMap.getMapValue (DefaultColumnMap.java:287)
+  [4] edu.umn.genomics.table.ColumnMapBinModel.getBin (ColumnMapBinModel.java:298)
+  [5] edu.umn.genomics.table.DefaultHistogramModel.calculateBinSizes (DefaultHistogramModel.java:217)
+  [6] edu.umn.genomics.table.DefaultHistogramModel.updateBinSizes (DefaultHistogramModel.java:251)
+  [7] edu.umn.genomics.table.DefaultHistogramModel.run (DefaultHistogramModel.java:81)
+  [8] java.lang.Thread.run (Thread.java:534)
+Thread-73:
+  [1] edu.umn.genomics.table.DefaultHistogramModel.calculateBinSizes (DefaultHistogramModel.java:201)
+  [2] edu.umn.genomics.table.DefaultHistogramModel.updateBinSizes (DefaultHistogramModel.java:251)
+  [3] edu.umn.genomics.table.DefaultHistogramModel.run (DefaultHistogramModel.java:81)
+  [4] java.lang.Thread.run (Thread.java:534)
+> threads
+Group system:
+  (java.lang.ref.Reference$ReferenceHandler)0xdd                 Reference Handler cond. waiting
+  (java.lang.ref.Finalizer$FinalizerThread)0xdc                  Finalizer         cond. waiting
+  (java.lang.Thread)0xdb                                         Signal Dispatcher running
+  (java.lang.Thread)0x943                                        Shutdown-Thread   unknown
+Group main:
+  (java.util.TimerThread)0x1d4                                   Thread-0          cond. waiting
+  (java.util.prefs.FileSystemPreferences$6)0x946                 Thread-1          unknown
+  (java.util.prefs.AbstractPreferences$EventDispatchThread)0x1f6 Thread-2          cond. waiting
+  (java.lang.Thread)0x24e                                        AWT-Motif         running
+  (java.lang.Thread)0x364                                        Java2D Disposer   cond. waiting
+  (java.lang.Thread)0x4e8                                        AWT-Shutdown      cond. waiting
+  (java.lang.Thread)0x69e                                        DestroyJavaVM     running
+  (java.lang.Thread)0x6b5                                        TimerQueue        cond. waiting
+  (java.awt.EventDispatchThread)0x948                            AWT-EventQueue-0  cond. waiting
+  (edu.umn.genomics.table.DefaultColumnMap$MapThread)0x976       Thread-69         waiting in a monitor
+  (java.lang.Thread)0x97a                                        Thread-72         waiting in a monitor
+  (java.lang.Thread)0x97b                                        Thread-73         waiting in a monitor
+
+
+
+
+
+
+Fix vtm columnmap references and events
+
+There are a few synchronization problems with mapping columns in viersion 1.3.1.
+ColumnMaps are created with an int  columnIndex  that indicates the column in the
+TableModel that it maps.  But if the TableModel has a column added or deleted
+with a lower index, the ColumnMap columnIndex is not correct.  There is no
+specified  order for Listeners to be called (it's currently implemented in
+javax.swing.table.AbstractTableModel to notify listeners in reverse order that
+they were added.) with TableModel events.  So there needs to be some change
+in the edu.umn.genomics.table package for:  AbstractColumnMap.java,
+DefaultTableContext.java, and VirtualTableModelProxy.java to correctly
+manange the column indices and ColumnMaps.
+
+
+
+              ctx
+              /|\
+             / \ \
+            /   | \
+           /    |  \
+          /     |   \
+         /      |    \
+        /       |     \
+       /  view  |      \
+      /     cml |       \
+      vtm  ->   cm -> tm(ci)
+
+
+/** Extended TableModeEvent 
+   - Table Name Changed
+   - Changes in columns: order, insert, delete 
+   - Rows reordered
+javax.swing.event.TableModelEvent
+public static final int ALL_COLUMNS -1
+public static final int HEADER_ROW -1
+public static final int DELETE -1
+public static final int INSERT 1
+public static final int UPDATE 0
+
+public static final int REORDER -2
+
+ TableModelEvent(source);              //  The data, ie. all rows changed 
+ TableModelEvent(source, HEADER_ROW);  //  Structure change, reallocate TableColumns
+ TableModelEvent(source, 1);           //  Row 1 changed
+ TableModelEvent(source, 3, 6);        //  Rows 3 to 6 inclusive changed
+ TableModelEvent(source, 2, 2, 6);     //  Cell at (2, 6) changed
+ TableModelEvent(source, 3, 6, ALL_COLUMNS, INSERT); // Rows (3, 6) were inserted
+ TableModelEvent(source, 3, 6, ALL_COLUMNS, DELETE); // Rows (3, 6) were deleted
+
+  
+
+ */
+TableModelEventExt.java
+  
+
+/**  
+  State change, 
+  name change, 
+  class change, 
+  format change 
+ */
+CellMapEvent.java
+
+
+
+ColRef 
+
+
+
+
+  IndexColumnMap(ColumnMap, IndexMap) 
+
+
+
+
+
+
+
+
+What if this were all changed to a MappedList?
+  MappedDataList ->   ListRef  
+                      TableColRef
+                  
+
+      DataList
+
+VirtualCell
+        public int[] getDimensions();
+
+        public int getSize();
+        public Object getElementAt(int index);
+        public void addListDataListener(ListDataListener l);
+        public void removeListDataListener(ListDataListener l);
+
+        Object getValueAt(int index)
+        setValueAt(Object value, int index)
+        isCellEditable(int index)
+
+VirtualCellEvent
+
+VirtualCellListener
+  public void intervalAdded(ListDataEvent e)
+  public void intervalRemoved(ListDataEvent e)
+  public void contentsChanged(ListDataEvent e)
+  public void contentsReordered(ListDataEvent e)
+      
+
+ColumnMap(VirtualCell) 
+  if (
+
+
+VirtualTableModel   
+   VirtualColumn
+
+
+
+                                                      +-------   edit
+                                                      V            |
+  VTM -> TableChanged -> VirtualCellChanged -> CellMapChanged -> View
+                                                      ^            |
+                                                      +------- selection 
+
+

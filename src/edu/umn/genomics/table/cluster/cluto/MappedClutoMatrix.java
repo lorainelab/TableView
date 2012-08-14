@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: MappedClutoMatrix.java,v $ $Revision: 1.1 $ $Date: 2004/02/24 18:44:33 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: MappedClutoMatrix.java,v $ $Revision: 1.1 $ $Date: 2004/02/24 18:44:33 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,31 +21,27 @@
  * GNU General Public License for more details.
  * 
  */
-package edu.umn.genomics.table.cluster.cluto;
 
-import edu.umn.genomics.table.ColumnMap;
-import edu.umn.genomics.table.TableColumnMap;
+
+package edu.umn.genomics.table.cluster.cluto; 
 import java.io.Serializable;
+import java.util.Vector;
 import javax.swing.table.AbstractTableModel;
-import jcluto.ClutoMatrix;
-import jcluto.ClutoTableMatrix;
+import jcluto.*;
+import edu.umn.genomics.table.*; 
 
 /**
- * MappedClutoMatrix encapsulates a portion of a TableModel as a ClutoMatrix,
- * and also presents the ClutoMatrix as a TableModel.
- *
- * @author J Johnson
- * @author Shlan Tian
- * @version $Revision: 1.1 $ $Date: 2004/02/24 18:44:33 $ $Name: TableView1_3_2
- * $
- * @see javax.swing.table.AbstractTableModel
+ * MappedClutoMatrix encapsulates a portion of a TableModel as a ClutoMatrix, and 
+ * also presents the ClutoMatrix as a TableModel.
+ * 
+ * @author       J Johnson
+ * @author       Shlan Tian
+ * @version $Revision: 1.1 $ $Date: 2004/02/24 18:44:33 $  $Name: TableView1_2 $
+ * @see  javax.swing.table.AbstractTableModel
  * @see ClutoMatrix
  */
 public class MappedClutoMatrix extends ClutoTableMatrix implements TableColumnMap, Cloneable, Serializable {
-
-    ClutoColumnMap[] colMap = null;
-
-    ;
+  ClutoColumnMap[] colMap = null;;
   
   /** 
    * Construct a cluto matrix. The arguments rowptr and rowind are null for a dense matrix.
@@ -57,39 +53,38 @@ public class MappedClutoMatrix extends ClutoTableMatrix implements TableColumnMa
    * @see ClutoMatrix
    */
   public MappedClutoMatrix(int nrows, int ncols, int[] rowptr, int[] rowind, float[] rowval) {
-        super(nrows, ncols, rowptr, rowind, rowval);
-    }
+    super(nrows, ncols, rowptr, rowind, rowval);
+  }
 
-    /**
-     * Construct an MappedClutoMatrix from the ClutoMatrix.
-     */
-    public MappedClutoMatrix(ClutoMatrix matrix) {
-        super(matrix);
-    }
+  /** 
+   * Construct an MappedClutoMatrix from the ClutoMatrix.
+   */
+  public MappedClutoMatrix(ClutoMatrix matrix) {
+    super(matrix);
+  }
 
-    /**
-     * Construct an empty cluto matrix for derived classes.
-     */
-    protected MappedClutoMatrix() {
-        super();
-    }
+  /** 
+   * Construct an empty cluto matrix for derived classes. 
+   */
+  protected MappedClutoMatrix() {
+    super();
+  }
 
-    /**
-     * Return a ColumnMap for the column in the TableModel at columnIndex.
-     *
-     * @param columnIndex the index of the TableModel column.
-     * @return a ColumnMap for the TableModel column at columnIndex.
-     */
-    public ColumnMap getColumnMap(int columnIndex) {
-        if (colMap == null) {
-            colMap = new ClutoColumnMap[getColumnCount()];
-        }
-        if (columnIndex >= 0 && columnIndex < colMap.length) {
-            if (colMap[columnIndex] == null) {
-                colMap[columnIndex] = new ClutoColumnMap(this, columnIndex);
-            }
-            return colMap[columnIndex];
-        }
-        return null;
+  /**
+   * Return a ColumnMap for the column in the TableModel at columnIndex.
+   * @param columnIndex the index of the TableModel column.
+   * @return a ColumnMap for the TableModel column at columnIndex.
+   */
+  public ColumnMap getColumnMap(int columnIndex) {
+    if (colMap == null) {
+      colMap = new ClutoColumnMap[getColumnCount()];
     }
+    if (columnIndex >= 0 && columnIndex < colMap.length) {
+      if (colMap[columnIndex] == null) {
+        colMap[columnIndex] = new ClutoColumnMap(this,columnIndex);
+      }
+      return colMap[columnIndex];
+    }
+    return null;
+  }
 }

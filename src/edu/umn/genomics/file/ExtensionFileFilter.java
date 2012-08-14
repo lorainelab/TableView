@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: ExtensionFileFilter.java,v $ $Revision: 1.1 $ $Date: 2003/08/29 13:30:25 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: ExtensionFileFilter.java,v $ $Revision: 1.1 $ $Date: 2003/08/29 13:30:25 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -29,108 +29,100 @@ import javax.swing.filechooser.FileFilter;
 
 /**
  * Filter files based on filename extensions.
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/08/29 13:30:25 $ $Name: TableView1_3_2
- * $
- * @since 1.1
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/08/29 13:30:25 $  $Name: TableView1_2 $ 
+ * @since        1.1
  */
 public class ExtensionFileFilter extends FileFilter {
+  String description = "All files";
+  List extensions = null;
+  
+  /**
+   * Construct a filter for files based on filename extensions.
+   * @param extensions The list of filename extensions to recognize.
+   * @param description A text description for this filter.
+   */
+  public ExtensionFileFilter(List extensions, String description) {
+    setDescription(description);
+    setExtensions(extensions);
+  }
 
-    String description = "All files";
-    List extensions = null;
+  /**
+   * Set the description for this filter.
+   * @param description A text description for this filter.
+   */
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    /**
-     * Construct a filter for files based on filename extensions.
-     *
-     * @param extensions The list of filename extensions to recognize.
-     * @param description A text description for this filter.
-     */
-    public ExtensionFileFilter(List extensions, String description) {
-        setDescription(description);
-        setExtensions(extensions);
+  /**
+   * Get the description for this filter.
+   * @return A text description for this filter.
+   */
+  public String getDescription() {
+    return description;
+  }
+
+  /**
+   * Set the list of filename extensions to recognize.
+   * @param extensions The list of filename extensions to recognize.
+   */
+  public void setExtensions(List extensions) {
+    this.extensions = new Vector();
+    for (ListIterator i = extensions.listIterator(); i.hasNext();) {
+      Object o = i.next();
+      if (o != null) {
+        this.extensions.add(o.toString().toLowerCase());
+      }
     }
+  }
 
-    /**
-     * Set the description for this filter.
-     *
-     * @param description A text description for this filter.
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  /**
+   * Get the list of filename extensions to recognize.
+   * @return The list of filename extensions to recognize.
+   */
+  public List getExtensions() {
+    return extensions;
+  }
 
-    /**
-     * Get the description for this filter.
-     *
-     * @return A text description for this filter.
-     */
-    public String getDescription() {
-        return description;
+  // Inherit javadoc
+  public boolean accept(File f) {
+    if (f.isDirectory()) {
+      return true;
     }
+    if (extensions == null) {
+      return true;
+    }
+    String extension = getExtension(f);
+    if (extension != null) {
+      return extensions.contains(extension);
+    }
+    return false;
+  }
 
-    /**
-     * Set the list of filename extensions to recognize.
-     *
-     * @param extensions The list of filename extensions to recognize.
-     */
-    public void setExtensions(List extensions) {
-        this.extensions = new Vector();
-        for (ListIterator i = extensions.listIterator(); i.hasNext();) {
-            Object o = i.next();
-            if (o != null) {
-                this.extensions.add(o.toString().toLowerCase());
-            }
-        }
-    }
+  /**
+   * Get the final filename extension for this file.
+   * @param f The file from which to retrieve the extension.
+   * @return The extension or null if none was found.
+   */
+  public static String getExtension(File f) {
+    String s = f.getName();
+    return getExtension(s);
+  }
 
-    /**
-     * Get the list of filename extensions to recognize.
-     *
-     * @return The list of filename extensions to recognize.
-     */
-    public List getExtensions() {
-        return extensions;
+  /**
+   * Get the final filename extension for this filename.
+   * @param s The filename from which to retrieve the extension.
+   * @return The extension or null if none was found.
+   */
+  public static String getExtension(String s) {
+    String ext = null;
+    int i = s.lastIndexOf('.');
+    if (i > 0 && i < s.length() - 1) {
+      ext = s.substring(i+1).toLowerCase();
     }
+    return ext;
+  }
 
-    // Inherit javadoc
-    public boolean accept(File f) {
-        if (f.isDirectory()) {
-            return true;
-        }
-        if (extensions == null) {
-            return true;
-        }
-        String extension = getExtension(f);
-        if (extension != null) {
-            return extensions.contains(extension);
-        }
-        return false;
-    }
-
-    /**
-     * Get the final filename extension for this file.
-     *
-     * @param f The file from which to retrieve the extension.
-     * @return The extension or null if none was found.
-     */
-    public static String getExtension(File f) {
-        String s = f.getName();
-        return getExtension(s);
-    }
-
-    /**
-     * Get the final filename extension for this filename.
-     *
-     * @param s The filename from which to retrieve the extension.
-     * @return The extension or null if none was found.
-     */
-    public static String getExtension(String s) {
-        String ext = null;
-        int i = s.lastIndexOf('.');
-        if (i > 0 && i < s.length() - 1) {
-            ext = s.substring(i + 1).toLowerCase();
-        }
-        return ext;
-    }
 }

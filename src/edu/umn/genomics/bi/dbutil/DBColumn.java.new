@@ -1,0 +1,190 @@
+
+package edu.umn.genomics.bi.dbutil;
+
+import java.sql.*;
+import java.util.*;
+
+public class DBColumn {
+  Hashtable catalogueHash;  // name -> Catalogue
+  DBTable  table; 	// TABLE_CAT TABLE_SCHEM TABLE_NAME
+  String name;  	// COLUMN_NAME
+  short dataType;	// DATA_TYPE
+  String typeName;	// TYPE_NAME
+  int columnSize;	// COLUMN_SIZE
+  //int bufferLength;	// BUFFER_LENGTH
+  int decimalDigits;	// DECIMAL_DIGITS
+  int numPrecRadix;	// NUM_PREC_RADIX
+  int nullable;		// NULLABLE
+  String remarks;	// REMARKS 
+  String columnDef;	// COLUMN_DEF
+  //int sqlDataType;	// SQL_DATA_TYPE
+  //int sqlDateTimeSub;	// SQL_DATETIME_SUB
+  int charOctetLength;	// CHAR_OCTET_LENGTH
+  int ordinalPosition;	// ORDINAL_POSITION
+  String isNullable;	// IS_NULLABLE
+
+
+  public static List getDBColumn(DatabaseMetaData dbmd, DBTable table) throws NullPointerException {
+    if (table == null) {
+      throw new NullPointerException("DBColumn.getDBColumn(DatabaseMetaData, DBTable) DBTable can't be null" );
+    }
+    if (dbmd == null) {
+      throw new NullPointerException("DBColumn.getDBColumn(DatabaseMetaData, DBTable) DatabaseMetaData can't be null" );
+    }
+    ResultSet rs = dbmd.getColumns(table.getCatalog(), table.getSchema(), table.getName(), null);
+    Vector colList = new Vector();
+    while (rs.next()) {
+      DBColumn dbcol = getDBColumn(table, rs);
+      if (dbcol != null) {
+        colList.add(dbcol);
+      }
+    }
+    return colList; 
+  }
+
+  public static DBColumn getDBColumn(DBTable table, ResultSet rs) {
+    DBTable dbTable = table; 
+    if (dbTable == null) {
+      dbTable = new DBTable(rs.getString(1), rs.getString(2), rs.getString(3));
+    }
+    String name = rs.getString(4);
+    DBColumn col = new DBColumn(name, dbTable);
+    col.setDataType(rs.getShort(5));
+    col.setTypeName(rs.getString(6));
+    col.setColumnSize(rs.getInt(7));
+    // col.setBufferLength(rs.getInt(8));
+    col.setDecimalDigits(rs.getInt(9));
+    col.setNumPrecRadix(rs.getInt(10));
+    col.setNullable(rs.getInt(11));
+    col.setRemarks(rs.getString(12));
+    col.setColumnDef(rs.getString(13));
+    // col.setSqlDataType(rs.getInt(14));
+    // col.setSqlDateTimeSub(rs.getInt(15));
+    col.setCharOctetLength(rs.getInt(16));
+    col.setOrdinalPosition(rs.getInt(17));
+    col.setIsNullable(rs.getString(18));
+    return col;
+  }
+
+  public DBColumn(String name, DBTable table) {
+    this.name = name;
+    this.table = table;
+  }
+
+  public String getColumnName() {
+    return name;
+  }
+  public short getDataType () {
+    return dataType;
+  }
+  public String getTypeName () {
+    return typeName;
+  }
+  public int getColumnSize () {
+    return columnSize;
+  }
+  //public int getBufferLength () {
+  //  return bufferLength;
+  //}
+  public int getDecimalDigits () {
+    return decimalDigits;
+  }
+  public int getNumPrecRadix () {
+    return numPrecRadix;
+  }
+  public int getNullable () {
+    return nullable;
+  }
+  public String getRemarks () {
+    return remarks;
+  }
+  public String getColumnDef () {
+    return columnDef;
+  }
+  //public int getSqlDataType () {
+  //  return sqlDataType;
+  //}
+  //public int getSqlDateTimeSub () {
+  //  return sqlDateTimeSub;
+  //}
+  public int getCharOctetLength () {
+    return charOctetLength;
+  }
+  public int getOrdinalPosition () {
+    return ordinalPosition;
+  }
+  public String getIsNullable () {
+    return isNullable;
+  }
+
+  public void setDataType(short dataType) {
+    this.dataType = dataType;
+  }
+  public void setTypeName(String typeName) {
+    this.typeName = typeName;
+  }
+  public void setColumnSize(int columnSize) {
+    this.columnSize = columnSize;
+  }
+  //public void setBufferLength(int bufferLength) {
+  //  this.bufferLength = bufferLength;
+  //}
+  public void setDecimalDigits(int decimalDigits) {
+    this.decimalDigits = decimalDigits;
+  }
+  public void setNumPrecRadix(int numPrecRadix) {
+    this.numPrecRadix = numPrecRadix;
+  }
+  public void setNullable(int nullable) {
+    this.nullable = nullable;
+  }
+  public void setRemarks(String remarks) {
+    this.remarks = remarks;
+  }
+  public void setColumnDef(String columnDef) {
+    this.columnDef = columnDef;
+  }
+  //public void setSqlDataType(int sqlDataType) {
+  //  this.sqlDataType = sqlDataType;
+  //}
+  //public void setSqlDateTimeSub(int sqlDateTimeSub) {
+  //  this.sqlDateTimeSub = sqlDateTimeSub;
+  //}
+  public void setCharOctetLength(int charOctetLength) {
+    this.charOctetLength = charOctetLength;
+  }
+  public void setOrdinalPosition(int ordinalPosition) {
+    this.ordinalPosition = ordinalPosition;
+  }
+  public void setIsNullable(String isNullable) {
+    this.isNullable = isNullable;
+  }
+
+  public String getQualifiedName() {
+    return (catalog != null && catalog.length() > 0? catalog + "." : "") +
+           (schema != null && schema.length() > 0? schema + "." : "") +
+           (table != null && table.length() > 0? table + "." : "") +
+           column;
+  }
+
+  public boolean equals(Object obj) {
+    if (obj != null && obj instanceof DBColumn) {
+      return this.getQualifiedName().equals(((DBColumn)obj).getQualifiedName());
+    }
+    return false();
+  }
+
+  public int compareTo(Object obj) {
+    if (obj != null) {
+      throw new NullPointerException("Can only compare DBColumn to another DBColumn.");
+    } else if (obj instanceof DBColumn) {
+      return this.getQualifiedName().compareTo(((DBColumn)obj).getQualifiedName());
+    }
+    throw new ClassCastException("Can only compare DBColumn to another DBColumn.");
+  }
+
+  public String toString() {
+    return getColumnName();
+  }
+
+}

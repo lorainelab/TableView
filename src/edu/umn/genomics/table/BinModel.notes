@@ -1,0 +1,303 @@
+  
+
+Partition.java
+PartitionSource.java
+PartitionLabeler.java
+// cluto clustering is a PartitionSource
+// histogram for cluto cluster
+// Register PartitionSource with TableContext
+// Color by PartitionSource
+// Select by PartitionSource
+// label by PartitionSource
+//RegexPartition.java
+
+BinModelEvent.java
+BinModelListener.java
+
+BinModel.java
+RangeBinModel.java
+PartitionBinModel.java
+// public void setBins(PartitionIndexMap partitionMap);
+// public void setBins(Partition partition);
+MutableBinModel.java
+ColumnMapBinModel.java
+  Date - Year, Quarter, Season, Month, Week, Day, Hour, Minute, Second, 
+         DayOfWeek, MonthOfYear, DayOfYear, DayOfMonth
+  String - Distinct, Starting Letter, regex
+  Number - 
+
+HistogramEvent.java
+HistgramListener.java
+
+HistogramModel.java
+AbstractHistogramModel.java
+DefaultHistogramModel.java
+
+HistogramView.java
+
+
+
+
+1D View
+-----+--------------------------------------------+
+     |                                            |
+     |                                            |
+     |                                            |
+     |                                            |
+     |                                            |
+     |                                            |
+     |                                            |
+     |                                            |
+     |                                            |
+     |                                            |
+-----+--------------------------------------------+
+     |                                            |
+     |                                            |
+     | ^     ^     ^    ^    ^    ^     ^     ^   |
+-----+--------------------------------------------+
+       BinModelView.java
+       ColumnMapBinModelView.java
+       // Display control wigdets on mouseentry
+       // range 
+       // partition
+       // Other
+
+                    +-----+           
+  +-----+           |     |
+  |     |  +-----+  |     |
+  |     |  |     |  |     |
+  |     |  |     |  |     |
+  +-----+--+-----+--+-----+
+  min max  min max  min max
+   label    label    label  
+
+
+
+
+       
+
+BinModelView Manipulation
+auto
+toGrid
+manual
+count
+loc
+incr
+from partition
+
+  
+Count AxisDisplay
+LabelDisplay
+
+Graph
+
+ScrollPane
+
+DefaultHistogramModel 
+
+
+// Create table from Histogram counts
+// Create MultDimMatrix from Histogram counts
+
+
+/*
+Histogram2D
+  Stacked Bars
+  Layers overlapping bars
+  3D rects or tubes
+  3d surface altitude map
+
+  000 001 002 003 010 011 012 013 
+  label
+  label
+  label
+
+
+BinModelAxis
+  getBinCount();
+  getBinSize(int binIndex);
+  getBinLabel(int binIndex);
+  selectBin(int binIndex);
+
+  setSpacer(int pixels);
+
+  RangePartition	
+  ValuePartition	
+  RowPartition
+
+  
+BinPreference
+  datevalue
+  realvalue	#bins	min	max
+  realvalue	#bins	val	incr
+  categorical	#bins	
+  categorical	#bins	
+  partition	#bins
+
+
+ColumnName Cluster 
+
+
+Partition the range:
+  evenly
+
+Classify by types:
+
+*/
+
+
+
+
+Histogram3D {
+  HistogramModel 
+  getDimensions()
+  
+  draw back left
+  draw back right
+  draw bottom
+  draw height grid lines
+  draw height axis
+  draw left axis
+  draw right axis
+  draw bars
+
+  
+  private void drawBar() {
+    setColor
+    draw front
+    setColor
+    draw side
+    setColor
+    draw top
+  }
+}
+
+IsoHistogram3D {
+draw base grid bivariate scales
+draw back panels with height scale
+draw bars back to front
+
+
+PieChart
+
+
+
+DatePartition
+  public PartitionIndexMap getMap(ColumnMap cmap, int calendarField) {
+    if (cmap == null) {
+      throw new NullPointerException("ColumnMap");
+    }
+    if (!cmap.getColumnClass() instanceof java.util.Date) {
+      throw new IllegalArgumentException("ColumnMap is not an instance of java.util.Date");
+    }
+    int calFld = calendarField;
+    switch(calendarField) {
+    case Calendar.AM_PM:
+
+    case Calendar.DATE:
+    case Calendar.DAY_OF_MONTH:
+
+    case Calendar.DAY_OF_WEEK:
+
+    case Calendar.DAY_OF_YEAR:
+
+    case Calendar.DAY_OF_WEEK_IN_MONTH:
+
+    case Calendar.MONTH:
+    case Calendar.WEEK_OF_MONTH:
+    case Calendar.WEEK_OF_YEAR:
+
+    case Calendar.HOUR:
+    case Calendar.HOUR_OF_DAY:
+    case Calendar.MINUTE:
+    case Calendar.SECOND:
+    case Calendar.MILLISECOND:
+      break;
+
+    case Calendar.YEAR:
+    // restrict to actual range of years in data
+    case Calendar.ERA:
+    default: 
+      throw new IllegalArgumentException("ColumnMap is not an instance of java.util.Date");
+    }
+    int[] pmap = new int[cmap.getTableModel().getRowCount()];
+    GregorianCalendar cal = new GregorianCalendar();
+    for (int ri = 0; ri < pmap.length; ri++) {
+      Object obj = cmap.getValueAt(ri);
+      if (obj != null && obj instanceof java.util.Date) {
+        try {
+          cal.setTime((Date)obj);
+          pmap[ri] = cal.get(calFld);
+        } catch (Exception ex) {
+        }
+      } else {
+        pmap[ri] = cal.getMaximum(calFld)+1;
+      }
+    }
+    return new PartitionIndexMap(pmap);
+  }
+  
+  
+  
+
+  Date - range:     Year, Quarter, Season, Month, Week, Day, Hour, Minute, Second,
+         partition:
+         DateFormatSymbols 
+         Calendar.setTime(Date date)
+                  roll(Calendar.DATE, true)
+         partition: DayOfWeek, DayOfYear, DayOfMonth, 
+                    MonthOfYear, SeasonOfYear, QuarterOfYear
+                    HourOfDay
+         DAY_OF_WEEK
+         DAY_OF_MONTH
+         DAY_OF_YEAR
+         WEEK_OF_MONTH
+         WEEK_OF_YEAR
+         getMinimum(int field)
+         getMaximum(int field)
+  Number - 
+           range:  count, start incr, start incr func log, manual
+           partition:
+  String - range: Distinct, Starting Letter, 
+         - partition: regex, ...
+  Object
+
+
+
+
+
+import edu.umn.genomics.table.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.table.*;
+
+TableModel tm = tv.getTableModel();
+ListSelectionModel lsm = ctx.getRowSelectionModel(tm);
+ColumnMap cm = ctx.getColumnMap(tm,0);
+ColumnMapBinModel bm = new ColumnMapBinModel(cm);
+DefaultHistogramModel hgm = new DefaultHistogramModel();
+hgm.setDataModel(tm);
+hgm.setListSelectionModel(lsm);
+hgm.addBinModel(bm);
+PartitionIndexMap pim = DefaultColumnMap.getDatePartition(cm,Calendar.MONTH);
+bm.setBins(pim);
+
+HistogramDisplay hd = new HistogramDisplay(hgm);
+JFrame frame = new JFrame("HistogramDisplay");
+frame.getContentPane().add(hd);
+frame.pack();
+frame.setVisible(true);
+
+
+
+ColumnMap cm5 = ctx.getColumnMap(tm,5);
+ColumnMapBinModel bm5 = new ColumnMapBinModel(cm5);
+bm5.setBins(0.,1.,2);
+hgm.addBinModel(bm5);
+
+
+
+ColumnMap cm3 = ctx.getColumnMap(tm,3);
+ColumnMapBinModel bm3 = new ColumnMapBinModel(cm3);
+bm3.setBins(0.,1.,4);
+hgm.addBinModel(bm3);

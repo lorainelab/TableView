@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: BinModelListener.java,v $ $Revision: 1.1 $ $Date: 2004/08/02 20:23:38 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: BinModelListener.java,v $ $Revision: 1.1 $ $Date: 2004/08/02 20:23:38 $ $Name: TableView1_3 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,23 +21,23 @@
  * GNU General Public License for more details.
  *
  */
+
 package edu.umn.genomics.table;
 
-import java.util.EventListener;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Listens for changes to a BinModel.
- *
- * @author J Johnson
- * @version %I%, %G%
- * @since 1.0
+ * @author       J Johnson
+ * @version      %I%, %G%
+ * @since        1.0
  */
 public interface BinModelListener extends EventListener {
-
-    /**
-     * The method called when a BinModel is changed.
-     *
-     * @param e the BinModelEvent.
-     */
-    public void binModelChanged(BinModelEvent e);
+  /** 
+   * The method called when a BinModel is changed.
+   * @param e the BinModelEvent.
+   */
+  public void binModelChanged(BinModelEvent e);
 }
+

@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: SQLTypeTableCellRenderer.java,v $ $Revision: 1.1 $ $Date: 2003/07/28 16:36:21 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: SQLTypeTableCellRenderer.java,v $ $Revision: 1.1 $ $Date: 2003/07/28 16:36:21 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,6 +21,7 @@
  * GNU General Public License for more details.
  * 
  */
+
 package edu.umn.genomics.bi.dbutil;
 
 import edu.umn.genomics.table.ExceptionHandler;
@@ -28,33 +29,31 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  * Displays the java.sql.Types name for a java.sql.Types value.
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/07/28 16:36:21 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/07/28 16:36:21 $  $Name: TableView1_2 $ 
+ * @since        1.0
  */
 public class SQLTypeTableCellRenderer extends DefaultTableCellRenderer {
 
-    static SQLTypeNames sqlTypeName = SQLTypeNames.getSharedInstance();
+  static SQLTypeNames sqlTypeName = SQLTypeNames.getSharedInstance();
 
-    /**
-     * Overrides the setValue method method to display the java.sql.Types field
-     * name for the value argument.
-     */
-    public void setValue(Object value) {
-        try {
-            String s = null;
-            if (value != null && value instanceof Number) {
+  /**
+   * Overrides the setValue method method to display the java.sql.Types field 
+   * name for the value argument.
+   */
+  public void setValue(Object value) {
+    try {
+      String s = null;
+      if (value != null && value instanceof Number) {
                 s = sqlTypeName.get(((Number) value).intValue());
-            }
-            if (s != null) {
-                super.setValue(s);
-            } else {
-                super.setValue(value);
-            }
-        } catch (Exception ex) {
+      }
+      if (s != null) {
+        super.setValue(s);
+      } else {
+        super.setValue(value);
+      }
+    } catch (Exception ex) {
             ExceptionHandler.popupException(""+ex);
-        }
     }
+  }
 }

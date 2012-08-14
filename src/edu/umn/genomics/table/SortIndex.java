@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: SortIndex.java,v $ $Revision: 1.1 $ $Date: 2003/03/07 20:15:42 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: SortIndex.java,v $ $Revision: 1.1 $ $Date: 2003/03/07 20:15:42 $ $Name: TableView1_3 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,101 +21,98 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
+import java.io.Serializable;
+import java.util.*;
+import java.math.*;
+import java.text.DecimalFormat;
+import java.text.ParsePosition;
+import javax.swing.table.TableModel;
+import edu.umn.genomics.graph.LineFormula;
+
 /**
- * SortIndex generates an index array that will access the values of the given
- * array in sorted order.
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/03/07 20:15:42 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * SortIndex generates an index array that will access the values 
+ * of the given array in sorted order.
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/03/07 20:15:42 $  $Name: TableView1_3 $ 
+ * @since        1.0
  */
 public class SortIndex {
+  
+  /**
+   * Swaps the index positions ia[a] with ia[b].
+   */
+  private static void swap(int ia[], int a, int b) {
+    int i = ia[a];
+    ia[a] = ia[b];
+    ia[b] = i;
+  }
 
-    /**
-     * Swaps the index positions ia[a] with ia[b].
-     */
-    private static void swap(int ia[], int a, int b) {
-        int i = ia[a];
-        ia[a] = ia[b];
-        ia[b] = i;
+  /** 
+   * qsort an array of int by generating a corresponding index array 
+   */
+  private static void qsort(int a[], int ia[], int lo0, int hi0) {
+    int lo = lo0;
+    int hi = hi0;
+    int mid;
+    if ( hi0 > lo0) {
+      /* Arbitrarily establishing partition element as the midpoint of
+       * the array.
+       */
+      mid = (lo0 + hi0) / 2;
+      int mval = a[ia[mid]];
+         // loop through the array until indices cross
+      while( lo <= hi ) {
+        /* find the first element that is greater than or equal to
+         * the partition element starting from the left Index.
+         */
+        while( ( lo < hi0 ) && ( a[ia[lo]] < mval ) )
+          ++lo;
+        /* find an element that is smaller than or equal to
+         * the partition element starting from the right Index.
+         */
+        while( ( hi > lo0 ) && ( a[ia[hi]] > mval ) )
+          --hi;
+        // if the indexes have not crossed, swap
+        if ( lo <= hi ) {
+          if (lo < hi)
+            swap(ia, lo, hi);
+          ++lo;
+          --hi;
+        }
+      }
+      /* If the right index has not reached the left side of array
+       * must now sort the left partition.
+       */
+      if( lo0 < hi )
+        qsort( a, ia, lo0, hi);
+      /* If the left index has not reached the right side of array
+       * must now sort the right partition.
+       */
+      if( lo < hi0 )
+        qsort( a, ia, lo, hi0);
     }
+  }
 
-    /**
-     * qsort an array of int by generating a corresponding index array
-     */
-    private static void qsort(int a[], int ia[], int lo0, int hi0) {
-        int lo = lo0;
-        int hi = hi0;
-        int mid;
-        if (hi0 > lo0) {
-            /*
-             * Arbitrarily establishing partition element as the midpoint of the
-             * array.
-             */
-            mid = (lo0 + hi0) / 2;
-            int mval = a[ia[mid]];
-            // loop through the array until indices cross
-            while (lo <= hi) {
-                /*
-                 * find the first element that is greater than or equal to the
-                 * partition element starting from the left Index.
-                 */
-                while ((lo < hi0) && (a[ia[lo]] < mval)) {
-                    ++lo;
-                }
-                /*
-                 * find an element that is smaller than or equal to the
-                 * partition element starting from the right Index.
-                 */
-                while ((hi > lo0) && (a[ia[hi]] > mval)) {
-                    --hi;
-                }
-                // if the indexes have not crossed, swap
-                if (lo <= hi) {
-                    if (lo < hi) {
-                        swap(ia, lo, hi);
-                    }
-                    ++lo;
-                    --hi;
-                }
-            }
-            /*
-             * If the right index has not reached the left side of array must
-             * now sort the left partition.
-             */
-            if (lo0 < hi) {
-                qsort(a, ia, lo0, hi);
-            }
-            /*
-             * If the left index has not reached the right side of array must
-             * now sort the right partition.
-             */
-            if (lo < hi0) {
-                qsort(a, ia, lo, hi0);
-            }
-        }
+  /** 
+   * Return an index array that provides access to the given array in sorted order.
+   * @param array An array of ints for which to generate an index.
+   * @return he index that will access the array in sorted order.
+   */
+  public static int[] getSortIndex(int[] array) {
+    if (array == null) {
+      // throw IllegalArgumentException
+      return null;
     }
-
-    /**
-     * Return an index array that provides access to the given array in sorted
-     * order.
-     *
-     * @param array An array of ints for which to generate an index.
-     * @return he index that will access the array in sorted order.
-     */
-    public static int[] getSortIndex(int[] array) {
-        if (array == null) {
-            // throw IllegalArgumentException
-            return null;
-        }
-        int[] si = new int[array.length];
-        for (int i = 0; i < si.length; i++) {
-            si[i] = i;
-        }
-        qsort(array, si, 0, array.length - 1);
-        return si;
+    int[] si = new int[array.length];
+    for (int i = 0; i < si.length; i++) {
+      si[i] = i;
     }
+    qsort(array, si, 0, array.length-1);
+    return si;
+  }
 }

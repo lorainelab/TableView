@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: PieChartView.java,v $ $Revision: 1.1 $ $Date: 2004/08/02 20:23:45 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: PieChartView.java,v $ $Revision: 1.1 $ $Date: 2004/08/02 20:23:45 $ $Name: TableView1_3 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,69 +21,69 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
-import javax.swing.JComponent;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.TableModel;
+import java.io.Serializable;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.table.*;
+import javax.swing.event.*;
 
 /**
- * PieChartView displays a scatter plot of the two selected columns of the
- * table.
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2004/08/02 20:23:45 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see ColumnMap
- * @see TableContext
- * @see javax.swing.table.TableModel
- * @see javax.swing.ListSelectionModel
+ * PieChartView displays a scatter plot of the two selected columns
+ * of the table.
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2004/08/02 20:23:45 $  $Name: TableView1_3 $ 
+ * @since        1.0
+ * @see  ColumnMap
+ * @see  TableContext
+ * @see  javax.swing.table.TableModel
+ * @see  javax.swing.ListSelectionModel
  */
 public class PieChartView extends AbstractHistogramViewND {
 
-    protected JComponent createCanvas() {
-        return ctx != null ? new PieChartDisplay(hgm, ctx.getSetOperator(tm))
-                : new PieChartDisplay(hgm);
-    }
+  protected JComponent createCanvas() {
+    return ctx != null ? new PieChartDisplay(hgm,ctx.getSetOperator(tm)) 
+                       : new PieChartDisplay(hgm);
+  }
 
-    /**
-     * Constructs a view display. Nothing will be displayed until a data model
-     * is set.
-     *
-     * @see #setTableModel(TableModel tableModel)
-     */
-    public PieChartView() {
-        super();
-    }
+  /**
+   * Constructs a view display.  Nothing will be displayed 
+   * until a data model is set.
+   * @see #setTableModel(TableModel tableModel)
+   */
+  public PieChartView() {
+    super();
+  }
 
-    /**
-     * Constructs a view display which is initialized with tableModel as the
-     * data model, and a default selection model.
-     *
-     * @param tableModel the data model for the parallel coordinate display
-     */
-    public PieChartView(TableModel tableModel) {
-        super(tableModel);
-    }
+  /**
+   * Constructs a view  display which is initialized with 
+   * tableModel as the data model, and a default selection model.
+   * @param tableModel the data model for the parallel coordinate display
+   */
+  public PieChartView(TableModel tableModel) {
+    super(tableModel);
+  }
 
-    /**
-     * Constructs a view display which is initialized with tableModel as the
-     * data model, and the given selection model.
-     *
-     * @param tableModel the data model for the parallel coordinate display
-     * @param lsm the ListSelectionModel for the parallel coordinate display
-     */
-    public PieChartView(TableModel tableModel, ListSelectionModel lsm) {
-        super(tableModel, lsm);
-    }
+  /**
+   * Constructs a view  display which is initialized with 
+   * tableModel as the data model, and the given selection model.
+   * @param tableModel the data model for the parallel coordinate display
+   * @param lsm  the ListSelectionModel for the parallel coordinate display
+   */
+  public PieChartView(TableModel tableModel, ListSelectionModel lsm) {
+    super(tableModel, lsm);
+  }
 
-    /**
-     * Get the component displaying the table data in this view.
-     *
-     * @return the component displaying the table data.
-     */
-    public PieChartDisplay getDisplay() {
-        return (PieChartDisplay) canvas;
-    }
+  /**
+   * Get the component displaying the table data in this view.
+   * @return the component displaying the table data.
+   */
+  public PieChartDisplay getDisplay() {
+    return (PieChartDisplay)canvas;
+  }
 }

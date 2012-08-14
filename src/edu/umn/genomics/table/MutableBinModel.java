@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: MutableBinModel.java,v $ $Revision: 1.1 $ $Date: 2004/08/02 20:23:43 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: MutableBinModel.java,v $ $Revision: 1.1 $ $Date: 2004/08/02 20:23:43 $ $Name: TableView1_3 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,14 +21,18 @@
  * GNU General Public License for more details.
  *
  */
+
 package edu.umn.genomics.table;
+
+import java.io.Serializable;
+import java.util.*;
+
 
 /**
  * BinModel.
- *
- * @author J Johnson
- * @version %I%, %G%
- * @since 1.0
+ * @author       J Johnson
+ * @version      %I%, %G%
+ * @since        1.0
  */
-public interface MutableBinModel extends RangeBinModel, PartitionBinModel {
+public interface MutableBinModel extends RangeBinModel,PartitionBinModel {
 }

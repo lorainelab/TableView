@@ -1,0 +1,857 @@
+/*
+ * @(#) $RCSfile$ $Revision$ $Date$ $Name$
+ *
+ * Center for Computational Genomics and Bioinformatics
+ * Academic Health Center, University of Minnesota
+ * Copyright (c) 2000-2002. The Regents of the University of Minnesota
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * see: http://www.gnu.org/copyleft/gpl.html
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ */
+
+
+package edu.umn.genomics.table;
+import java.io.Serializable;
+import java.awt.*;
+import java.awt.geom.*;
+import java.awt.event.*;
+import java.util.*;
+import java.text.DecimalFormat;
+import javax.swing.*;
+import javax.swing.table.*;
+import javax.swing.event.*;
+import javax.vecmath.*;
+
+public class Histogram3dDisplay extends JComponent {
+  SetOperator setOperator = new DefaultSetOperator();
+  int prevSetOp = -1;
+  HistogramModel hgm;
+  // Selection 
+  boolean selecting = false;
+  Point start = null;
+  Point current = null;
+  // Transformation matrices
+  public Matrix4d mvm = null; // model view matrix
+  public Matrix4d pjm = null; // projection matrix
+  public double rotation = 0.;  // -1 <-> 1
+  public double tilt = -.6;    //  0 <-> 1
+  public double eyeX = -1.25;
+  public double eyeY = -.9; 
+  public double eyeZ = 5.; 
+  public double ctrX = -1.25;
+  public double ctrY = -1.; 
+  public double ctrZ = 0.; 
+  // Whether to only display Selected Portions of bars or all
+  public boolean selectBarsOnly = false;
+  // An array of facets of bars
+  public Polygon[] bars;
+  // Position of facets of bars in the Polygon array
+  static final int TOP_FACET = 0;
+  static final int LEFT_FACET = 1;
+  static final int RIGHT_FACET = 2;
+  static final int TOP_SEL_FACET = 3;
+  static final int LEFT_SEL_FACET = 4;
+  static final int RIGHT_SEL_FACET = 5;
+  static final int POLYS_PER_BAR = 6;
+
+  public boolean updateAxesNeeded = true;
+  public boolean updateBarsNeeded = true;
+
+  public void setRotation(double rotation) {
+    this.rotation = rotation;
+    setView();
+  }
+  public double getRotation() {
+    return rotation;
+  }
+
+  public void setTilt(double tilt) {
+    this.tilt = tilt;
+    setView();
+  }
+  public double getTilt() {
+    return tilt;
+  }
+
+  HistogramListener hdl = new HistogramListener() {
+    public void histogramChanged(HistogramEvent e) {
+      if (!e.isAdjusting()) {
+        if (e.binModelsChanged()) { // Update axes and labels
+          updateAxesNeeded = true;
+        }
+        updateBarsNeeded = true;
+        repaint();
+      }
+    }
+  };
+  private MouseInputAdapter ma = new MouseInputAdapter() {
+    public void mousePressed(MouseEvent e) {
+      start = e.getPoint();
+      current = e.getPoint();
+      selecting = true;
+      prevSetOp = getSetOperator().getSetOperator();
+      getSetOperator().setFromInputEventMask(e.getModifiers());
+      repaint();
+    }
+    public void mouseDragged(MouseEvent e) {
+      current = e.getPoint();
+      repaint();
+    }
+    public void mouseReleased(MouseEvent e) {
+      selecting = false;
+      current = e.getPoint();
+      select();
+      getSetOperator().setSetOperator(prevSetOp);
+      repaint();
+    }
+    public void mouseClicked(MouseEvent e) {
+      start = e.getPoint();
+      current = e.getPoint();
+      prevSetOp = getSetOperator().getSetOperator();
+      getSetOperator().setFromInputEventMask(e.getModifiers());
+      select(current);
+      getSetOperator().setSetOperator(prevSetOp);
+      repaint();
+    }
+    public void mouseExited(MouseEvent e) {
+    }
+  };
+
+  public void select() {
+    int x = Math.min(start.x, current.x);
+    int y = Math.min(start.y, current.y);
+    int w = Math.abs(start.x - current.x);
+    int h = Math.abs(start.y - current.y);
+    Rectangle r = new Rectangle(x,y,w,h);
+    select(r);
+  }
+
+  public void select(Rectangle r) {
+    int selCnt = 0;
+    int[] indices = new int[bars.length / POLYS_PER_BAR];
+    if (bars != null) {
+      for (int i = 0, pos = 0; pos < bars.length; i++, pos += POLYS_PER_BAR) {
+        for (int j = 0; j < POLYS_PER_BAR; j++) {
+          if (bars[pos + j] != null) {
+            if (bars[pos + j].intersects(r)) {
+              indices[selCnt++] = i;
+              break;
+            }
+          }
+        }
+      }
+    }
+    if (selCnt < indices.length) {
+      int[] tmp = indices;
+      indices = new int[selCnt];
+      System.arraycopy(tmp,0,indices,0,selCnt);
+    }
+    select(indices);
+  }
+
+  public void select(Point p) {
+    int selCnt = 0;
+    int[] indices = new int[bars.length / POLYS_PER_BAR];
+    if (bars != null) {
+      for (int i = 0, pos = 0; pos < bars.length; i++, pos += POLYS_PER_BAR) {
+        for (int j = 0; j < POLYS_PER_BAR; j++) {
+          if (bars[pos + j] != null) {
+            if (bars[pos + j].contains(p)) {
+              indices[selCnt++] = i;
+              break;
+            }
+          }
+        }
+      }
+    }
+    if (selCnt < indices.length) {
+      int[] tmp = indices;
+      indices = new int[selCnt];
+      System.arraycopy(tmp,0,indices,0,selCnt);
+    }
+    select(indices);
+  }
+
+  public void select(int[] indices) {
+    if (indices != null) {
+      hgm.selectBins(indices,hgm.getListSelectionModel(),getSetOperator().getSetOperator());
+    } else {
+    }
+  }
+  public void setSetOperator(SetOperator setOperator) {
+    this.setOperator = setOperator;
+  }
+  public SetOperator getSetOperator() {
+    return setOperator;
+  }
+
+  public Histogram3dDisplay(HistogramModel model, SetOperator setOperator) {
+    this(model);
+    setSetOperator(setOperator);
+  }
+  public Histogram3dDisplay(HistogramModel model) {
+    setOpaque(true);
+    mvm = new Matrix4d(); // model view matrix
+    pjm = new Matrix4d(); // projection matrix
+    setFrustum(pjm, -1,1,-1,1,4,100);
+    mvm.setIdentity();
+    setView();
+    // lookAt(mvm, .5, 1, -5, 0, 0, 0, 0, 1, 0);
+    this.hgm = model;
+    hgm.addHistogramListener(hdl);
+    addMouseListener(ma);
+    addMouseMotionListener(ma);
+  }
+
+  public void setView() {
+    setView(rotation, tilt);
+  }
+  public Vector3d trans = new Vector3d(-.5,-.5,-.5);
+  public void setView(double rot, double tilt) {
+    AxisAngle4d axisAngle;
+    Matrix4d mat;
+    mvm.setIdentity();
+    //mvm.setTranslation(tran);
+
+    // view platform
+    lookAt(mvm, eyeX, eyeY, eyeZ, ctrX, ctrX, ctrY, 0, 1, 0);
+
+    // set tilt;
+    axisAngle = new AxisAngle4d(1.,0.,0., tilt * .5 * Math.PI);
+    mat = new Matrix4d();
+    mat.setIdentity();
+    mat.setRotation(axisAngle);
+    mvm.mul(mat);
+
+    // set rotation;
+    axisAngle = new AxisAngle4d(0.,0.,1., .5  + rot * .5 * Math.PI);
+    mat = new Matrix4d();
+    mat.setIdentity();
+    mat.setRotation(axisAngle);
+    mvm.mul(mat);
+
+    // translation
+    mat = new Matrix4d();
+    mat.setIdentity();
+    mat.setTranslation(trans);
+    mvm.mul(mat);
+
+    updateAxesNeeded = true;
+    updateBarsNeeded = true;
+    repaint();
+  }
+
+  public void lookAt(Matrix4d mat, 
+                     double eyeX, double eyeY, double eyeZ, 
+                     double centerX, double centerY, double centerZ, 
+                     double upX, double upY, double upZ)  {
+    Vector3d f = new Vector3d(centerX - eyeX, centerY - eyeY, centerZ - eyeZ);
+    Vector3d up = new Vector3d(upX, upY, upZ);
+    f.normalize();
+    up.normalize();
+    Vector3d s = new Vector3d();
+    Vector3d u = new Vector3d();
+    s.cross(f,up);
+    u.cross(s,f);
+    Matrix4d m = new Matrix4d(s.x, s.y, s.z, 0,
+                              u.x, u.y, u.z, 0,
+                              -f.x, -f.y, -f.z, 0,
+                              0, 0, 0, 1);
+    mat.mul(m);
+    //m.mul(mat);
+    //mat.set(m);
+    m.setIdentity();
+    // m.setTranslation(new Vector3d(-eyeX, -eyeY, -eyeZ));
+    // mat.mul(m);
+    mat.setTranslation(new Vector3d(-eyeX, -eyeY, -eyeZ));
+    //m.mul(mat);
+    //mat.set(m);
+  }
+
+  public void setFrustum(Matrix4d mat, double l,double r,double b,double t,double n,double f) {
+    mat.m00 = 2*n / (r-l);
+    mat.m01 = 0;
+    mat.m02 = (r+l)/(r-l);
+    mat.m03 = 0;
+
+    mat.m10 = 0;
+    mat.m11 = 2*n / (t-b);
+    mat.m12 = (t+b)/(t-b);
+    mat.m13 = 0;
+
+    mat.m20 = 0;
+    mat.m21 = 0;
+    mat.m22 = -1*(f+n)/(f-n);
+    mat.m23 = -2*f*n / (f-n);
+
+    mat.m30 = 0;
+    mat.m31 = 0;
+    mat.m32 = -1;
+    mat.m33 = 0;
+  }
+
+  public void setOrtho(Matrix4d mat, double l,double r,double b,double t,double n,double f) {
+    mat.m00 = 2 / (r-l);
+    mat.m01 = 0;
+    mat.m02 = 0;
+    mat.m03 = -1*(r+l)/(r-l);
+
+    mat.m10 = 0;
+    mat.m11 = 2 / (t-b);
+    mat.m12 = 0;
+    mat.m13 = -1*(t+b)/(t-b);
+
+    mat.m20 = 0;
+    mat.m21 = 0;
+    mat.m22 = -2/(f-n);
+    mat.m23 = -1*(f+n)/(f-n);
+
+    mat.m30 = 0;
+    mat.m31 = 0;
+    mat.m32 = 0;
+    mat.m33 = 1;
+  }
+
+  public Point[] worldToScreen(Point4d[] coords, Matrix4d mvm, Matrix4d pjm, Dimension viewPort) {
+    Point[] pnts = new Point[coords.length];
+    Point4d pp = new Point4d();
+    for (int i = 0; i < coords.length; i++) {
+      // ModelView Matrix Transformtion
+      mvm.transform(coords[i]);
+      // Projection Matrix Transformtion
+      pjm.transform(coords[i]);
+      // Perspective Division
+      pp.project(coords[i]);
+      // ViewPort Transformation
+      pnts[i] = new Point((int)((pp.x)*(viewPort.width/2.)), 
+                          viewPort.height - (int)((pp.y) * (viewPort.height/2.)));
+    }
+    return pnts;
+  }
+
+  public Dimension getViewPort() {
+    Insets insets = getInsets();
+    int vw = (getWidth() - insets.left - insets.right);
+    int vh = (getHeight() - insets.top - insets.bottom);
+    return new Dimension(vw,vh);
+  }
+
+  public Point4d[] getPoint4dArray(int len) {
+    Point4d[] coord  = new Point4d[len];
+    for (int i = 0; i < len; i++) {
+      coord[i] = new Point4d();
+    }
+    return coord;
+  }
+
+
+//
+//	  3       2
+//	    +---+  
+//	   /   /|
+//	0 +---+1|     <- nonselected portion
+//	  |   | |
+//	  |   | + 9
+//	  |   |/|
+//	7 +---+8|     <- selected portion
+//	  |   | + 6
+//	  |   |/
+//	  +---+ 
+//	 4     5
+//	
+//	   / \
+//	  /   \
+//	 |\   /|
+//	 | \ / | <- nonselected portion
+//	 |  |  |
+//	 |\ | /|
+//	 | \|/ | <- selected portion
+//	  \ | /
+//	   \|/
+//	
+
+  /**
+   * 
+   * Six Polygons per bar in this order:
+   *   select left face
+   *   select right face
+   *   select top face
+   *   unselect left face
+   *   unselect right face
+   *   unselect top face
+   */
+  public Polygon[] makeBars() {
+    if (hgm == null) {
+      return null;
+    }
+    int nMod = hgm.getModelCount();
+    int[] dim = hgm.getDimensions();
+    int cnt = hgm.getBinCount();
+    int max = hgm.getMaxBinSize();
+    if (nMod != 2 || dim == null || dim.length != 2) {
+      return null;
+    }
+    int[] indices = new int[dim.length];
+    Dimension vp = getViewPort();
+
+    Polygon[] polygon = new Polygon[cnt * POLYS_PER_BAR];
+    Polygon poly = null;
+
+    Point4d[] pnts4 = null;
+    Point4d[] pnts7 = null;
+    Point4d[] pnts10 = null;
+    double xscale = 1. / dim[0];
+    double xoff = xscale * .4;
+    double yscale = 1. / dim[1];
+    double yoff = yscale * .4;
+    double hscale = max > 0 ? 1. / max : 1;
+    for (int i = 0, pos = 0; i < cnt; i++, pos += POLYS_PER_BAR) {
+      int binCnt = hgm.getBinCount(indices);
+      int selCnt = hgm.getBinSelectCount(indices);
+      if (selectBarsOnly) {
+        if (selCnt == 0) {  // 4 points
+
+          if (pnts4 == null) {
+            pnts4 = getPoint4dArray(4);
+          }
+          // top
+          pnts4[0].x = (.5 + indices[0]) * xscale + xoff;
+          pnts4[0].y = (.5 + indices[1]) * yscale - yoff;
+          pnts4[0].z = selCnt * hscale;
+          pnts4[0].w = 1;
+          pnts4[1].x = (.5 + indices[0]) * xscale - xoff;
+          pnts4[1].y = (.5 + indices[1]) * yscale - yoff;
+          pnts4[1].z = selCnt * hscale;
+          pnts4[1].w = 1;
+          pnts4[2].x = (.5 + indices[0]) * xscale - xoff;
+          pnts4[2].y = (.5 + indices[1]) * yscale + yoff;
+          pnts4[2].z = selCnt * hscale;
+          pnts4[2].w = 1;
+          pnts4[3].x = (.5 + indices[0]) * xscale + xoff;
+          pnts4[3].y = (.5 + indices[1]) * yscale + yoff;
+          pnts4[3].z = selCnt * hscale;
+          pnts4[3].w = 1;
+          Point[] pnts = worldToScreen(pnts4, mvm, pjm, vp);
+          poly = new Polygon();   
+          for (int j = 0; j < 4; j++) {
+            poly.addPoint(pnts[j].x,pnts[j].y); 
+          }
+          polygon[pos + TOP_SEL_FACET] = poly;
+
+        } else { // 7 points
+
+          if (pnts7 == null) {
+            pnts7 = getPoint4dArray(7);
+          }
+          // top
+          pnts7[0].x = (.5 + indices[0]) * xscale + xoff;
+          pnts7[0].y = (.5 + indices[1]) * yscale - yoff;
+          pnts7[0].z = selCnt * hscale;
+          pnts7[0].w = 1;
+          pnts7[1].x = (.5 + indices[0]) * xscale - xoff;
+          pnts7[1].y = (.5 + indices[1]) * yscale - yoff;
+          pnts7[1].z = selCnt * hscale;
+          pnts7[1].w = 1;
+          pnts7[2].x = (.5 + indices[0]) * xscale - xoff;
+          pnts7[2].y = (.5 + indices[1]) * yscale + yoff;
+          pnts7[2].z = selCnt * hscale;
+          pnts7[2].w = 1;
+          pnts7[3].x = (.5 + indices[0]) * xscale + xoff;
+          pnts7[3].y = (.5 + indices[1]) * yscale + yoff;
+          pnts7[3].z = selCnt * hscale;
+          pnts7[3].w = 1;
+          // base
+          pnts7[4].x = (.5 + indices[0]) * xscale + xoff;
+          pnts7[4].y = (.5 + indices[1]) * yscale - yoff;
+          pnts7[4].z = 0;
+          pnts7[4].w = 1;
+          pnts7[5].x = (.5 + indices[0]) * xscale - xoff;
+          pnts7[5].y = (.5 + indices[1]) * yscale - yoff;
+          pnts7[5].z = 0;
+          pnts7[5].w = 1;
+          pnts7[6].x = (.5 + indices[0]) * xscale - xoff;
+          pnts7[6].y = (.5 + indices[1]) * yscale + yoff;
+          pnts7[6].z = 0;
+          pnts7[6].w = 1;
+          Point[] pnts = worldToScreen(pnts7, mvm, pjm, vp);
+          // top 
+          poly = new Polygon();   
+          for (int j = 0; j < 4; j++) {
+            poly.addPoint(pnts[j].x,pnts[j].y); 
+          }
+          polygon[pos + TOP_SEL_FACET] = poly;
+          // left  
+          poly = new Polygon();   
+          poly.addPoint(pnts[4].x,pnts[4].y);
+          poly.addPoint(pnts[5].x,pnts[5].y);
+          poly.addPoint(pnts[1].x,pnts[1].y);
+          poly.addPoint(pnts[0].x,pnts[0].y);
+          polygon[pos + LEFT_SEL_FACET] = poly;
+          // right  
+          poly = new Polygon();   
+          poly.addPoint(pnts[5].x,pnts[5].y);
+          poly.addPoint(pnts[6].x,pnts[6].y);
+          poly.addPoint(pnts[2].x,pnts[2].y);
+          poly.addPoint(pnts[1].x,pnts[1].y);
+          polygon[pos + RIGHT_SEL_FACET] = poly;
+
+        }
+
+      } else {
+        if (binCnt == 0) { // 4 points
+          if (pnts4 == null) {
+            pnts4 = getPoint4dArray(4);
+          }
+          // top
+          pnts4[0].x = (.5 + indices[0]) * xscale + xoff;
+          pnts4[0].y = (.5 + indices[1]) * yscale - yoff;
+          pnts4[0].z = 0;
+          pnts4[0].w = 1;
+          pnts4[1].x = (.5 + indices[0]) * xscale - xoff;
+          pnts4[1].y = (.5 + indices[1]) * yscale - yoff;
+          pnts4[1].z = 0;
+          pnts4[1].w = 1;
+          pnts4[2].x = (.5 + indices[0]) * xscale - xoff;
+          pnts4[2].y = (.5 + indices[1]) * yscale + yoff;
+          pnts4[2].z = 0;
+          pnts4[2].w = 1;
+          pnts4[3].x = (.5 + indices[0]) * xscale + xoff;
+          pnts4[3].y = (.5 + indices[1]) * yscale + yoff;
+          pnts4[3].z = 0;
+          pnts4[3].w = 1;
+          Point[] pnts = worldToScreen(pnts4, mvm, pjm, vp);
+          poly = new Polygon();   
+          for (int j = 0; j < 4; j++) {
+            poly.addPoint(pnts[j].x,pnts[j].y); 
+          }
+          polygon[pos + TOP_FACET] = poly;
+        } else if (selCnt == binCnt) { // 7 points
+          if (pnts7 == null) {
+            pnts7 = getPoint4dArray(7);
+          }
+          // top
+          pnts7[0].x = (.5 + indices[0]) * xscale + xoff;
+          pnts7[0].y = (.5 + indices[1]) * yscale - yoff;
+          pnts7[0].z = selCnt * hscale;
+          pnts7[0].w = 1;
+          pnts7[1].x = (.5 + indices[0]) * xscale - xoff;
+          pnts7[1].y = (.5 + indices[1]) * yscale - yoff;
+          pnts7[1].z = selCnt * hscale;
+          pnts7[1].w = 1;
+          pnts7[2].x = (.5 + indices[0]) * xscale - xoff;
+          pnts7[2].y = (.5 + indices[1]) * yscale + yoff;
+          pnts7[2].z = selCnt * hscale;
+          pnts7[2].w = 1;
+          pnts7[3].x = (.5 + indices[0]) * xscale + xoff;
+          pnts7[3].y = (.5 + indices[1]) * yscale + yoff;
+          pnts7[3].z = selCnt * hscale;
+          pnts7[3].w = 1;
+          // base
+          pnts7[4].x = (.5 + indices[0]) * xscale + xoff;
+          pnts7[4].y = (.5 + indices[1]) * yscale - yoff;
+          pnts7[4].z = 0;
+          pnts7[4].w = 1;
+          pnts7[5].x = (.5 + indices[0]) * xscale - xoff;
+          pnts7[5].y = (.5 + indices[1]) * yscale - yoff;
+          pnts7[5].z = 0;
+          pnts7[5].w = 1;
+          pnts7[6].x = (.5 + indices[0]) * xscale - xoff;
+          pnts7[6].y = (.5 + indices[1]) * yscale + yoff;
+          pnts7[6].z = 0;
+          pnts7[6].w = 1;
+          Point[] pnts = worldToScreen(pnts7, mvm, pjm, vp);
+          // top select 
+          poly = new Polygon();   
+          for (int j = 0; j < 4; j++) {
+            poly.addPoint(pnts[j].x,pnts[j].y); 
+          }
+          polygon[pos + TOP_SEL_FACET] = poly;
+          // left select 
+          poly = new Polygon();   
+          poly.addPoint(pnts[4].x,pnts[4].y);
+          poly.addPoint(pnts[5].x,pnts[5].y);
+          poly.addPoint(pnts[1].x,pnts[1].y);
+          poly.addPoint(pnts[0].x,pnts[0].y);
+          polygon[pos + LEFT_SEL_FACET] = poly;
+          // right select 
+          poly = new Polygon();   
+          poly.addPoint(pnts[5].x,pnts[5].y);
+          poly.addPoint(pnts[6].x,pnts[6].y);
+          poly.addPoint(pnts[2].x,pnts[2].y);
+          poly.addPoint(pnts[1].x,pnts[1].y);
+          polygon[pos + RIGHT_SEL_FACET] = poly;
+
+        } else if (selCnt > 0) {  // 10 points
+          if (pnts10 == null) {
+            pnts10 = getPoint4dArray(10);
+          }
+          // top
+          pnts10[0].x = (.5 + indices[0]) * xscale + xoff;
+          pnts10[0].y = (.5 + indices[1]) * yscale - yoff;
+          pnts10[0].z = binCnt * hscale;
+          pnts10[0].w = 1;
+          pnts10[1].x = (.5 + indices[0]) * xscale - xoff;
+          pnts10[1].y = (.5 + indices[1]) * yscale - yoff;
+          pnts10[1].z = binCnt * hscale;
+          pnts10[1].w = 1;
+          pnts10[2].x = (.5 + indices[0]) * xscale - xoff;
+          pnts10[2].y = (.5 + indices[1]) * yscale + yoff;
+          pnts10[2].z = binCnt * hscale;
+          pnts10[2].w = 1;
+          pnts10[3].x = (.5 + indices[0]) * xscale + xoff;
+          pnts10[3].y = (.5 + indices[1]) * yscale + yoff;
+          pnts10[3].z = binCnt * hscale;
+          pnts10[3].w = 1;
+          // base
+          pnts10[4].x = (.5 + indices[0]) * xscale + xoff;
+          pnts10[4].y = (.5 + indices[1]) * yscale - yoff;
+          pnts10[4].z = 0;
+          pnts10[4].w = 1;
+          pnts10[5].x = (.5 + indices[0]) * xscale - xoff;
+          pnts10[5].y = (.5 + indices[1]) * yscale - yoff;
+          pnts10[5].z = 0;
+          pnts10[5].w = 1;
+          pnts10[6].x = (.5 + indices[0]) * xscale - xoff;
+          pnts10[6].y = (.5 + indices[1]) * yscale + yoff;
+          pnts10[6].z = 0;
+          pnts10[6].w = 1;
+          // select top
+          pnts10[7].x = (.5 + indices[0]) * xscale + xoff;
+          pnts10[7].y = (.5 + indices[1]) * yscale - yoff;
+          pnts10[7].z = selCnt * hscale;
+          pnts10[7].w = 1;
+          pnts10[8].x = (.5 + indices[0]) * xscale - xoff;
+          pnts10[8].y = (.5 + indices[1]) * yscale - yoff;
+          pnts10[8].z = selCnt * hscale;
+          pnts10[8].w = 1;
+          pnts10[9].x = (.5 + indices[0]) * xscale - xoff;
+          pnts10[9].y = (.5 + indices[1]) * yscale + yoff;
+          pnts10[9].z = selCnt * hscale;
+          pnts10[9].w = 1;
+          Point[] pnts = worldToScreen(pnts10, mvm, pjm, vp);
+
+          // top 
+          poly = new Polygon();   
+          for (int j = 0; j < 4; j++) {
+            poly.addPoint(pnts[j].x,pnts[j].y); 
+          }
+          polygon[pos + TOP_FACET] = poly;
+          // left  
+          poly = new Polygon();   
+          poly.addPoint(pnts[7].x,pnts[7].y);
+          poly.addPoint(pnts[8].x,pnts[8].y);
+          poly.addPoint(pnts[1].x,pnts[1].y);
+          poly.addPoint(pnts[0].x,pnts[0].y);
+          polygon[pos + LEFT_FACET] = poly;
+          // right  
+          poly = new Polygon();   
+          poly.addPoint(pnts[8].x,pnts[8].y);
+          poly.addPoint(pnts[9].x,pnts[9].y);
+          poly.addPoint(pnts[2].x,pnts[2].y);
+          poly.addPoint(pnts[1].x,pnts[1].y);
+          polygon[pos + RIGHT_FACET] = poly;
+          // left  select
+          poly = new Polygon();   
+          poly.addPoint(pnts[4].x,pnts[4].y);
+          poly.addPoint(pnts[5].x,pnts[5].y);
+          poly.addPoint(pnts[8].x,pnts[8].y);
+          poly.addPoint(pnts[7].x,pnts[7].y);
+          polygon[pos + LEFT_SEL_FACET] = poly;
+          // right  select
+          poly = new Polygon();   
+          poly.addPoint(pnts[5].x,pnts[5].y);
+          poly.addPoint(pnts[6].x,pnts[6].y);
+          poly.addPoint(pnts[9].x,pnts[9].y);
+          poly.addPoint(pnts[8].x,pnts[8].y);
+          polygon[pos + RIGHT_SEL_FACET] = poly;
+
+        } else { // selCnt == 0     7 points
+          if (pnts7 == null) {
+            pnts7 = getPoint4dArray(7);
+          }
+          // top
+          pnts7[0].x = (.5 + indices[0]) * xscale + xoff;
+          pnts7[0].y = (.5 + indices[1]) * yscale - yoff;
+          pnts7[0].z = binCnt * hscale;
+          pnts7[0].w = 1;
+          pnts7[1].x = (.5 + indices[0]) * xscale - xoff;
+          pnts7[1].y = (.5 + indices[1]) * yscale - yoff;
+          pnts7[1].z = binCnt * hscale;
+          pnts7[1].w = 1;
+          pnts7[2].x = (.5 + indices[0]) * xscale - xoff;
+          pnts7[2].y = (.5 + indices[1]) * yscale + yoff;
+          pnts7[2].z = binCnt * hscale;
+          pnts7[2].w = 1;
+          pnts7[3].x = (.5 + indices[0]) * xscale + xoff;
+          pnts7[3].y = (.5 + indices[1]) * yscale + yoff;
+          pnts7[3].z = binCnt * hscale;
+          pnts7[3].w = 1;
+          // base
+          pnts7[4].x = (.5 + indices[0]) * xscale + xoff;
+          pnts7[4].y = (.5 + indices[1]) * yscale - yoff;
+          pnts7[4].z = 0;
+          pnts7[4].w = 1;
+          pnts7[5].x = (.5 + indices[0]) * xscale - xoff;
+          pnts7[5].y = (.5 + indices[1]) * yscale - yoff;
+          pnts7[5].z = 0;
+          pnts7[5].w = 1;
+          pnts7[6].x = (.5 + indices[0]) * xscale - xoff;
+          pnts7[6].y = (.5 + indices[1]) * yscale + yoff;
+          pnts7[6].z = 0;
+          pnts7[6].w = 1;
+          Point[] pnts = worldToScreen(pnts7, mvm, pjm, vp);
+          // top 
+          poly = new Polygon();   
+          for (int j = 0; j < 4; j++) {
+            poly.addPoint(pnts[j].x,pnts[j].y); 
+          }
+          polygon[pos + TOP_FACET] = poly;
+          // left  
+          poly = new Polygon();   
+          poly.addPoint(pnts[4].x,pnts[4].y);
+          poly.addPoint(pnts[5].x,pnts[5].y);
+          poly.addPoint(pnts[1].x,pnts[1].y);
+          poly.addPoint(pnts[0].x,pnts[0].y);
+          polygon[pos + LEFT_FACET] = poly;
+          // right  
+          poly = new Polygon();   
+          poly.addPoint(pnts[5].x,pnts[5].y);
+          poly.addPoint(pnts[6].x,pnts[6].y);
+          poly.addPoint(pnts[2].x,pnts[2].y);
+          poly.addPoint(pnts[1].x,pnts[1].y);
+          polygon[pos + RIGHT_FACET] = poly;
+
+        }
+      }
+      MultiDimIntArray.incrIndex(indices, dim);
+    }
+    return polygon;
+  }
+
+  public Color getBarFacetColor(int facet) {
+    switch(facet % POLYS_PER_BAR) {
+    case TOP_FACET:
+      return Color.BLUE;
+    case LEFT_FACET:
+      return Color.BLUE.brighter();
+    case RIGHT_FACET:
+      return Color.BLUE.darker();
+    case TOP_SEL_FACET:
+      return Color.CYAN;
+    case LEFT_SEL_FACET:
+      return Color.CYAN.brighter();
+    case RIGHT_SEL_FACET:
+      return Color.CYAN.darker();
+    default:
+    }
+    return Color.BLACK;
+  }
+
+  Polygon[] box;
+  Line2D[] hLines;
+  Line2D[] hTicks;
+  Line2D[] xTicks;
+  Line2D[] yTicks;
+  
+  // Shape[] display;
+
+  public void paintComponent(Graphics g) {
+    Graphics2D g2 = (Graphics2D)g;
+    Dimension vp = getViewPort();
+
+    if (updateAxesNeeded) {
+    } 
+    if (updateBarsNeeded) {
+      bars = makeBars();
+    } 
+    // draw background
+    if (isOpaque()) {
+      g2.setColor(getBackground());
+      g2.fillRect(0,0,getWidth(), getHeight());
+    }
+    // draw background cube faces
+    Point4d[] cube = getPoint4dArray(8);
+    for (int i = 0; i < 8; i++) {
+      cube[i].x = (i + 1) % 4 / 2;
+      cube[i].y = i % 4 / 2;
+      cube[i].z = i / 4;
+      cube[i].w = 1.;
+    }
+    Point[] pnts = worldToScreen(cube, mvm, pjm, vp);
+    Polygon poly;
+
+    // draw back left
+    // g2.setColor(Color.yellow);
+    poly = new Polygon();
+    poly.addPoint(pnts[3].x,pnts[3].y);
+    poly.addPoint(pnts[2].x,pnts[2].y);
+    poly.addPoint(pnts[6].x,pnts[6].y);
+    poly.addPoint(pnts[7].x,pnts[7].y);
+    g2.setColor(new Color(240,240,240));
+    g2.fill(poly);
+    g2.setColor(Color.BLACK);
+    g2.draw(poly);
+
+    // draw back right
+    // g2.setColor(Color.green);
+    poly = new Polygon();
+    poly.addPoint(pnts[1].x,pnts[1].y);
+    poly.addPoint(pnts[2].x,pnts[2].y);
+    poly.addPoint(pnts[6].x,pnts[6].y);
+    poly.addPoint(pnts[5].x,pnts[5].y);
+    g2.setColor(new Color(220,220,220));
+    g2.fill(poly);
+    g2.setColor(Color.BLACK);
+    g2.draw(poly);
+
+    // draw bottom
+    poly = new Polygon();
+    poly.addPoint(pnts[0].x,pnts[0].y);
+    poly.addPoint(pnts[1].x,pnts[1].y);
+    poly.addPoint(pnts[2].x,pnts[2].y);
+    poly.addPoint(pnts[3].x,pnts[3].y);
+    g2.setColor(new Color(250,250,250));
+    g2.fill(poly);
+    g2.setColor(Color.BLACK);
+    g2.draw(poly);
+
+    // draw height grid lines
+    // for (int i = 0; i < ; i++) {
+    // }
+    // draw height axis
+    // Label height axis
+    // draw left axis
+    // Label left axis
+    // draw right axis
+    // Label right axis
+    if (bars != null) {
+      // draw bars back to front
+      for (int pos = bars.length - POLYS_PER_BAR; pos >= 0; pos -= POLYS_PER_BAR) {
+        for (int j = 0; j < POLYS_PER_BAR; j++) {
+          if (bars[pos + j] != null) {
+            g2.setColor(getBarFacetColor(pos+j));
+            g2.fill(bars[pos + j]);
+          }
+        }
+      }
+    } 
+    if (selecting) {
+      g2.setColor(Color.black);
+      g2.drawRect(Math.min(current.x,start.x), Math.min(current.y,start.y), 
+                  Math.abs(current.x - start.x), Math.abs(current.y - start.y));
+    }
+  }
+}

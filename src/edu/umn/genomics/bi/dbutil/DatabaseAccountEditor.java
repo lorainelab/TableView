@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: DatabaseAccountEditor.java,v $ $Revision: 1.1 $ $Date: 2004/02/10 21:34:11 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: DatabaseAccountEditor.java,v $ $Revision: 1.1 $ $Date: 2004/02/10 21:34:11 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -40,10 +40,9 @@ import javax.swing.event.ListDataListener;
 /**
  * Provides a panel in which to edit the database account user preferences.
  *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2004/02/10 21:34:11 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author             J Johnson
+ * @version $Revision: 1.1 $ $Date: 2004/02/10 21:34:11 $    $Name: TableView1_2 $
+ * @since                1.0
  * @see edu.umn.genomics.bi.dbutil.DBAccountListModel
  * @see java.util.prefs.Preferences
  * @see java.sql.DriverManager
@@ -71,7 +70,7 @@ public class DatabaseAccountEditor extends JPanel {
                 String acctName = (String) e.getItem();
                 if (acctName != null && acctName.length() > 0) {
                     try {
-                        setFields(acctName);
+                        setFields(acctName);          
                     } catch (Exception ex) {
                         ExceptionHandler.popupException(""+ex);
                     }
@@ -144,7 +143,7 @@ public class DatabaseAccountEditor extends JPanel {
         label.setToolTipText("Java Class name for the JDBC Driver");
         labels.add(label);
         fields.add(driverChooser);
-
+ 
         // JDBC URL
         label = new JLabel("JDBC URL: ", JLabel.RIGHT);
         label.setToolTipText("The URL for the Database Server");
@@ -172,8 +171,8 @@ public class DatabaseAccountEditor extends JPanel {
         // ToolBar Buttons
         JToolBar tb = new JToolBar();
 
-
-
+        
+        
         URL imgURL;
 
         // New
@@ -185,14 +184,14 @@ public class DatabaseAccountEditor extends JPanel {
         }
         btn.setToolTipText("Add New Account");
         btn.addActionListener(
-                new ActionListener() {
+            new ActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        newAccount();
-                    }
+                public void actionPerformed(ActionEvent e) {
+                    newAccount();
+                }
                 });
         tb.add(btn);
-
+        
         // Duplicate
         imgURL = this.getClass().getClassLoader().getResource("toolbarButtonGraphics/general/Copy24.gif");
         if (imgURL != null) {
@@ -202,11 +201,11 @@ public class DatabaseAccountEditor extends JPanel {
         }
         btn.setToolTipText("Duplicate this Account");
         btn.addActionListener(
-                new ActionListener() {
+            new ActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        duplicateAccount();
-                    }
+                public void actionPerformed(ActionEvent e) {
+                    duplicateAccount();
+                }
                 });
         tb.add(btn);
         tb.addSeparator();
@@ -220,18 +219,18 @@ public class DatabaseAccountEditor extends JPanel {
         }
         btn.setToolTipText("Test Connection to Database Server");
         btn.addActionListener(
-                new ActionListener() {
+            new ActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        try {
-                            testConnection();
-                            JOptionPane.showMessageDialog(
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        testConnection();
+                        JOptionPane.showMessageDialog(
                                     ((JComponent) e.getSource()).getTopLevelAncestor(),
-                                    "Able to connect");
-                        } catch (Exception ex) {
+                            "Able to connect");
+                    } catch (Exception ex) {
                             ExceptionHandler.popupException(""+ex);
-                        }
                     }
+                }
                 });
         tb.add(btn);
 
@@ -244,11 +243,11 @@ public class DatabaseAccountEditor extends JPanel {
         }
         btn.setToolTipText("Apply Changes to this Account");
         btn.addActionListener(
-                new ActionListener() {
+            new ActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        applyChanges();
-                    }
+                public void actionPerformed(ActionEvent e) {
+                    applyChanges();
+                }
                 });
         tb.add(btn);
         tb.addSeparator();
@@ -262,11 +261,11 @@ public class DatabaseAccountEditor extends JPanel {
         }
         btn.setToolTipText("Remove this Account");
         btn.addActionListener(
-                new ActionListener() {
+            new ActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        removeAccount();
-                    }
+                public void actionPerformed(ActionEvent e) {
+                    removeAccount();
+                }
                 });
         tb.add(btn);
         tb.addSeparator();
@@ -280,11 +279,11 @@ public class DatabaseAccountEditor extends JPanel {
         }
         btn.setToolTipText("Import Accounts");
         btn.addActionListener(
-                new ActionListener() {
+            new ActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        importAccounts();
-                    }
+                public void actionPerformed(ActionEvent e) {
+                    importAccounts();
+                }
                 });
         tb.add(btn);
 
@@ -297,11 +296,11 @@ public class DatabaseAccountEditor extends JPanel {
         }
         btn.setToolTipText("Export this Account");
         btn.addActionListener(
-                new ActionListener() {
+            new ActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        exportAccount();
-                    }
+                public void actionPerformed(ActionEvent e) {
+                    exportAccount();
+                }
                 });
         tb.add(btn);
 
@@ -314,35 +313,55 @@ public class DatabaseAccountEditor extends JPanel {
         }
         btn.setToolTipText("Export All Accounts");
         btn.addActionListener(
-                new ActionListener() {
+            new ActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        exportAllAccounts();
-                    }
+                public void actionPerformed(ActionEvent e) {
+                    exportAllAccounts();
+                }
                 });
         tb.add(btn);
 
         // Apply Buttons
         btnPanel = new Box(BoxLayout.X_AXIS);
 
-        /*
-         *
-         * // Test btn = new JButton("Test"); btn.setToolTipText("Test
-         * Connection to Database Server"); btn.addActionListener( new
-         * ActionListener() { public void actionPerformed(ActionEvent e) { try {
-         * testConnection(); JOptionPane.showMessageDialog(
-         * ((JComponent)e.getSource()).getTopLevelAncestor(), "Able to
-         * connect"); } catch (Exception ex) { JOptionPane.showMessageDialog(
-         * ((JComponent)e.getSource()).getTopLevelAncestor(), ex, "Data base
-         * connection failed", JOptionPane.ERROR_MESSAGE); } } } );
-         * btnPanel.add(btn);
-         *
-         * // Apply btn = new JButton("Apply"); btn.setToolTipText("Apply
-         * Changes to this Account"); btn.addActionListener( new
-         * ActionListener() { public void actionPerformed(ActionEvent e) {
-         * applyChanges(); } } ); btnPanel.add(btn);
-         *
-         */
+/*
+
+        // Test
+        btn = new JButton("Test");
+        btn.setToolTipText("Test Connection to Database Server");
+        btn.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        testConnection();
+                        JOptionPane.showMessageDialog(
+                            ((JComponent)e.getSource()).getTopLevelAncestor(),
+                            "Able to connect");
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(
+                            ((JComponent)e.getSource()).getTopLevelAncestor(),
+                            ex,
+                            "Data base connection failed",
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        );
+        btnPanel.add(btn);
+
+        // Apply
+        btn = new JButton("Apply");
+        btn.setToolTipText("Apply Changes to this Account");
+        btn.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    applyChanges();
+                }
+            }
+        );
+        btnPanel.add(btn);
+
+*/
 
         setLayout(new BorderLayout());
         add(entry);
@@ -368,11 +387,11 @@ public class DatabaseAccountEditor extends JPanel {
         // Close
         closeBtn.setToolTipText("Close");
         closeBtn.addActionListener(
-                new ActionListener() {
+            new ActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        cancel();
-                    }
+                public void actionPerformed(ActionEvent e) {
+                    cancel();
+                }
                 });
         btnPanel.add(closeBtn);
     }
@@ -408,9 +427,9 @@ public class DatabaseAccountEditor extends JPanel {
 
         newAccount();
 
-        driverChooser.setSelectedItem(drvr);
-        urlChooser.setSelectedItem(url);
-        userChooser.setSelectedItem(usr);
+        driverChooser.setSelectedItem(drvr); 
+        urlChooser.setSelectedItem(url); 
+        userChooser.setSelectedItem(usr); 
         passwordChooser.setText(pwd);
 
     }
@@ -428,7 +447,7 @@ public class DatabaseAccountEditor extends JPanel {
                     acctChooser.setSelectedIndex(i - 1);
                 } else if (i < dblm.getSize()) {
                     acctChooser.setSelectedIndex(i);
-                }
+                } 
             }
         } catch (Exception ex) {
             ExceptionHandler.popupException(""+ex);
@@ -439,15 +458,15 @@ public class DatabaseAccountEditor extends JPanel {
         String[] optionNames = {"Import", "Cancel"};
         try {
             int choice = JOptionPane.showOptionDialog(
-                    this.getTopLevelAncestor(),
-                    getImportPanel(),
-                    "Import Database User Parameters",
-                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
-                    null, optionNames, optionNames[0]);
+                 this.getTopLevelAncestor(),
+                 getImportPanel(),
+                 "Import Database User Parameters",
+                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
+                 null, optionNames, optionNames[0]);
             switch (choice) {
-                case 0:
-                    dblm.importPreferences(importTextField.getText());
-                    break;
+            case 0:
+                dblm.importPreferences(importTextField.getText());
+                break;
             }
         } catch (Exception ex) {
             ExceptionHandler.popupException(""+ex);
@@ -491,7 +510,7 @@ public class DatabaseAccountEditor extends JPanel {
             dblm.setURL(name, url);
             dblm.setUser(name, usr);
             dblm.setPassword(name, pwd);
-            dblm.setSelectedItem(name);
+            dblm.setSelectedItem(name); 
             setFields(name);
         } catch (Exception ex) {
             ExceptionHandler.popupException(""+ex);
@@ -505,7 +524,7 @@ public class DatabaseAccountEditor extends JPanel {
         String usr = (String) userChooser.getSelectedItem();
         String pwd = new String(passwordChooser.getPassword());
         try {
-            Class.forName(drvr);
+            Class.forName(drvr); 
         } catch (ClassNotFoundException cnfex) {
             ExceptionHandler.popupException(""+cnfex);
         }
@@ -520,11 +539,11 @@ public class DatabaseAccountEditor extends JPanel {
         } else {
             Container c = getTopLevelAncestor();
             if (c instanceof Window) {
-                ((Window) c).dispose();
+                ((Window)c).dispose();
             }
         }
     }
-
+    
     private synchronized void setModels() throws BackingStoreException{
         driverChooser.setModel(new DefaultComboBoxModel(dblm.getKnownDrivers()));
         urlChooser.setModel(new DefaultComboBoxModel(dblm.getKnownURLs()));
@@ -535,11 +554,11 @@ public class DatabaseAccountEditor extends JPanel {
         setModels();
         nameField.setText(accountName);
         //driverChooser.setModel(new DefaultComboBoxModel(dblm.getKnownDrivers()));
-        driverChooser.setSelectedItem(dblm.getDriver(accountName));
+        driverChooser.setSelectedItem(dblm.getDriver(accountName)); 
         //urlChooser.setModel(new DefaultComboBoxModel(dblm.getKnownURLs()));
-        urlChooser.setSelectedItem(dblm.getURL(accountName));
+        urlChooser.setSelectedItem(dblm.getURL(accountName)); 
         //userChooser.setModel(new DefaultComboBoxModel(dblm.getKnownUsers()));
-        userChooser.setSelectedItem(dblm.getUser(accountName));
+        userChooser.setSelectedItem(dblm.getUser(accountName)); 
         passwordChooser.setText(dblm.getPassword(accountName));
     }
 
@@ -547,7 +566,7 @@ public class DatabaseAccountEditor extends JPanel {
         String acctName = (String) acctChooser.getSelectedItem();
         if (acctName != null && acctName.length() > 0) {
             try {
-                setFields(acctName);
+            setFields(acctName);
             } catch (Exception ex) {
                 ExceptionHandler.popupException(""+ex);
             }
@@ -578,7 +597,7 @@ public class DatabaseAccountEditor extends JPanel {
                                 }
                             } catch (Exception ex) {
                                 ExceptionHandler.popupException(""+ex);
-                            }
+                                }
                         }
                     });
             importPanel.add(label);
@@ -612,14 +631,14 @@ public class DatabaseAccountEditor extends JPanel {
      */
     public void show(Component parentComponent) {
         Component parent = (Component) (parentComponent != null
-                ? parentComponent : getTopLevelAncestor());
+                                       ? parentComponent : getTopLevelAncestor());
         String[] optionNames = {"Close"};
         String connectTitle = "Edit Database Account Preferences";
         this.validate();
         int choice = JOptionPane.showOptionDialog(parent, this,
-                connectTitle,
-                JOptionPane.CLOSED_OPTION, JOptionPane.QUESTION_MESSAGE,
-                null, optionNames, optionNames[0]);
+                         connectTitle,
+                         JOptionPane.CLOSED_OPTION, JOptionPane.QUESTION_MESSAGE,
+                         null, optionNames, optionNames[0]);
     }
 
     /**

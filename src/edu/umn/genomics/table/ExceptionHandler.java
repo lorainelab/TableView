@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
  * This Class is used to handle all the Exceptions with a generalised Popup 
  */
 public class ExceptionHandler {
-    static Icon tvIcon = new ImageIcon(TableView.class.getClassLoader().getResource("TableView96.png"));
+    static Icon tvIcon = new ImageIcon(TableView.class.getClassLoader().getResource("edu/umn/genomics/table/TableView96.png"));
     public static int popupException(String message){
         return JOptionPane.showConfirmDialog(null, message, "Tableview Exception", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, tvIcon);
     }

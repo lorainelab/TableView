@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: Cluster.java,v $ $Revision: 1.2 $ $Date: 2002/07/30 19:45:14 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: Cluster.java,v $ $Revision: 1.2 $ $Date: 2002/07/30 19:45:14 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,43 +21,42 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table.cluster;
 
-import javax.swing.tree.DefaultMutableTreeNode;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.tree.*;
+import javax.swing.table.*;
 
 /**
  * Base class for Cluster data.
- *
- * @author J Johnson
- * @version $Revision: 1.2 $ $Date: 2002/07/30 19:45:14 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.2 $ $Date: 2002/07/30 19:45:14 $  $Name: TableView1_2 $ 
+ * @since        1.0
  */
 public class Cluster extends DefaultMutableTreeNode {
+  double similarity = 0.;
+  double height = 0.;
 
-    double similarity = 0.;
-    double height = 0.;
+  public Cluster() {
+  }
+  public double[] getValues() {
+    return null;
+  }
+  public double getSimilarity() {
+    return similarity;
+  }
+  public void setSimilarity(double similarity) {
+    this.similarity = similarity;
+  }
+  public double getHeight() {
+    return height;
+  }
+  public void setHeight(double height) {
+    this.height = height;
+  }
 
-    public Cluster() {
-    }
-
-    public double[] getValues() {
-        return null;
-    }
-
-    public double getSimilarity() {
-        return similarity;
-    }
-
-    public void setSimilarity(double similarity) {
-        this.similarity = similarity;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public void setHeight(double height) {
-        this.height = height;
-    }
 }
+

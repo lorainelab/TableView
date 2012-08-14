@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: AbstractTableSource.java,v $ $Revision: 1.2 $ $Date: 2002/07/30 19:44:59 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: AbstractTableSource.java,v $ $Revision: 1.2 $ $Date: 2002/07/30 19:44:59 $ $Name: TableView1_3 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,94 +21,89 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
-import javax.swing.JPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.EventListenerList;
-import javax.swing.table.TableModel;
+import java.util.*;
+import java.sql.*;
+import java.text.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import edu.umn.genomics.bi.dbutil.*;
 
 /**
- * Associates a named table data source and the TableModel interface to that
- * data source.
- *
- * @author J Johnson
- * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:59 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * Associates a named table data source and the
+ * TableModel interface to that data source.
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:59 $  $Name: TableView1_3 $
+ * @since        1.0
  */
 public class AbstractTableSource extends JPanel implements TableSource {
+  private EventListenerList listenerList = new EventListenerList();
+  protected String tableSource;
+  protected TableModel tableModel;
 
-    private EventListenerList listenerList = new EventListenerList();
-    protected String tableSource;
-    protected TableModel tableModel;
+  /**
+   * Set the source name for the given TableModel.
+   * @param tableModel  A TableModel interface to the named data source.
+   * @param tableSource A name for this data source.
+   */
+  protected void setTableSource(TableModel tableModel, String tableSource) {
+    this.tableModel = tableModel;
+    this.tableSource = tableSource;
+    fireChangeEvent();
+  }
 
-    /**
-     * Set the source name for the given TableModel.
-     *
-     * @param tableModel A TableModel interface to the named data source.
-     * @param tableSource A name for this data source.
-     */
-    protected void setTableSource(TableModel tableModel, String tableSource) {
-        this.tableModel = tableModel;
-        this.tableSource = tableSource;
-        fireChangeEvent();
+  /**
+   * Return the name for the source of the data table.
+   * @return The source of the data table
+   */
+  public String getTableSource() {
+    return tableSource;
+  }
+
+  /**
+   * Return a TableModel for the data source.
+   * @return The TableModel for the data source, or null if not available.
+   */
+  public TableModel getTableModel() {
+    return tableModel;
+  }
+  /**
+   * Adds the listener to be notified of changes to the data source.
+   * @param listener the ChangeListener to add
+   */
+  public void addChangeListener(ChangeListener listener) {
+    listenerList.add(ChangeListener.class, listener);
+  }
+  /**
+   * Removes the listener from the notification list.
+   * @param listener the ChangeListener to remove
+   */
+  public void removeChangeListener(ChangeListener listener) {
+    listenerList.add(ChangeListener.class, listener);
+  }
+  /**
+   * Notify Listeners of change.
+   */
+  protected void fireChangeEvent() {
+    // Guaranteed to return a non-null array
+    Object[] listeners = listenerList.getListenerList();
+    // Process the listeners last to first, notifying
+    // those that are interested in this event
+    ChangeEvent changeEvent = null;
+    for (int i = listeners.length-2; i>=0; i-=2) {
+      if (listeners[i]==ChangeListener.class) {
+        // Lazily create the event:
+        if (changeEvent == null)
+          changeEvent = new ChangeEvent(this);
+        ((ChangeListener)listeners[i+1]).stateChanged(changeEvent);
+      }
     }
-
-    /**
-     * Return the name for the source of the data table.
-     *
-     * @return The source of the data table
-     */
-    public String getTableSource() {
-        return tableSource;
-    }
-
-    /**
-     * Return a TableModel for the data source.
-     *
-     * @return The TableModel for the data source, or null if not available.
-     */
-    public TableModel getTableModel() {
-        return tableModel;
-    }
-
-    /**
-     * Adds the listener to be notified of changes to the data source.
-     *
-     * @param listener the ChangeListener to add
-     */
-    public void addChangeListener(ChangeListener listener) {
-        listenerList.add(ChangeListener.class, listener);
-    }
-
-    /**
-     * Removes the listener from the notification list.
-     *
-     * @param listener the ChangeListener to remove
-     */
-    public void removeChangeListener(ChangeListener listener) {
-        listenerList.add(ChangeListener.class, listener);
-    }
-
-    /**
-     * Notify Listeners of change.
-     */
-    protected void fireChangeEvent() {
-        // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
-        ChangeEvent changeEvent = null;
-        for (int i = listeners.length - 2; i >= 0; i -= 2) {
-            if (listeners[i] == ChangeListener.class) {
-                // Lazily create the event:
-                if (changeEvent == null) {
-                    changeEvent = new ChangeEvent(this);
-                }
-                ((ChangeListener) listeners[i + 1]).stateChanged(changeEvent);
-            }
-        }
-    }
+  }
 }

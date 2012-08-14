@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: BinLabeler.java,v $ $Revision: 1.1 $ $Date: 2004/08/02 20:23:37 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: BinLabeler.java,v $ $Revision: 1.1 $ $Date: 2004/08/02 20:23:37 $ $Name: TableView1_3 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,22 +21,22 @@
  * GNU General Public License for more details.
  *
  */
+
 package edu.umn.genomics.table;
+
+import java.io.Serializable;
 
 /**
  * Returns a label for a bin in a BinModel.
- *
- * @author J Johnson
- * @version %I%, %G%
- * @since 1.0
+ * @author       J Johnson
+ * @version      %I%, %G%
+ * @since        1.0
  */
 public interface BinLabeler {
-
-    /**
-     * Get the label of a bin.
-     *
-     * @param binIndex the index of the bin from 0 to #bins - 1.
-     * @return the label for the given bin.
-     */
-    public String getLabel(int binIndex);
+  /**
+   * Get the label of a bin.
+   * @param binIndex the index of the bin from 0 to  #bins - 1.
+   * @return the label for the given bin.
+   */
+  public String getLabel(int binIndex);
 }

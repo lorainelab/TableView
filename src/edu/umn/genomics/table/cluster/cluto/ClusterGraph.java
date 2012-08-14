@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: ClusterGraph.java,v $ $Revision: 1.1 $ $Date: 2003/07/28 19:30:18 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: ClusterGraph.java,v $ $Revision: 1.1 $ $Date: 2003/07/28 19:30:18 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,201 +21,201 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table.cluster.cluto;
 
-import edu.umn.genomics.graph.GraphLine;
-import edu.umn.genomics.graph.IndexedColor;
-import edu.umn.genomics.graph.swing.SimpleGraph;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import javax.swing.JPanel;
-import javax.swing.ListSelectionModel;
+import java.awt.*;
+import java.util.*;
+import java.awt.geom.*;
+import javax.swing.*;
+import edu.umn.genomics.table.*;
+import edu.umn.genomics.graph.*;
+import edu.umn.genomics.graph.swing.*;
 import jcluto.ClusterFeatures;
 import jcluto.ClutoMatrix;
 import jcluto.ClutoSolution;
 import jcluto.ClutoTableMatrix;
 
+
 /**
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/07/28 19:30:18 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see javax.swing.table.TableModel
- * @see javax.swing.ListSelectionModel
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/07/28 19:30:18 $  $Name: TableView1_2 $ 
+ * @since        1.0
+ * @see  javax.swing.table.TableModel
+ * @see  javax.swing.ListSelectionModel
  */
 public class ClusterGraph extends JPanel {
 
-    ClutoTableMatrix ctm;
-    int[] rows = null;
-    double[] mean = null;
-    double[] stddev = null;
-    double minVal = Double.MAX_VALUE;
-    double maxVal = Double.MIN_VALUE;
-    SimpleGraph graph;
+  ClutoTableMatrix ctm; 
+  int[] rows = null;
+  double[] mean = null;
+  double[] stddev = null;
+  double minVal = Double.MAX_VALUE;
+  double maxVal = Double.MIN_VALUE; 
 
-    public ClusterGraph(ClutoSolution clutoSolution, int cluster, int fCnt, int[] rows) {
-        ClutoMatrix matrix = clutoSolution.getMatrix();
-        ctm = matrix instanceof ClutoTableMatrix ? (ClutoTableMatrix) matrix
-                : new ClutoTableMatrix(matrix);
-        this.rows = rows;
-        calcStats();
+  SimpleGraph graph;
 
-        graph = new SimpleGraph();
-        graph.getGraphDisplay().setOpaque(true);
-        graph.getGraphDisplay().setBackground(Color.white);
-        graph.getGraphDisplay().setGridColor(new Color(220, 220, 220));
-        graph.showGrid(false);
-        graph.showAxis(BorderLayout.WEST, true);
-        graph.getAxisDisplay(BorderLayout.WEST).setZoomable(true);
-        graph.getAxisDisplay(BorderLayout.SOUTH).setZoomable(true);
 
-        graph.getXAxis().setMin(-.5);
-        graph.getXAxis().setMax(ctm.getColumnCount() - .5);
-        graph.getYAxis().setMin(minVal);
-        graph.getYAxis().setMax(maxVal);
+  public ClusterGraph(ClutoSolution clutoSolution, int cluster, int fCnt, int[] rows) {
+    ClutoMatrix matrix = clutoSolution.getMatrix();
+    ctm = matrix instanceof ClutoTableMatrix ? (ClutoTableMatrix)matrix 
+                                             : new ClutoTableMatrix(matrix);
+    this.rows = rows; 
+    calcStats();
 
-        if (fCnt > 0) {
-            ClusterFeatures cf = clutoSolution.getClusterFeatures(fCnt);
-            IndexedColor idx;
-            FeatureGraphItem gf;
-            int cnt = cf.getFeatureCount();
-            int[] fcol1 = new int[cnt];
-            int[] fcol2 = new int[cnt];
-            final Color[] fcolor1 = new Color[cnt];
-            final Color[] fcolor2 = new Color[cnt];
+    graph = new SimpleGraph();
+    graph.getGraphDisplay().setOpaque(true);
+    graph.getGraphDisplay().setBackground(Color.white);
+    graph.getGraphDisplay().setGridColor(new Color(220,220,220));
+    graph.showGrid(false);
+    graph.showAxis(BorderLayout.WEST,true);
+    graph.getAxisDisplay(BorderLayout.WEST).setZoomable(true);
+    graph.getAxisDisplay(BorderLayout.SOUTH).setZoomable(true);
 
-            for (int i = 0; i < cnt; i++) {
-                // 
-                fcol2[i] = cf.getInternalID(cluster, i);
-                float fwgt = cf.getInternalWgt(cluster, i) * fCnt / 2f;
-                if (fwgt > 1f) {
-                    fwgt = 1f;
-                } else if (fwgt < .1f) {
-                    fwgt = .1f;
-                }
-                fcolor2[i] = new Color(1f - fwgt, 1f, 1f - fwgt);
-                //
-                fcol1[i] = cf.getExternalID(cluster, i);
-                fwgt = cf.getExternalWgt(cluster, i) * fCnt / 2f;
-                if (fwgt > 1f) {
-                    fwgt = 1f;
-                } else if (fwgt < .1f) {
-                    fwgt = .1f;
-                }
-                fcolor1[i] = new Color(1f - fwgt, 1f - fwgt, 1f);
-            }
+    graph.getXAxis().setMin(-.5);
+    graph.getXAxis().setMax(ctm.getColumnCount()-.5);
+    graph.getYAxis().setMin(minVal);
+    graph.getYAxis().setMax(maxVal);
 
-            idx = new IndexedColor() {
+    if (fCnt > 0) {
+      ClusterFeatures cf = clutoSolution.getClusterFeatures(fCnt);
+      IndexedColor idx;
+      FeatureGraphItem gf;
+      int cnt = cf.getFeatureCount();
+      int[] fcol1 = new int[cnt];
+      int[] fcol2 = new int[cnt];
+      final Color[] fcolor1 = new Color[cnt];
+      final Color[] fcolor2 = new Color[cnt];
 
-                Color color[] = fcolor1;
-
-                public int getSize() {
-                    return color != null ? color.length : 0;
-                }
-
-                public Color getColorAt(int index) {
-                    return color != null && index >= 0 && index < color.length ? color[index] : Color.white;
-                }
-            };
-            gf = new FeatureGraphItem(fcol1, 0., .1);
-            gf.setIndexedColor(idx);
-            graph.addGraphItem(gf);
-
-            idx = new IndexedColor() {
-
-                Color color[] = fcolor2;
-
-                public int getSize() {
-                    return color != null ? color.length : 0;
-                }
-
-                public Color getColorAt(int index) {
-                    return color != null && index >= 0 && index < color.length ? color[index] : Color.white;
-                }
-            };
-            gf = new FeatureGraphItem(fcol2, .9, .1);
-            gf.setIndexedColor(idx);
-            graph.addGraphItem(gf);
-
+      for (int i = 0; i < cnt; i++) {
+        // 
+        fcol2[i] = cf.getInternalID(cluster, i);
+        float fwgt = cf.getInternalWgt(cluster, i) * fCnt / 2f;
+        if (fwgt > 1f) {
+          fwgt = 1f;
+        } else if (fwgt < .1f) {
+          fwgt = .1f;
         }
-
-        ClusterGraphItem cg = new ClusterGraphItem(ctm, rows);
-        cg.setColor(Color.darkGray);
-        graph.addGraphItem(cg);
-
-        double[] stddevPos = new double[stddev.length];
-        for (int i = 0; i < stddev.length; i++) {
-            stddevPos[i] = mean[i] + stddev[i];
+        fcolor2[i] = new Color(1f - fwgt, 1f, 1f - fwgt);
+        //
+        fcol1[i] = cf.getExternalID(cluster, i);
+        fwgt = cf.getExternalWgt(cluster, i) * fCnt / 2f;
+        if (fwgt > 1f) {
+          fwgt = 1f;
+        } else if (fwgt < .1f) {
+          fwgt = .1f;
         }
-        GraphLine gp = new GraphLine();
-        gp.setData(stddevPos);
-        gp.setColor(Color.yellow);
-        graph.addGraphItem(gp);
+        fcolor1[i] = new Color(1f - fwgt, 1f - fwgt, 1f);
+      }
+ 
+      idx = new IndexedColor() {
+          Color color[] = fcolor1;
+          public int getSize() {
+            return color != null ? color.length : 0;
+          }
+          public Color getColorAt(int index) {
+            return color != null && index >= 0 && index < color.length ? color[index] : Color.white;
+          }
+        };
+      gf = new FeatureGraphItem(fcol1,0.,.1);
+      gf.setIndexedColor(idx);
+      graph.addGraphItem(gf);
+ 
+      idx = new IndexedColor() {
+          Color color[] = fcolor2;
+          public int getSize() {
+            return color != null ? color.length : 0;
+          }
+          public Color getColorAt(int index) {
+            return color != null && index >= 0 && index < color.length ? color[index] : Color.white;
+          }
+        };
+      gf = new FeatureGraphItem(fcol2,.9,.1);
+      gf.setIndexedColor(idx);
+      graph.addGraphItem(gf);
 
-        double[] stddevNeg = new double[stddev.length];
-        for (int i = 0; i < stddev.length; i++) {
-            stddevNeg[i] = mean[i] - stddev[i];
-        }
-        GraphLine gn = new GraphLine();
-        gn.setData(stddevNeg);
-        gn.setColor(Color.yellow);
-        graph.addGraphItem(gn);
-
-        GraphLine gm = new GraphLine();
-        gm.setData(mean);
-        gm.setColor(Color.green);
-        graph.addGraphItem(gm);
-
-        setLayout(new BorderLayout());
-        add(graph);
     }
 
-    public SimpleGraph getGraph() {
-        return graph;
-    }
+    ClusterGraphItem cg = new ClusterGraphItem(ctm, rows);
+    cg.setColor(Color.darkGray);
+    graph.addGraphItem(cg);
 
-    private void calcStats() {
-        int ncol = ctm.getColumnCount();
-        mean = new double[ncol];
-        stddev = new double[ncol];
-        for (int c = 0; c < ncol; c++) {
-            int numNull = 0;
-            double avg = 0.;
-            int n = rows.length;
-            if (n > 0) {
-                for (int i = 0; i < rows.length; i++) {
-                    double val = ctm.getValue(rows[i], c);
-                    if (!Double.isNaN(val)) {
-                        avg += val / n;
-                        if (val < minVal) {
-                            minVal = val;
-                        }
-                        if (val > maxVal) {
-                            maxVal = val;
-                        }
-                    } else {
-                        numNull++;
-                    }
-                }
-                if (numNull > 0 && numNull < rows.length) {
-                    avg *= n / (n - numNull);
-                }
+    double[] stddevPos = new double[stddev.length];
+    for (int i = 0; i < stddev.length; i++) {
+      stddevPos[i] = mean[i] + stddev[i];
+    }
+    GraphLine gp = new GraphLine();
+    gp.setData(stddevPos);
+    gp.setColor(Color.yellow);
+    graph.addGraphItem(gp);
+
+    double[] stddevNeg = new double[stddev.length];
+    for (int i = 0; i < stddev.length; i++) {
+      stddevNeg[i] = mean[i] - stddev[i];
+    }
+    GraphLine gn = new GraphLine();
+    gn.setData(stddevNeg);
+    gn.setColor(Color.yellow);
+    graph.addGraphItem(gn);
+
+    GraphLine gm = new GraphLine();
+    gm.setData(mean);
+    gm.setColor(Color.green);
+    graph.addGraphItem(gm);
+
+    setLayout(new BorderLayout());
+    add(graph);
+  } 
+
+  public SimpleGraph getGraph() {
+    return graph;
+  }
+
+  private void calcStats() {
+    int ncol = ctm.getColumnCount();
+    mean = new double[ncol];
+    stddev = new double[ncol];
+    for (int c = 0; c < ncol; c++) {
+      int numNull = 0;
+      double avg = 0.;
+      int n = rows.length;
+      if (n > 0) {
+        for (int i = 0; i < rows.length; i++) {
+          double val = ctm.getValue(rows[i],c);
+          if (!Double.isNaN(val)) {
+            avg += val / n;
+            if (val < minVal) {
+              minVal = val;
             }
-            // variance
-            double variance = 0.;
-            double n1 = n - numNull - 1;
-            if (n1 > 0) {
-                for (int i = 0; i < rows.length; i++) {
-                    double val = ctm.getValue(rows[i], c);
-                    if (!Double.isNaN(val)) {
-                        variance += Math.pow(val - avg, 2.) / n1;
-                    }
-                }
+            if (val > maxVal) {
+              maxVal = val;
             }
-            // stddev
-            mean[c] = avg;
-            stddev[c] = Math.sqrt(variance);
+          } else {
+            numNull++;
+          }
         }
-
+        if (numNull > 0 && numNull < rows.length) {
+          avg *= n / (n - numNull);
+        }
+      }
+      // variance
+      double variance = 0.;
+      double n1 = n - numNull - 1;
+      if (n1 > 0) {
+        for (int i = 0; i < rows.length; i++) {
+          double val = ctm.getValue(rows[i],c);
+          if (!Double.isNaN(val)) {
+            variance += Math.pow(val-avg,2.) / n1 ;
+          }
+        }
+      }
+      // stddev
+      mean[c] = avg;
+      stddev[c] = Math.sqrt(variance);
     }
+    
+  }
+
+
 }

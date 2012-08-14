@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: IndexMap.java,v $ $Revision: 1.3 $ $Date: 2002/07/30 19:45:04 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: IndexMap.java,v $ $Revision: 1.3 $ $Date: 2002/07/30 19:45:04 $ $Name: TableView1_3 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,68 +21,55 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
 /**
  * Provides a mapping between two sets of indices.
  *
- * @author J Johnson
- * @version $Revision: 1.3 $ $Date: 2002/07/30 19:45:04 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.3 $ $Date: 2002/07/30 19:45:04 $  $Name: TableView1_3 $ 
+ * @since        1.0
  */
 public interface IndexMap {
-
-    /**
-     * Return true if this is a one to one mapping.
-     *
-     * @return true if this is a one to one mapping, else efalse.
-     */
-    public boolean isOneToOne();
-
-    /**
-     * Return the source index for the given destination index.
-     *
-     * @param dstIndex the index into the destination list.
-     * @return the source index mapped from the destination index.
-     */
-    public int getSrc(int dstIndex);
-
-    /**
-     * Return the destination index for the given source index.
-     *
-     * @param srcIndex the index into the source list.
-     * @return the destination index mapped from the source index.
-     */
-    public int getDst(int srcIndex);
-
-    /**
-     * Return the source indices for the given destination index.
-     *
-     * @param dstIndex the index into the destination list.
-     * @return the source indices mapped from the destination index.
-     */
-    public int[] getSrcs(int dstIndex);
-
-    /**
-     * Return the destination indices for the given source index.
-     *
-     * @param srcIndex the index into the source list.
-     * @return the destination indices mapped from the source index.
-     */
-    public int[] getDsts(int srcIndex);
-
-    /**
-     * Return the size of the source list.
-     *
-     * @return the size of the source list.
-     */
-    public int getSrcSize();
-
-    /**
-     * Return the size of the destination list.
-     *
-     * @return the size of the destination list.
-     */
-    public int getDstSize();
+  /**
+   *  Return true if this is a one to one mapping.
+   * @return true if this is a one to one mapping, else efalse.
+   */
+  public boolean isOneToOne();
+  /**
+   * Return the source index for the given destination index.
+   * @param dstIndex the index into the destination list.
+   * @return the source index mapped from the destination index.
+   */
+  public int getSrc(int dstIndex);
+  /**
+   * Return the destination index for the given source index.
+   * @param srcIndex the index into the source list.
+   * @return the destination index mapped from the source index.
+   */
+  public int getDst(int srcIndex);
+  /**
+   * Return the source indices for the given destination index.
+   * @param dstIndex the index into the destination list.
+   * @return the source indices mapped from the destination index.
+   */
+  public int[] getSrcs(int dstIndex);
+  /**
+   * Return the destination indices for the given source index.
+   * @param srcIndex the index into the source list.
+   * @return the destination indices mapped from the source index.
+   */
+  public int[] getDsts(int srcIndex);
+  /**
+   * Return the size of the source list.
+   * @return the size of the source list.
+   */
+  public int getSrcSize();
+  /**
+   * Return the size of the destination list.
+   * @return the size of the destination list.
+   */
+  public int getDstSize();
 }

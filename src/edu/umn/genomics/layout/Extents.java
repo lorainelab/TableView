@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: Extents.java,v $ $Revision: 1.3 $ $Date: 2002/07/30 19:44:58 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: Extents.java,v $ $Revision: 1.3 $ $Date: 2002/07/30 19:44:58 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,87 +21,80 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.layout;
 
 /**
- * Extents defines a double precision rectangle by specifying two opposite
- * corners.
- *
- * @author J Johnson
- * @version $Revision: 1.3 $ $Date: 2002/07/30 19:44:58 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * Extents defines a double precision rectangle by specifying 
+ * two opposite corners.
+ * @author       J Johnson
+ * @version $Revision: 1.3 $ $Date: 2002/07/30 19:44:58 $  $Name: TableView1_2 $ 
+ * @since        1.0
  */
 public class Extents {
+  public double fromX = 0.;
+  public double fromY = 0.;
+  public double toX = 1.;
+  public double toY = 1.;
 
-    public double fromX = 0.;
-    public double fromY = 0.;
-    public double toX = 1.;
-    public double toY = 1.;
+  /** 
+   * Constructor that sets the default extents 0.,0. t0 1.,1.
+   */
+  public Extents() {
+  }
+  /** 
+   * Constructor that sets the extents to the given values.
+   * @param fromX the left x position.
+   * @param fromY the top y position.
+   * @param toX the right x position.
+   * @param toY the bottom y position.
+   */
+  public Extents(double fromX, double fromY, double toX,double toY) {
+    this.fromX = fromX;
+    this.fromY = fromY;
+    this.toX = toX;
+    this.toY = toY;
+  }
 
-    /**
-     * Constructor that sets the default extents 0.,0. t0 1.,1.
-     */
-    public Extents() {
-    }
+  /**
+   * Return the width of this Extent.
+   * @return the width of this Extent.
+   */
+  public double getWidth() {
+    return toX - fromX;
+  }
 
-    /**
-     * Constructor that sets the extents to the given values.
-     *
-     * @param fromX the left x position.
-     * @param fromY the top y position.
-     * @param toX the right x position.
-     * @param toY the bottom y position.
-     */
-    public Extents(double fromX, double fromY, double toX, double toY) {
-        this.fromX = fromX;
-        this.fromY = fromY;
-        this.toX = toX;
-        this.toY = toY;
-    }
+  /**
+   * Return the height of this Extent.
+   * @return the height of this Extent.
+   */
+  public double getHeight() {
+    return toY - fromY;
+  }
 
-    /**
-     * Return the width of this Extent.
-     *
-     * @return the width of this Extent.
-     */
-    public double getWidth() {
-        return toX - fromX;
-    }
+  /**
+   * Return the x origin of this Extent.
+   * @return the x origin of this Extent.
+   */
+  public double getX() {
+    return fromX;
+  }
 
-    /**
-     * Return the height of this Extent.
-     *
-     * @return the height of this Extent.
-     */
-    public double getHeight() {
-        return toY - fromY;
-    }
+  /**
+   * Return the y origin of this Extent.
+   * @return the y origin of this Extent.
+   */
+  public double getY() {
+    return fromY;
+  }
 
-    /**
-     * Return the x origin of this Extent.
-     *
-     * @return the x origin of this Extent.
-     */
-    public double getX() {
-        return fromX;
-    }
-
-    /**
-     * Return the y origin of this Extent.
-     *
-     * @return the y origin of this Extent.
-     */
-    public double getY() {
-        return fromY;
-    }
-
-    /**
-     * Return a String representation of this Extent.
-     *
-     * @return a representation of this Extent.
-     */
-    public String toString() {
-        return "[" + fromX + "," + fromY + "," + toX + "," + toY + "]";
-    }
+  /**
+   * Return a String representation of this Extent.
+   * @return a representation of this Extent.
+   */
+  public String toString() {
+    return "[" + fromX +","+fromY+","+toX+","+toY+"]";
+  }
 }
+

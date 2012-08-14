@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: DrawableT.java,v $ $Revision: 1.2 $ $Date: 2002/07/30 19:44:50 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: DrawableX.java,v $ $Revision: 1.2 $ $Date: 2002/07/30 19:44:50 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,30 +21,49 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.graph;
 
-import java.awt.Graphics;
+import java.awt.*;
 
 /**
- * An item to be drawn.
- *
- * @author J Johnson
- * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:50 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see javax.swing.table.TableModel
- * @see javax.swing.ListSelectionModel
- * @see Graph
+ * An item to be drawn. 
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:50 $  $Name: TableView1_2 $ 
+ * @since        1.0
+ * @see  javax.swing.table.TableModel
+ * @see  javax.swing.ListSelectionModel
+ * @see  Graph
  */
 public class DrawableX implements Drawable {
-    /*
-     * Draw using the given graphics context at the given point. @param g the
-     * graphics context. @param xAxis The X axis of the graph. @param yAxis The
-     * Y axis of the graph.
-     */
+  protected int radius = 1;
 
-    public void draw(Graphics g, int x, int y) {
-        g.drawLine(x - 2, y - 2, x + 2, y + 2);
-        g.drawLine(x - 2, y + 2, x + 2, y - 2);
-    }
+  public DrawableX() {
+  }
+  public DrawableX(int radius) {
+    this.radius = radius;
+  }
+
+  public int getRadius() {
+    return radius;
+  }
+  public void setRadius(int radius) {
+    this.radius = radius;
+  }
+
+  /*
+   * Draw using the given graphics context at the given point.
+   * @param g the graphics context.
+   * @param xAxis The X axis of the graph.
+   * @param yAxis The Y axis of the graph.
+   */
+  public void draw(Graphics g, int x, int y) {
+    g.drawLine(x-radius, y-radius, x+radius, y+radius);
+    g.drawLine(x-radius, y+radius, x+radius, y-radius);
+  }
+  public String toString() {
+    return this.getClass().getSimpleName() + ",Radius=" + getRadius();
+  }
 }

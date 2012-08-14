@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: ColumnMap.java,v $ $Revision: 1.20 $ $Date: 2002/07/30 19:45:01 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: ColumnMap.java,v $ $Revision: 1.20 $ $Date: 2002/07/30 19:45:01 $ $Name: TableView1_3 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,72 +21,69 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table;
 
-import javax.swing.ListSelectionModel;
-import javax.swing.table.TableModel;
+import java.io.Serializable;
+import java.util.*;
+import java.text.DecimalFormat;
+import java.text.ParsePosition;
+import javax.swing.*;
+import javax.swing.table.*;
+import javax.swing.event.*;
 
 /**
- * ColumnMap maps the values of a column in a TableModel to a numeric range. If
- * the common Class type of the Column is Number or Date, or if all of the *
- * values of the Column are Strings that can be parsed as class Number or Date,
- * * the range will be from the minimum to the maximum of the values in the
- * Column. If any value can not be parsed as class Number or Date, the values
- * will be mapped to integral values from 0 to the number of distinct values -
- * 1, (distinct values are determined by the value's equals method.) The CellMap
- * can also be used to select a range of mapped values from the Column and
- * indicate the selected indices in a ListSelectionModel. A new selection is be
- * specified as a subrange of values between the the minimum and maximum values
- * of the column. New selections may be combined with the previous selections
- * using standard set operators.
- *
- * @author J Johnson
- * @version $Revision: 1.20 $ $Date: 2002/07/30 19:45:01 $ $Name: TableView1_3_2
- * $
- * @since 1.0
- * @see SetOperator
- * @see javax.swing.table.TableModel
- * @see javax.swing.ListSelectionModel
+ * ColumnMap maps the values of a column in a TableModel to a numeric range. 
+ * If the common Class type of the Column is Number or Date, 
+ * or if all of the * values of the Column are Strings that can be parsed 
+ * as class Number or Date, * the range will be from the minimum to the maximum 
+ * of the values in the Column. 
+ * If any value can not be parsed as class Number or Date, the values 
+ * will be mapped to integral values from 0 to the number of distinct values - 1,
+ * (distinct values are determined by the value's equals method.)
+ * The CellMap can also be used to select a range of mapped values 
+ * from the Column and indicate the selected indices in a ListSelectionModel.  
+ * A new selection is be specified as a subrange of values between the
+ * the minimum and maximum values of the column.
+ * New selections may be combined with the previous selections using standard 
+ * set operators.
+ * 
+ * @author       J Johnson
+ * @version $Revision: 1.20 $ $Date: 2002/07/30 19:45:01 $  $Name: TableView1_3 $ 
+ * @since        1.0
+ * @see  SetOperator 
+ * @see  javax.swing.table.TableModel 
+ * @see  javax.swing.ListSelectionModel
  */
 public interface ColumnMap extends SelectableCellMap {
+  /**
+   * Sets tableModel as the data model for the column being mapped.
+   * @param tableModel the data model
+   */
+  public void setTableModel(TableModel tableModel);
 
-    /**
-     * Sets tableModel as the data model for the column being mapped.
-     *
-     * @param tableModel the data model
-     */
-    public void setTableModel(TableModel tableModel);
+  /** Return the table model being displayed.
+   * @return the table being displayed.
+   */
+  public TableModel getTableModel();
+  /**
+   * Return the column index that is be mapped.
+   * @return the index of the column of the TableModel this maps.
+   */
+  public int getColumnIndex();
+   /**
+   * Return the Class of the column in the TableModel.
+   * @return the Class of the column in the TableModel.
+   */
+  public Class getColumnClass();
+  /**
+   * Return the value for this column in the TableModel at the given rowIndex.
+   * This is a convenience method for TableModel.getValueAt(int rowIndex, int columnIndex),
+   * however, an implementation may choose to store the values outside of the table.
+   * @param rowIndex the row index in the TableModel.
+   * @return the value for this column in the TableModel at the given rowIndex.
+   */
+  public Object getValueAt(int rowIndex);
 
-    /**
-     * Return the table model being displayed.
-     *
-     * @return the table being displayed.
-     */
-    public TableModel getTableModel();
-
-    /**
-     * Return the column index that is be mapped.
-     *
-     * @return the index of the column of the TableModel this maps.
-     */
-    public int getColumnIndex();
-
-    /**
-     * Return the Class of the column in the TableModel.
-     *
-     * @return the Class of the column in the TableModel.
-     */
-    public Class getColumnClass();
-
-    /**
-     * Return the value for this column in the TableModel at the given rowIndex.
-     * This is a convenience method for TableModel.getValueAt(int rowIndex, int
-     * columnIndex), however, an implementation may choose to store the values
-     * outside of the table.
-     *
-     * @param rowIndex the row index in the TableModel.
-     * @return the value for this column in the TableModel at the given
-     * rowIndex.
-     */
-    public Object getValueAt(int rowIndex);
 }

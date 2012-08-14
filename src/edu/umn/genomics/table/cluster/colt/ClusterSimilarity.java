@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: ClusterSimilarity.java,v $ $Revision: 1.1 $ $Date: 2003/05/15 18:23:40 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: ClusterSimilarity.java,v $ $Revision: 1.1 $ $Date: 2003/05/15 18:23:40 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,30 +21,27 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.table.cluster.colt;
 
-import cern.colt.matrix.DoubleMatrix2D;
-import edu.umn.genomics.table.cluster.Cluster;
+import edu.umn.genomics.table.cluster.*;
+import cern.colt.matrix.*;
 
 /**
  * AbstractSimilarity.
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/05/15 18:23:40 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/05/15 18:23:40 $  $Name: TableView1_2 $ 
+ * @since        1.0
  */
 public interface ClusterSimilarity {
-
-    /**
-     * Get the distance between the two Clusters by traversing to the
-     * RowClusters. The implementing classes determine how to accumulate the
-     * leaf distances.
-     *
-     * @param c1 The first cluster of the pair.
-     * @param c2 The second cluster of the pair.
-     * @param dm The distance matrix for RowClusters. return the distance
-     * between the clusters.
-     */
-    public double distance(Cluster c1, Cluster c2, DoubleMatrix2D dm);
+  /** 
+   * Get the distance between the two Clusters by traversing to the RowClusters.
+   * The implementing classes determine how to accumulate the leaf distances.
+   * @param c1 The first cluster of the pair.
+   * @param c2 The second cluster of the pair.
+   * @param dm The distance matrix for RowClusters.
+   * return the distance between the clusters.
+   */
+  public double distance(Cluster c1, Cluster c2, DoubleMatrix2D dm);
 }

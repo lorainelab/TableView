@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: DBComboBoxModel.java,v $ $Revision: 1.2 $ $Date: 2002/07/30 19:44:45 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: DBComboBoxModel.java,v $ $Revision: 1.2 $ $Date: 2002/07/30 19:44:45 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -21,58 +21,53 @@
  * GNU General Public License for more details.
  * 
  */
+
+
 package edu.umn.genomics.bi.dbutil;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-
+import java.lang.*;
+import javax.swing.*;
+import javax.swing.event.*;
 /**
  * Provides a ComboBoxModel that uses a shared DBUserList.
- *
- * @author J Johnson
- * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:45 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.2 $ $Date: 2002/07/30 19:44:45 $  $Name: TableView1_2 $
+ * @since        1.0
  * @see edu.umn.genomics.bi.dbutil.DBUserList
  * @see javax.swing.DefaultComboBoxModel
  */
 public class DBComboBoxModel extends DefaultComboBoxModel {
-
-    ListDataListener ldl = new ListDataListener() {
-
-        public void intervalAdded(ListDataEvent e) {
-            DBUserList list = (DBUserList) e.getSource();
-            for (int i = e.getIndex0(); i <= e.getIndex1(); i++) {
-                insertElementAt(list.getElementAt(i), i);
-            }
-        }
-
-        public void intervalRemoved(ListDataEvent e) {
-            DBUserList list = (DBUserList) e.getSource();
-            for (int i = e.getIndex1(); i >= e.getIndex0(); i--) {
-                removeElementAt(i);
-            }
-        }
-
-        public void contentsChanged(ListDataEvent e) {
-            DBUserList list = (DBUserList) e.getSource();
-            removeAllElements();
-            for (int i = 0; i < list.getSize(); i++) {
-                addElement(list.getElementAt(i));
-            }
-        }
-    };
-
-    public DBComboBoxModel() {
-        super();
-        DBUserList.getSharedInstance().addListDataListener(ldl);
-        ldl.contentsChanged(new ListDataEvent(DBUserList.getSharedInstance(),
-                ListDataEvent.CONTENTS_CHANGED,
-                0, DBUserList.getSharedInstance().getSize() - 1));
+  ListDataListener ldl = new ListDataListener() {
+    public void intervalAdded(ListDataEvent e) {
+      DBUserList list = (DBUserList)e.getSource();
+      for (int i = e.getIndex0(); i <= e.getIndex1(); i++) {
+        insertElementAt(list.getElementAt(i),i);
+      }
     }
-
-    protected void finalize() {
-        DBUserList.getSharedInstance().removeListDataListener(ldl);
+    public void intervalRemoved(ListDataEvent e) {
+      DBUserList list = (DBUserList)e.getSource();
+      for (int i = e.getIndex1(); i >= e.getIndex0(); i--) {
+        removeElementAt(i);
+      }
     }
-}
+    public void contentsChanged(ListDataEvent e) {
+      DBUserList list = (DBUserList)e.getSource();
+      removeAllElements();
+      for (int i = 0; i < list.getSize(); i++) {
+        addElement(list.getElementAt(i));
+      }
+    }
+  };
+
+  public DBComboBoxModel() {
+    super();
+    DBUserList.getSharedInstance().addListDataListener(ldl);
+    ldl.contentsChanged(new ListDataEvent(DBUserList.getSharedInstance(),
+                                          ListDataEvent.CONTENTS_CHANGED, 
+                                          0,DBUserList.getSharedInstance().getSize()-1));
+  }
+
+  protected void finalize() {
+    DBUserList.getSharedInstance().removeListDataListener(ldl);
+  }
+
+} 

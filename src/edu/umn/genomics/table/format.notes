@@ -1,0 +1,20 @@
+
+VirtualTableModelProxy 
+  Column -> format  
+    Number
+      scientific notation
+      percent
+      currency
+    Date/Time/Calendar
+    String/Object.toString() 
+      url
+      email
+      substring
+    Boolean
+      true|false
+      1|0
+      yes|no
+    Image
+      url
+        
+  

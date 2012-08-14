@@ -1,5 +1,5 @@
 /*
- * @(#) $RCSfile: SQLTypeListRenderer.java,v $ $Revision: 1.1 $ $Date: 2003/07/28 16:36:20 $ $Name: TableView1_3_2 $
+ * @(#) $RCSfile: SQLTypeListRenderer.java,v $ $Revision: 1.1 $ $Date: 2003/07/28 16:36:20 $ $Name: TableView1_2 $
  *
  * Center for Computational Genomics and Bioinformatics
  * Academic Health Center, University of Minnesota
@@ -30,37 +30,35 @@ import javax.swing.JList;
 
 /**
  * Displays the java.sql.Types name for a java.sql.Types value.
- *
- * @author J Johnson
- * @version $Revision: 1.1 $ $Date: 2003/07/28 16:36:20 $ $Name: TableView1_3_2
- * $
- * @since 1.0
+ * @author       J Johnson
+ * @version $Revision: 1.1 $ $Date: 2003/07/28 16:36:20 $  $Name: TableView1_2 $ 
+ * @since        1.0
  */
 public class SQLTypeListRenderer extends DefaultListCellRenderer {
 
-    static SQLTypeNames sqlTypeName = SQLTypeNames.getSharedInstance();
+  static SQLTypeNames sqlTypeName = SQLTypeNames.getSharedInstance();
 
-    /**
-     */
-    public Component getListCellRendererComponent(
-            JList list,
-            Object value,
-            int index,
-            boolean isSelected,
-            boolean cellHasFocus) {
-        try {
-            String s = null;
-            if (value != null && value instanceof Number) {
+  /**
+   */
+  public Component getListCellRendererComponent(
+                           JList list,
+                           Object value,
+                           int index,
+                           boolean isSelected,
+                           boolean cellHasFocus) {
+    try {
+      String s = null;
+      if (value != null && value instanceof Number) {
                 s = sqlTypeName.get(((Number) value).intValue());
-            }
-            if (s != null) {
-                super.setText(s);
-            } else {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            }
-        } catch (Exception ex) {
+      } 
+      if (s != null) {
+        super.setText(s);
+      } else {
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+      }
+    } catch (Exception ex) {
             ExceptionHandler.popupException(""+ex);
-        }
-        return this;
     }
+    return this;
+  }
 }
