@@ -133,6 +133,13 @@ public class TableViewPreferenceEditor extends JFrame  {
         return super.getCellEditor(row, column);
       }
     };
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    TableColumn col = table.getColumnModel().getColumn(0);
+    col.setPreferredWidth(100);
+    col = table.getColumnModel().getColumn(1);
+    col.setPreferredWidth(100);
+    col = table.getColumnModel().getColumn(2);
+    col.setPreferredWidth(250);
     table.setDefaultRenderer(Class.class, new ClassNameRenderer());
     table.setDefaultRenderer(String.class, new DefaultTableCellRenderer());
     table.setDefaultRenderer(Object.class, new DelegatingRenderer(rendererMap));
