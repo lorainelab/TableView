@@ -56,7 +56,6 @@ public class SimpleGraph extends JPanel implements Graph {
     public void mouseWheelMoved(MouseWheelEvent e) {
         Point p = e.getPoint();
         int rotation = e.getWheelRotation();
-        System.err.println("rot:" + rotation);
         alterView(p,rotation);
     }
   };
@@ -175,7 +174,6 @@ public class SimpleGraph extends JPanel implements Graph {
                     minVal = min -  range * adj;
                     maxVal = max +     range * adj;              
                 }
-        System.err.println("axis:" + i + " Point:" + p + " rot:" + amount + " min:" + min + " MIN:" + minVal + " max:" + max + " MAX:" + maxVal);
                 axis.setMin(minVal);
                 axis.setMax(maxVal);
             }
