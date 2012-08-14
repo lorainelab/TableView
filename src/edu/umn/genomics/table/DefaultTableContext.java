@@ -925,7 +925,7 @@ System.err.println(" <<<< ColumnMaps " + e.getSource());
       if (true) {
         jBtn = new JButton("Save PDF");
         try {
-          Class.forName("com.lowagie.text.pdf.PdfWriter");
+          Class.forName("com.itextpdf.text.pdf.PdfWriter");
           jBtn.setToolTipText("Save this view as a PDF file");
           jBtn.addActionListener(
             new ActionListener() {
