@@ -76,6 +76,8 @@ public final class TableView extends JPanel implements Serializable //, Printabl
   // are we running with Java2:
     boolean j2available = System.getProperty("java.specification.version").compareTo("1.2") >= 0;
   DefaultTableContext ctx = new DefaultTableContext();
+  private static final String APP_NAME = "Tableview";
+  private static final String APP_VERSION = "1.4";
   TreeModel tree = ctx.getTreeModel();
   JTree jtr = new JTree(tree);
   TableViewPreferenceEditor preferenceFrame;
@@ -575,6 +577,16 @@ public final class TableView extends JPanel implements Serializable //, Printabl
     mb.add(viewMenu);
         JMenu helpMenu = new JMenu("Help");
         helpMenu.setMnemonic('h');
+        mi = (JMenuItem)helpMenu.add(new JMenuItem("About Tableview" , getIcon("edu/umn/genomics/table/Icons/TipOfTheDay16.gif")));
+        mi.setMnemonic('t');
+        mi.setActionCommand("About Tableview");
+        mi.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent ae) {
+                showAboutDialog();
+            }
+        });
+        mi.getAccessibleContext().setAccessibleDescription("About Tableview");
         mi = (JMenuItem) helpMenu.add(new JMenuItem("TableView User's Guide" , getIcon("edu/umn/genomics/table/Icons/Information16.gif")));
         mi.setMnemonic('g');
         mi.setActionCommand("TableView User's Guide");
@@ -737,6 +749,28 @@ public final class TableView extends JPanel implements Serializable //, Printabl
     JFrame frame = ctx.getViewFrame("Scratch Pad", jsp);
         DefaultTableContext.setViewToolBar(frame, text);
     frame.setVisible(true);
+  }
+  
+  private void showAboutDialog(){
+      JPanel message_pane = new JPanel();
+      message_pane.setLayout(new BoxLayout(message_pane, BoxLayout.Y_AXIS));
+      JTextArea about_text = new JTextArea();
+      about_text.setEditable(false);
+      String text = APP_NAME+" "+ APP_VERSION +"\n\n"
+              + "TableView is a product of the open source GenoViz project,\n"
+              + "which develops interactive visualization software for genomics and bioinformatics.\n\n"
+              + "TableView was originally developed at the University of Minnesota\n"
+              + " and is now being maintained and developed by the GenoViz project.\n\n"
+              + "If you use TableView, please cite:\n\n"
+              + "Johnson JE, Stromvik MV, Silverstein KA, Crow JA, Shoop E, Retzel EF.\n"
+              + "TableView: portable genomic data visualization. Bioinformatics. \n"
+              + "2003 Jul 1;19(10):1292-3. PubMed PMID: 12835275.";
+      about_text.append(text);
+      message_pane.add(new JScrollPane(about_text));
+      final JOptionPane pane = new JOptionPane(message_pane, JOptionPane.INFORMATION_MESSAGE,
+				JOptionPane.DEFAULT_OPTION, new ImageIcon(TableView.class.getClassLoader().getResource("edu/umn/genomics/table/TableView96.png")));
+      final JDialog dialog = pane.createDialog("About TableView");
+      dialog.setVisible(true);
   }
 
     private void browse(String link) {
