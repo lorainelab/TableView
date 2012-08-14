@@ -76,7 +76,7 @@ public final class TableView extends JPanel implements Serializable //, Printabl
   // are we running with Java2:
     boolean j2available = System.getProperty("java.specification.version").compareTo("1.2") >= 0;
   DefaultTableContext ctx = new DefaultTableContext();
-  private static final String APP_NAME = "Tableview";
+  private static final String APP_NAME = "TableView";
   private static final String APP_VERSION = "1.4";
   TreeModel tree = ctx.getTreeModel();
   JTree jtr = new JTree(tree);
