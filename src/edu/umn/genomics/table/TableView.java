@@ -776,7 +776,7 @@ public final class TableView extends JPanel implements Serializable //, Printabl
       about_text.append(text);
       message_pane.add(new JScrollPane(about_text));
       final JOptionPane pane = new JOptionPane(message_pane, JOptionPane.INFORMATION_MESSAGE,
-        JOptionPane.DEFAULT_OPTION, new ImageIcon(TableView.class.getClassLoader().getResource("edu/umn/genomics/table/Icons/TableView96.png")));
+        JOptionPane.DEFAULT_OPTION, new ImageIcon(TableView.class.getClassLoader().getResource("edu/umn/genomics/table/TableView96.png")));
       final JDialog dialog = pane.createDialog("About TableView");
       dialog.setVisible(true);
   }
