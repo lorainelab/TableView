@@ -397,6 +397,16 @@ public final class TableView extends JPanel implements Serializable //, Printabl
               int returnVal = fc.showSaveDialog((Window)getTopLevelAncestor());
               if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
+                String name = file.getAbsolutePath();
+                if(name.lastIndexOf(".") > 0){
+                    String ext = name.substring(name.lastIndexOf(".")+1, name.length());
+                    if(!ext.equalsIgnoreCase("txt")){
+                        name = name.concat(".txt");
+                    }
+                }
+                else
+                    name = name.concat(".txt");
+                file = new File(name);
                 try {
                   //file.createNewFile();
                   writeSelection(new FileOutputStream(file));
