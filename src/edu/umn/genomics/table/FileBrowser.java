@@ -94,29 +94,11 @@ public class FileBrowser extends AbstractTableSource implements OpenTableSource 
           }
         }
       });
-    
-    JButton openBtn = new JButton("open");
-    openBtn.setToolTipText("Open a file chooser");
-    openBtn.addActionListener(
-      new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          openTableSource();
-        }
-      });
-   
-
-
-    JPanel pathp = new JPanel(new BorderLayout());
-    pathp.add(path,BorderLayout.CENTER);
-    pathp.add(browseBtn,BorderLayout.WEST);
-    pathp.add(openBtn,BorderLayout.EAST);
-     //Choose Field separator
-    JLabel fsLbl = new JLabel("Field Separator:",JLabel.RIGHT); 
     JPanel fsp = new JPanel(new BorderLayout());
     JPanel fsbp = new JPanel(new FlowLayout(1));
     final JTextField fsFld = new JTextField(3);
     fsFld.setToolTipText("fields separated by your tpyed in characters");
-    ActionListener al = new ActionListener() {
+        ActionListener al = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent ae) {
             String command = ae.getActionCommand();
@@ -132,12 +114,12 @@ public class FileBrowser extends AbstractTableSource implements OpenTableSource 
                 FileTableModel.setFS(fsFld.getText());
         }
     };
-    JRadioButton fsDefaultBtn = new JRadioButton("Tableview's best guess");
+    JRadioButton fsDefaultBtn = new JRadioButton("TableView's best guess");
     fsDefaultBtn.setSelected(true);
     fsDefaultBtn.setActionCommand("default");
+    fsDefaultBtn.setToolTipText("TableView guesses the delimiter based on the input source");
     fsDefaultBtn.addActionListener(al);
     JRadioButton fsTabBtn = new JRadioButton("TAB");
-    //fsTabBtn.setMnemonic(KeyEvent.VK_);
     fsTabBtn.setToolTipText("fields separated by a single TAB charater");
     fsTabBtn.setActionCommand("tab");
     fsTabBtn.addActionListener(al);
@@ -149,7 +131,7 @@ public class FileBrowser extends AbstractTableSource implements OpenTableSource 
     fsPipeBtn.setToolTipText("fields separated by a single pipe charater");
     fsPipeBtn.setActionCommand("pipe");
     fsPipeBtn.addActionListener(al);
-    JRadioButton fsOtherBtn = new JRadioButton("other:");
+    final JRadioButton fsOtherBtn = new JRadioButton("other:");
     fsOtherBtn.setActionCommand("other");
     fsOtherBtn.addActionListener(al);
     fsOtherBtn.setToolTipText("fields separated by your typed in characters");
@@ -168,6 +150,24 @@ public class FileBrowser extends AbstractTableSource implements OpenTableSource 
     fsbp.add(fsOtherBtn);
     fsp.add(fsbp,BorderLayout.WEST);
     fsp.add(fsFld,BorderLayout.CENTER);
+    JButton openBtn = new JButton("open");
+    openBtn.setToolTipText("Open a file chooser");
+    openBtn.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            if(fsOtherBtn.isSelected())
+                FileTableModel.setFS(fsFld.getText());
+          openTableSource();
+        }
+      });
+   
+    JPanel pathp = new JPanel(new BorderLayout());
+    pathp.add(path,BorderLayout.CENTER);
+    pathp.add(browseBtn,BorderLayout.WEST);
+    pathp.add(openBtn,BorderLayout.EAST);
+     //Choose Field separator
+    JLabel fsLbl = new JLabel("Field Separator:",JLabel.RIGHT); 
+    
 
     flp.add(pthLbl);
     fip.add(pathp);

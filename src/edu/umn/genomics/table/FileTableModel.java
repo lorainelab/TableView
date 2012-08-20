@@ -127,7 +127,7 @@ public class FileTableModel extends AbstractTableModel implements TableColumnMap
   public String source = null;
   public RandomAccessFile raf;
   public boolean canSplit; // can use regex in Java 1.4
-  public static String fs = "	"; // tab
+  public static String fs = null; // tab
   public String rs = null; // tab
   public int linesRead = 0;
   boolean linesIndexed = false;
