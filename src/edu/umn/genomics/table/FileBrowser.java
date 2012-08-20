@@ -24,8 +24,8 @@
 package edu.umn.genomics.table;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -110,30 +110,58 @@ public class FileBrowser extends AbstractTableSource implements OpenTableSource 
     pathp.add(path,BorderLayout.CENTER);
     pathp.add(browseBtn,BorderLayout.WEST);
     pathp.add(openBtn,BorderLayout.EAST);
-    
-    //Choose Field separator
+     //Choose Field separator
     JLabel fsLbl = new JLabel("Field Separator:",JLabel.RIGHT); 
     JPanel fsp = new JPanel(new BorderLayout());
-    JPanel fsbp = new JPanel(new GridLayout(1,0));
+    JPanel fsbp = new JPanel(new FlowLayout(1));
+    final JTextField fsFld = new JTextField(3);
+    fsFld.setToolTipText("fields separated by your tpyed in characters");
+    ActionListener al = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            String command = ae.getActionCommand();
+            if(command.equals("default"))
+                FileTableModel.setFS(null);
+            else if(command.equals("tab"))
+                FileTableModel.setFS("	");
+            else if(command.equals("comma"))
+                FileTableModel.setFS(",");
+            else if(command.equals("pipe"))
+                FileTableModel.setFS("|");
+            else
+                FileTableModel.setFS(fsFld.getText());
+        }
+    };
+    JRadioButton fsDefaultBtn = new JRadioButton("Tableview's best guess");
+    fsDefaultBtn.setSelected(true);
+    fsDefaultBtn.setActionCommand("default");
+    fsDefaultBtn.addActionListener(al);
     JRadioButton fsTabBtn = new JRadioButton("TAB");
-    fsTabBtn.setSelected(true);
     //fsTabBtn.setMnemonic(KeyEvent.VK_);
     fsTabBtn.setToolTipText("fields separated by a single TAB charater");
+    fsTabBtn.setActionCommand("tab");
+    fsTabBtn.addActionListener(al);
     JRadioButton fsCommaBtn = new JRadioButton(",");
     fsCommaBtn.setToolTipText("fields separated by a single comma charater");
+    fsCommaBtn.setActionCommand("comma");
+    fsCommaBtn.addActionListener(al);
     JRadioButton fsPipeBtn = new JRadioButton("|");
     fsPipeBtn.setToolTipText("fields separated by a single pipe charater");
+    fsPipeBtn.setActionCommand("pipe");
+    fsPipeBtn.addActionListener(al);
     JRadioButton fsOtherBtn = new JRadioButton("other:");
+    fsOtherBtn.setActionCommand("other");
+    fsOtherBtn.addActionListener(al);
     fsOtherBtn.setToolTipText("fields separated by your typed in characters");
     // Group the radio buttons.
     ButtonGroup fsGrp = new ButtonGroup();
+    fsGrp.add(fsDefaultBtn);
     fsGrp.add(fsTabBtn);
     fsGrp.add(fsCommaBtn);
     fsGrp.add(fsPipeBtn);
     fsGrp.add(fsOtherBtn);
-    JTextField fsFld = new JTextField(3);
-    fsFld.setToolTipText("fields separated by your tpyed in characters");
     // Put fs into panel
+    fsbp.add(fsDefaultBtn);
     fsbp.add(fsTabBtn);
     fsbp.add(fsCommaBtn);
     fsbp.add(fsPipeBtn);
