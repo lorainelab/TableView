@@ -645,7 +645,6 @@ System.err.println(">>> setIndexInfo");
     try {
       dbmodel.addQuery(dbuser.getName(),"\n"+sql.trim()+"\n");
     } catch (Exception ex) {
-        ExceptionHandler.popupException(""+ex);
     }
     rowLabel.setText("Rows  ?");
     try {
