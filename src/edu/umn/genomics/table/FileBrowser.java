@@ -189,7 +189,6 @@ public class FileBrowser extends AbstractTableSource implements OpenTableSource 
     try {
       openTableSource(path.getText());
     } catch (Exception ex) {
-            ExceptionHandler.popupException("Invalid URL: "+ex);
     }
   }
 

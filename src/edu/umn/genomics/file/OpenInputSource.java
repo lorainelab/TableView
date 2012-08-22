@@ -54,7 +54,7 @@ public class OpenInputSource {
                 ExceptionHandler.popupException(""+se);                
       }
         } catch (Exception ue) {
-            ExceptionHandler.popupException(""+ue);
+            ExceptionHandler.popupException("Enter a valid URL: "+ue);
     }
     // local file?
     try {
@@ -95,6 +95,6 @@ public class OpenInputSource {
    * @return a Reader opened on the source.
    */
   public static BufferedReader getBufferedReader(String source) throws IOException {
-    return new BufferedReader(new InputStreamReader(getInputStream(source)));
+        return new BufferedReader(new InputStreamReader(getInputStream(source)));
+    }
   }
-}
