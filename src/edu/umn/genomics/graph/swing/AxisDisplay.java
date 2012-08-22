@@ -372,7 +372,7 @@ public class AxisDisplay extends JComponent implements AxisComponent {
       int gap = 2;
       double ticks[] = axis.getTicks();
       String max = "-9"; // an arbitrary digit
-      for (int i = 0; i < ticks.length; i+=2) {
+      for (int i = 0; i < ticks.length -1; i+=2) {
         String tag = labeler.getLabel(ticks[i+1]);
         if (tag.length() > max.length()) 
           max = tag;
