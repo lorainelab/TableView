@@ -1474,6 +1474,7 @@ public class Histogram3dDisplay extends JComponent {
       g2.draw(poly);
     }
     */
+    try{
     if (bars != null) {
       // draw bars back to front
       if (closestCorner % 4 == 0) {
@@ -1530,7 +1531,10 @@ public class Histogram3dDisplay extends JComponent {
           }
         }
       }
-    } 
+    }
+    }catch(Exception ex){
+        ExceptionHandler.popupException(""+ex);
+    }
     if (selecting) {
       g2.setColor(Color.black);
       g2.drawRect(Math.min(current.x,start.x), Math.min(current.y,start.y), 
