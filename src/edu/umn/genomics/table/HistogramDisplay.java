@@ -219,9 +219,9 @@ public class HistogramDisplay extends JPanel {
   }
 
   public synchronized int[][] getPointArray(int x, int y, Axis axes[], boolean selectCnt) {
-    if(binRectPnts == null || binRectPnts[0] == null ||
+    if((binRectPnts == null || binRectPnts[0] == null ||
        calcAxes[0] == null || calcAxes[1] == null || 
-       !calcAxes[0].equals(axes[0]) || !calcAxes[1].equals(axes[1])) {
+       !calcAxes[0].equals(axes[0]) || !calcAxes[1].equals(axes[1])) && (axes[0] != null) && (axes[1] != null)) {
       try {
         calcPoints(x,y,axes);
       } catch (Exception ex) {
