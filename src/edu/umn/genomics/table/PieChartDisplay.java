@@ -221,7 +221,7 @@ public class PieChartDisplay extends JComponent {
 
   public double getArcs(int[] dims, int[] indices, Arc2D[][] arca, 
                      double cx, double cy, double rw, double angle, double scale) {
-    if (indices == null) {
+      if (indices == null) {
       return getArcs(dims, new int[0], arca, cx, cy, rw, angle, scale);
     } else  if (indices.length < dims.length) {
       double startAngle = angle;
@@ -231,6 +231,7 @@ public class PieChartDisplay extends JComponent {
         indexes[indices.length] = i;
         startAngle = getArcs(dims, indexes, arca, cx, cy, rw, startAngle, scale);
       }
+      try{
       if (indices.length > 0) {
         double rr = rw * indices.length / dims.length;
         int idx = indices != null ? MultiDimIntArray.getIndex(indices,dims) : 0;
@@ -239,16 +240,24 @@ public class PieChartDisplay extends JComponent {
         arca[indices.length-1][idx] = arc;
         // arca[indices.length-1][idx] =  new Arc2D.Double(bx,by,bw,bh,angle,startAngle - angle,Arc2D.PIE);
       }
+      }catch(Exception ex){
+          ExceptionHandler.popupException(""+ex);
+      }      
       return startAngle;
     } else {
+      double extent = 0;
+        try{
       int binCnt = hgm.getBinCount(indices);
       int selCnt = hgm.getBinSelectCount(indices);
-      double extent = binCnt * scale;
+      extent = binCnt * scale;
       int idx = indices != null ? MultiDimIntArray.getIndex(indices,dims) : 0;
       Arc2D.Double arc = new Arc2D.Double();
       arc.setArcByCenter(cx,cy,rw,angle,extent,Arc2D.PIE);
       arca[indices.length-1][idx] = arc;
       // arca[indices.length -1][idx] =  new Arc2D.Double(bx,by,bw,bh,angle,extent,Arc2D.PIE);
+        }catch(Exception ex){
+            ExceptionHandler.popupException(""+ex);
+        }
       return angle + extent;
     }
   }
