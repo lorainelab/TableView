@@ -231,7 +231,6 @@ public class PieChartDisplay extends JComponent {
         indexes[indices.length] = i;
         startAngle = getArcs(dims, indexes, arca, cx, cy, rw, startAngle, scale);
       }
-      try{
       if (indices.length > 0) {
         double rr = rw * indices.length / dims.length;
         int idx = indices != null ? MultiDimIntArray.getIndex(indices,dims) : 0;
@@ -239,14 +238,10 @@ public class PieChartDisplay extends JComponent {
         arc.setArcByCenter(cx,cy,rr,angle,startAngle - angle,Arc2D.PIE);
         arca[indices.length-1][idx] = arc;
         // arca[indices.length-1][idx] =  new Arc2D.Double(bx,by,bw,bh,angle,startAngle - angle,Arc2D.PIE);
-      }
-      }catch(Exception ex){
-          ExceptionHandler.popupException(""+ex);
       }      
       return startAngle;
     } else {
       double extent = 0;
-        try{
       int binCnt = hgm.getBinCount(indices);
       int selCnt = hgm.getBinSelectCount(indices);
       extent = binCnt * scale;
@@ -255,9 +250,6 @@ public class PieChartDisplay extends JComponent {
       arc.setArcByCenter(cx,cy,rw,angle,extent,Arc2D.PIE);
       arca[indices.length-1][idx] = arc;
       // arca[indices.length -1][idx] =  new Arc2D.Double(bx,by,bw,bh,angle,extent,Arc2D.PIE);
-        }catch(Exception ex){
-            ExceptionHandler.popupException(""+ex);
-        }
       return angle + extent;
     }
   }
@@ -269,6 +261,12 @@ public class PieChartDisplay extends JComponent {
   }
   
   public void paintComponent(Graphics g) {
+    Arc2D.Double arc;
+    try{
+    arcs = getArcs();
+    }catch(Exception ex){
+        return;
+    }
     Graphics2D g2 = (Graphics2D)g;
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
                         RenderingHints.VALUE_ANTIALIAS_ON);
@@ -279,8 +277,6 @@ public class PieChartDisplay extends JComponent {
     } 
     FontMetrics fm = g2.getFontMetrics();
     Arc2D lblArc = new Arc2D.Double();
-    Arc2D.Double arc;
-    arcs = getArcs();
     if (arcs != null) {
 
       for (int j = arcs.length-1; j >= 0; j--) {
