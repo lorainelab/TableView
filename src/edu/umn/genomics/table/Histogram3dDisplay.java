@@ -1090,7 +1090,11 @@ public class Histogram3dDisplay extends JComponent {
     if (updateAxesNeeded) { 
     } 
     if (updateBarsNeeded) {
-      bars = makeBars();
+      try{
+        bars = makeBars();
+      }catch(Exception ex){
+          return;
+      }
     } 
     // draw background
     if (isOpaque()) {
