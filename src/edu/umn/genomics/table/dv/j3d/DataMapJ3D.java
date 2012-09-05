@@ -414,7 +414,10 @@ public class DataMapJ3D extends DataMap implements Serializable {
       repSwitch.setWhichChild(whichChild);
       defaultPrimName = rep;
       for (Enumeration e = gGroup.getAllChildren(); e.hasMoreElements() ;) {
+        try{  
         ((GlyphJ3D)e.nextElement()).setPrimitive(defaultPrimName);
+        }catch(ClassCastException ex){
+        }
       }
     }
   }
