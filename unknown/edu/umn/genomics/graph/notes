@@ -1,0 +1,57 @@
+
+bean
+
+Properties:
+  Color
+    bg
+    fg
+    
+
+  Font
+    Header
+    Label
+    
+  Axis
+    DefaultRange
+    Size
+    Min
+    Max
+    Range
+    MajorTick
+    MinorTick
+
+  Graph
+    Axis
+    GraphItem
+    Grid
+    GridColor
+    
+
+  GraphItem
+
+  AxisDisplay
+    Labeler
+
+  GraphDisplay
+    Title
+
+
+  AxisDisplay <- Axis
+  Graph <- Axis
+  
+
+  AxisDisplay -> Axis.setRange(double min, double max);
+  AxisDisplay -> Axis.setRange(double min, double max);
+
+
+  AxisEvent
+    sizeChanged()
+    rangeChanged()
+    ticksChanged()
+
+
+Resize -> Graph -> Axis.setSize()
+Resize -> AxisDisplay -> Axis.setSize()
+  
+
+  

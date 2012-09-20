@@ -1,0 +1,141 @@
+CacheColumnMap.java
+DBColumnMap.java
+ScatterPlot.java
+ColHistogram.java
+Partition.java
+PartitionBinModel.java
+HistogramListener.java
+BinLabeler.java
+BinModel.java
+SpanPlotView.java
+HistogramDisplay.java
+BinModelEditorDialog.java
+Histogram3dDisplay.java
+HistogramModel.java
+PieChartView.java
+HistogramView.java
+HistogramEvent.java
+Histogram3dView.java
+PieChartDisplay.java
+BaseColumnMap.java
+ScriptInterpreter.java
+ScriptBsh.java
+ScriptJS.java
+TableModelFormula.java
+LoadTable.java
+MultiDimIntArray.java
+SpanPlot.java
+DefaultHistogramModel.java
+DatePartitionLabeler.java
+PartitionSource.java
+RangeBinModel.java
+ColumnMapBinModel.java
+DefaultTableContext.java
+DBBrowser.java
+TableContext.java
+BinModelEditor.java
+AbstractColumnMap.java
+AbstractHistogramModel.java
+AbstractHistogramViewND.java
+VirtualTableModelEditor.java
+VirtualTableModelProxy.java
+VirtualTableModel.java
+ColRef.java
+AbstractColumnFormula.java
+VirtualCell.java
+BshFormula.java
+JSFormula.java
+DefaultColumnMap.java
+VectorColumn.java*
+JTableEditor.java
+VirtualTableModelView.java
+TypedTableModel.java
+JTableView.java
+TableView.java
+
+
+
+
+
+AbstractTableModelView.java
+ParallelCoordinateTable.java
+ResidualPlot.java
+ScatterPlot.java
+SearchView.java
+TableView.java
+ColHistogram.java
+ParallelCoordinatePanel.java
+PartitionIndexMap.java
+
+
+bsh
+import javax.swing.*;
+import java.util.*;
+import edu.umn.genomics.table.*;
+TableView tv = new TableView();
+JFrame frame = new JFrame("TV bsh");
+frame.getContentPane().add(tv);
+frame.pack();
+frame.setVisible(true);
+tv.loadSource(null,"~/data/dd.data","3D");
+VirtualTableModel tm =  tv.getTableModel();
+print(tm.getRowCount());
+DefaultHistogramModel hg = new DefaultHistogramModel();
+hg.setDataModel(tm);
+hg.setListSelectionModel(tv.getTableContext().getRowSelectionModel(tm));
+ColumnMapBinModel cbm0 = new ColumnMapBinModel(tm.getColumnMap(0));
+hg.addBinModel(cbm0);
+int[] ia = new int[1];
+ia[0] = 1;
+print(hg.getBinSize(ia));
+hg.selectBin(ia);
+
+
+
+blade > bsh
+BeanShell 2.0b1.1 - by Pat Niemeyer (pat@pat.net)
+import javax.swing.*;
+import java.util.*;
+import edu.umn.genomics.table.*;
+TableView tv = new TableView();
+JFrame frame = new JFrame("TV bsh");
+frame.getContentPane().add(tv);
+frame.pack();
+frame.setVisible(true);
+tv.loadSource(null,"~/data/dd.data","3D");
+VirtualTableModel tm =  tv.getTableModel();
+print(tm.getRowCount());
+DefaultHistogramModel hg = new DefaultHistogramModel();
+hg.setItemCount(tm.getRowCount());
+ColumnMapBinModel cbm0 = new ColumnMapBinModel(tm.getColumnMap(0));
+cbm0.setBins(10);
+hg.addBinModel(cbm0);
+int[] ia = new int[1];
+ia[0] = 1;
+hg.updateBinSizes();
+
+print(cbm0.getBinSize(1));
+
+print(cbm0.getBin(0));
+print(hg.getBinSize(ia));
+print(cbm0.getBinSize(1));
+int tot = 0;
+for (int c = 0; c < 10; c++) { ia[0] = c; int n = hg.getBinSize(ia); tot += n; print(n + "  " + tot);}
+
+
+double[] div = cbm0.getDividers();
+print(div.length);
+for (int i = 0; i < div.length; i++) { print(i + "\t" + div[i]); }
+Arrays.binarySearch(div,0.272);
+print(Arrays.binarySearch(div,0.272));
+
+hg.setDataModel(tm);
+
+hg.setListSelectionModel(tv.getTableContext().getRowSelectionModel(tm));
+
+hg.selectBin(ia);
+
+
+
+
+

@@ -1,0 +1,43 @@
+
+class DBTable {
+  String catalog;
+  String schema;
+  String table;
+  DBTable(String catalog, String schema, String table) {
+    this.catalog = catalog;
+    this.schema = schema;
+    this.table = table;
+  }
+  public String getCatalog() {
+    return catalog;
+  }
+  public String getSchema() {
+    return schema;
+  }
+  public String getTable() {
+    return table;
+  }
+  public String toString() {
+    return (catalog != null ? catalog + "." : "") + 
+           (schema != null ? schema + "." : "") + table;
+  }
+}
+  
+class DBColumn extends DBTable {
+  String column;
+  DBColumn(String catalog, String schema, String table, String column) {
+    super(catalog, schema, table);
+    this.column = column;
+  }
+  public String getColumn() {
+    return column;
+  }
+  public String toString() {
+    return (catalog != null ? catalog + "." : "") + 
+           (schema != null ? schema + "." : "") + 
+           (table != null ? table + "." : "") + 
+           column;
+  }
+}
+  
+
