@@ -1,0 +1,87 @@
+
+package edu.umn.genomics.bi.dbutil;
+
+import java.sql.*;
+import java.util.*;
+
+
+public class DBMeta {
+  Hashtable catalogueHash;  // name -> Catalogue
+  Hashtable schemaHash = new Hashtable();     // name -> Catalogue
+  DatabaseMetaData dbmd = null;
+
+  public DBMeta(DatabaseMetaData dbmd) {
+    this.dbmd = dbmd;
+  }
+
+  TreeSet tableType;  // 
+
+  public DBSchema getSchema(String name) {
+      DBSchema s = (DBSchema)schemaHash.get(name);
+      if (s == null) {
+        s = new DBSchema(name,dbmd);
+        schemaHash.put(name, s);
+      }
+      return s;
+  }
+
+  public DBSchema[] getSchemas() {
+    int n = schemaHash.size();
+    DBSchema[] s = new DBSchema[n];
+    int i = 0;
+    for (Enumeration e = schemaHash.elements() ; e.hasMoreElements() ;) {
+      s[i++] = (DBSchema)e.nextElement();
+    }
+    return s;
+  }
+
+  public String[] getTableTypes() {
+    String[] tt = null;
+    try {
+      ResultSet rs = dbmd.getTableTypes();
+      Vector v = new Vector();
+      while (rs.next()) {
+        String t = rs.getString(1);
+        v.addElement(t);
+      }
+      tt = new String[v.size()];
+      v.toArray(tt);
+    } catch (SQLException sqle) {
+      System.err.println("getSchemas " + sqle);
+    }
+    return tt;
+  }
+
+  public void processMetaData() {
+
+    try {
+      ResultSet rs = dbmd.getSchemas();
+      //System.out.println("getSchemas: ");
+      while (rs.next()) {
+        String name = rs.getString(1);
+        if (name.startsWith("SYS") || name.startsWith("PUB")) {
+        } else {
+          //System.out.println(schema.toString());
+          DBSchema schema = getSchema(name);
+        }
+      }
+    } catch (SQLException sqle) {
+      System.err.println("getSchemas " + sqle);
+    }
+
+  }
+
+  public static void main(String args[]) {
+    try {
+      DatabaseMetaData dbmd = DBQuery.getConnection().getMetaData();
+      DBMeta dbm = new DBMeta(dbmd);
+      dbm.processMetaData();
+    } catch(Exception ex) {
+      System.err.println(ex);
+    }
+
+  }
+
+}
+
+
