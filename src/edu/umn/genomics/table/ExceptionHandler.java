@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author auser
+ * @author Anuj
  * This Class is used to handle all the Exceptions with a generalised Popup 
  */
 public class ExceptionHandler {
